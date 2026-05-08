@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ISE 3.0 Policy Analytics — 10.81.145.7</title>
+<style>
+:root{
+  --bg:#0f172a;--card:#1e293b;--border:#334155;
+  --text:#e2e8f0;--muted:#94a3b8;--accent:#38bdf8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:var(--bg);color:var(--text);padding:28px;line-height:1.5}
+h1{font-size:1.75rem;font-weight:800;color:#f1f5f9}
+h2{font-size:1.1rem;font-weight:700;color:#cbd5e1;
+   margin:36px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h3{font-size:.95rem;font-weight:600;color:#94a3b8;margin-bottom:10px}
+.header{display:flex;align-items:center;justify-content:space-between;
+        padding:24px 28px;background:var(--card);border:1px solid var(--border);
+        border-radius:14px;margin-bottom:26px}
+.header-meta{font-size:.78rem;color:var(--muted);margin-top:4px}
+.logo{font-size:2.6rem;line-height:1}
+/* Score */
+.score-row{display:flex;align-items:center;gap:24px;
+           background:var(--card);border:1px solid var(--border);
+           border-radius:14px;padding:22px 28px;margin-bottom:26px}
+.score-num{font-size:4rem;font-weight:900;line-height:1}
+.score-meta p{font-size:.82rem;color:var(--muted);margin-top:3px}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+       gap:14px;margin-bottom:26px}
+.stat{background:var(--card);border:1px solid var(--border);
+      border-radius:12px;padding:16px;text-align:center}
+.stat-n{font-size:2.2rem;font-weight:800;line-height:1}
+.stat-l{font-size:.72rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+/* Findings */
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fb{padding:5px 16px;border:1px solid var(--border);border-radius:999px;
+    background:var(--card);color:var(--muted);cursor:pointer;
+    font-size:.78rem;transition:all .15s}
+.fb:hover,.fb.active{background:#334155;color:#f1f5f9;border-color:#475569}
+.fb.fc.active{border-color:#dc2626;color:#f87171}
+.fb.fh.active{border-color:#ea580c;color:#fb923c}
+.fb.fw.active{border-color:#d97706;color:#fbbf24}
+.fb.fi.active{border-color:#2563eb;color:#60a5fa}
+.fcard{background:var(--card);border-left:4px solid var(--border);
+       border-radius:10px;padding:16px 18px;margin-bottom:10px;
+       transition:transform .1s}
+.fcard:hover{transform:translateX(2px)}
+.fcard.critical{border-left-color:#dc2626}
+.fcard.high{border-left-color:#ea580c}
+.fcard.warning{border-left-color:#d97706}
+.fcard.info{border-left-color:#2563eb}
+.fhead{display:flex;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.fnum{font-size:.72rem;color:var(--muted);margin-right:4px}
+.ftitle{font-weight:700;font-size:.92rem;color:#f1f5f9}
+.fbody p{font-size:.82rem;color:var(--muted);margin-bottom:5px}
+.fbody strong{color:#e2e8f0}
+.rec{color:#86efac!important}
+/* Tables */
+.tw{background:var(--card);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;margin-bottom:26px}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:#162032;color:var(--muted);font-weight:700;font-size:.72rem;
+   text-transform:uppercase;letter-spacing:.06em}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+.muted{color:var(--muted)!important;font-style:italic}
+/* Best Practice Section */
+.bp{background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:20px 24px;margin-bottom:26px}
+.bp p{font-size:.84rem;color:var(--muted);margin-bottom:14px}
+footer{text-align:center;color:var(--muted);font-size:.72rem;
+       margin-top:44px;padding-top:18px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div>
+    <h1>ISE 3.0 Policy Analytics</h1>
+    <div class="header-meta">
+      Cisco Identity Services Engine 3.0 Patch 3 &nbsp;|&nbsp;
+      10.81.145.7 &nbsp;|&nbsp; Generated: 2026-05-08 14:37:22 &nbsp;|&nbsp;
+      Role: Network Security Designer
+    </div>
+  </div>
+  <div class="logo">&#128737;</div>
+</div>
+<div style="background:#78350f;border:1px solid #92400e;border-radius:10px;padding:14px 20px;margin-bottom:20px;font-size:.84rem;color:#fef3c7"><strong>DEMO / EXAMPLE REPORT</strong> &mdash; The ISE API was not reachable when this report was generated. The data shown is a synthetic example that illustrates common policy findings and recommendations. Once the API is enabled (see instructions above), re-run the script for a live analysis.</div>
+
+<!-- Health Score -->
+<div class="score-row">
+  <div class="score-num" style="color:#dc2626">0</div>
+  <div class="score-meta">
+    <h3 style="font-size:1.15rem;color:#f1f5f9">Policy Health Score <span style="color:var(--muted);font-size:.85rem">/ 100</span></h3>
+    <p style="color:#dc2626;font-weight:600">Critical — Immediate Action Required</p>
+    <p>4 Critical &nbsp;·&nbsp; 11 High &nbsp;·&nbsp;
+       5 Warning &nbsp;·&nbsp; 15 Info</p>
+    <p style="margin-top:6px;font-size:.75rem">
+      Score = 100 − (critical×20) − (high×10) − (warning×4) − (info×1)
+    </p>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat"><div class="stat-n" style="color:#dc2626">4</div><div class="stat-l">Critical</div></div>
+  <div class="stat"><div class="stat-n" style="color:#ea580c">11</div><div class="stat-l">High</div></div>
+  <div class="stat"><div class="stat-n" style="color:#d97706">5</div><div class="stat-l">Warning</div></div>
+  <div class="stat"><div class="stat-n" style="color:#2563eb">15</div><div class="stat-l">Info</div></div>
+  <div class="stat"><div class="stat-n" style="color:#38bdf8">3</div><div class="stat-l">Policy Sets</div></div>
+  <div class="stat"><div class="stat-n" style="color:#94a3b8">5</div><div class="stat-l">Authz Profiles</div></div>
+  <div class="stat"><div class="stat-n" style="color:#94a3b8">47</div><div class="stat-l">NADs</div></div>
+  <div class="stat"><div class="stat-n" style="color:#94a3b8">2</div><div class="stat-l">Protocol Sets</div></div>
+</div>
+
+<!-- Policy Sets Table -->
+<h2>Policy Sets</h2>
+<div class="tw">
+  <table>
+    <thead><tr>
+      <th>Policy Set</th><th>Description</th><th>Default</th>
+      <th>State</th><th>Auth Rules</th><th>Authz Rules</th>
+    </tr></thead>
+    <tbody><tr><td>Wired 802.1X</td><td></td><td>No</td><td><span style="color:#4ade80">enabled</span></td><td>2</td><td>5</td></tr><tr><td>MAB Fallback</td><td>MAB for printers and phones</td><td>No</td><td><span style="color:#4ade80">enabled</span></td><td>1</td><td>2</td></tr><tr><td>Default</td><td>Catch-all</td><td><span style="color:#4ade80">Yes</span></td><td><span style="color:#4ade80">enabled</span></td><td>1</td><td>1</td></tr></tbody>
+  </table>
+</div>
+
+<!-- Authorization Profiles -->
+<h2>Authorization Profiles</h2>
+<div class="tw">
+  <table>
+    <thead><tr>
+      <th>Profile</th><th>Access Type</th><th>DACL</th><th>VLAN</th><th>Session Timeout (s)</th>
+    </tr></thead>
+    <tbody><tr><td>Corp_Full_Access</td><td>ACCESS_ACCEPT</td><td>PERMIT_ALL</td><td>CORP</td><td>28800</td></tr><tr><td>Limited_Access</td><td>ACCESS_ACCEPT</td><td></td><td>IOT</td><td>—</td></tr><tr><td>Guest_Access</td><td>ACCESS_ACCEPT</td><td></td><td>GUEST</td><td>—</td></tr><tr><td>Remediation</td><td>ACCESS_ACCEPT</td><td>ACL-REMEDIATION</td><td>QUARANTINE</td><td>3600</td></tr><tr><td>GhostProfile</td><td>ACCESS_ACCEPT</td><td></td><td>—</td><td>—</td></tr></tbody>
+  </table>
+</div>
+
+<!-- Allowed Protocols -->
+<h2>Allowed Protocol Sets</h2>
+<div class="tw">
+  <table>
+    <thead><tr>
+      <th>Name</th><th>EAP-TLS</th><th>PEAP</th><th>EAP-FAST</th>
+      <th>MSCHAPv2</th><th>PAP ⚠</th><th>LEAP ⚠</th>
+    </tr></thead>
+    <tbody><tr><td>Default Network Access</td><td style='color:#4ade80'>✔</td><td style='color:#4ade80'>✔</td><td style='color:#f87171'>✘</td><td style='color:#4ade80'>✔</td><td style='color:#f87171'>✔</td><td style='color:#f87171'>✔</td></tr><tr><td>Legacy Devices</td><td style='color:#f87171'>✘</td><td style='color:#f87171'>✘</td><td style='color:#f87171'>✘</td><td style='color:#f87171'>✘</td><td style='color:#f87171'>✔</td><td style='color:#f87171'>✔</td></tr></tbody>
+  </table>
+</div>
+
+<!-- Findings -->
+<h2>Findings (35 total)</h2>
+<div class="filter-bar">
+  <button class="fb fa active" onclick="filter('all')">All (35)</button>
+  <button class="fb fc" onclick="filter('critical')">Critical (4)</button>
+  <button class="fb fh" onclick="filter('high')">High (11)</button>
+  <button class="fb fw" onclick="filter('warning')">Warning (5)</button>
+  <button class="fb fi" onclick="filter('info')">Info (15)</button>
+</div>
+<div id="fc">
+
+<div class="fcard critical" data-sev="critical">
+  <div class="fhead">
+    <span class="fnum">#1</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">CRITICAL</span>
+    <span class="ftitle">PermitAccess Rule With No Conditions — Unrestricted Bypass</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization → Rule: Bypass Rule</p>
+    <p><strong>Detail:</strong> Rule &#x27;Bypass Rule&#x27; grants &#x27;PermitAccess&#x27; with zero conditions. Every session that reaches this policy set gets full access.</p>
+    <p class="rec"><strong>Recommendation:</strong> This rule must be deleted or given specific conditions immediately. Every permit rule needs at least: identity group + endpoint compliance + NDG/location. Follow the pattern: Who + From Where + How = What Access.</p>
+  </div>
+</div>
+<div class="fcard critical" data-sev="critical">
+  <div class="fhead">
+    <span class="fnum">#2</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">CRITICAL</span>
+    <span class="ftitle">PermitAccess Rule With No Conditions — Unrestricted Bypass</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization → Rule: Default</p>
+    <p><strong>Detail:</strong> Rule &#x27;Default&#x27; grants &#x27;PermitAccess&#x27; with zero conditions. Every session that reaches this policy set gets full access.</p>
+    <p class="rec"><strong>Recommendation:</strong> This rule must be deleted or given specific conditions immediately. Every permit rule needs at least: identity group + endpoint compliance + NDG/location. Follow the pattern: Who + From Where + How = What Access.</p>
+  </div>
+</div>
+<div class="fcard critical" data-sev="critical">
+  <div class="fhead">
+    <span class="fnum">#3</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">CRITICAL</span>
+    <span class="ftitle">PermitAccess Rule With No Conditions — Unrestricted Bypass</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authorization → Rule: Default</p>
+    <p><strong>Detail:</strong> Rule &#x27;Default&#x27; grants &#x27;PermitAccess&#x27; with zero conditions. Every session that reaches this policy set gets full access.</p>
+    <p class="rec"><strong>Recommendation:</strong> This rule must be deleted or given specific conditions immediately. Every permit rule needs at least: identity group + endpoint compliance + NDG/location. Follow the pattern: Who + From Where + How = What Access.</p>
+  </div>
+</div>
+<div class="fcard critical" data-sev="critical">
+  <div class="fhead">
+    <span class="fnum">#4</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">CRITICAL</span>
+    <span class="ftitle">PermitAccess Rule With No Conditions — Unrestricted Bypass</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Default → Authorization → Rule: Catch-All Permit</p>
+    <p><strong>Detail:</strong> Rule &#x27;Catch-All Permit&#x27; grants &#x27;PermitAccess&#x27; with zero conditions. Every session that reaches this policy set gets full access.</p>
+    <p class="rec"><strong>Recommendation:</strong> This rule must be deleted or given specific conditions immediately. Every permit rule needs at least: identity group + endpoint compliance + NDG/location. Follow the pattern: Who + From Where + How = What Access.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#5</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Catch-All Auth Rule — ifAuthFail=CONTINUE</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authentication → Rule: Default</p>
+    <p><strong>Detail:</strong> A rule with no conditions and ifAuthFail=CONTINUE lets failed authentications silently reach the authorization phase.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set ifAuthFail to REJECT. Only use CONTINUE on specific rules where chained authentication (e.g., 802.1X then MAB fallback) is explicitly intended.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#6</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Catch-All Auth Rule — ifUserNotFound=CONTINUE</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authentication → Rule: Default</p>
+    <p><strong>Detail:</strong> Unknown users (not in any identity store) continue to authorization. A spoofed MAC or credential can traverse the entire policy.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set ifUserNotFound to REJECT unless this rule is a MAB rule where &#x27;not found&#x27; is the expected outcome for profiling.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#7</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Last Authorization Rule &#x27;Default&#x27; Is Not DenyAccess</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization</p>
+    <p><strong>Detail:</strong> The final rule acts as a catch-all for unmatched sessions. If it is not DenyAccess, unexpected traffic receives unintended network access.</p>
+    <p class="rec"><strong>Recommendation:</strong> Add a DenyAccess rule as the last entry in every authorization policy. This enforces least-privilege: &#x27;if no rule explicitly grants access, deny.&#x27;</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#8</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Catch-All Auth Rule — ifAuthFail=CONTINUE</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authentication → Rule: MAB Any</p>
+    <p><strong>Detail:</strong> A rule with no conditions and ifAuthFail=CONTINUE lets failed authentications silently reach the authorization phase.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set ifAuthFail to REJECT. Only use CONTINUE on specific rules where chained authentication (e.g., 802.1X then MAB fallback) is explicitly intended.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#9</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Catch-All Auth Rule — ifUserNotFound=CONTINUE</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authentication → Rule: MAB Any</p>
+    <p><strong>Detail:</strong> Unknown users (not in any identity store) continue to authorization. A spoofed MAC or credential can traverse the entire policy.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set ifUserNotFound to REJECT unless this rule is a MAB rule where &#x27;not found&#x27; is the expected outcome for profiling.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#10</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Last Authorization Rule &#x27;Default&#x27; Is Not DenyAccess</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authorization</p>
+    <p><strong>Detail:</strong> The final rule acts as a catch-all for unmatched sessions. If it is not DenyAccess, unexpected traffic receives unintended network access.</p>
+    <p class="rec"><strong>Recommendation:</strong> Add a DenyAccess rule as the last entry in every authorization policy. This enforces least-privilege: &#x27;if no rule explicitly grants access, deny.&#x27;</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#11</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Catch-All Auth Rule — ifAuthFail=CONTINUE</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Default → Authentication → Rule: Catch-All</p>
+    <p><strong>Detail:</strong> A rule with no conditions and ifAuthFail=CONTINUE lets failed authentications silently reach the authorization phase.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set ifAuthFail to REJECT. Only use CONTINUE on specific rules where chained authentication (e.g., 802.1X then MAB fallback) is explicitly intended.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#12</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Catch-All Auth Rule — ifUserNotFound=CONTINUE</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Default → Authentication → Rule: Catch-All</p>
+    <p><strong>Detail:</strong> Unknown users (not in any identity store) continue to authorization. A spoofed MAC or credential can traverse the entire policy.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set ifUserNotFound to REJECT unless this rule is a MAB rule where &#x27;not found&#x27; is the expected outcome for profiling.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#13</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Last Authorization Rule &#x27;Catch-All Permit&#x27; Is Not DenyAccess</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Default → Authorization</p>
+    <p><strong>Detail:</strong> The final rule acts as a catch-all for unmatched sessions. If it is not DenyAccess, unexpected traffic receives unintended network access.</p>
+    <p class="rec"><strong>Recommendation:</strong> Add a DenyAccess rule as the last entry in every authorization policy. This enforces least-privilege: &#x27;if no rule explicitly grants access, deny.&#x27;</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#14</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Legacy/Insecure Protocols Enabled: PAP/ASCII, LEAP</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Allowed Protocols: Default Network Access</p>
+    <p><strong>Detail:</strong> &#x27;Default Network Access&#x27; permits: PAP/ASCII, LEAP. These protocols transmit credentials in a form vulnerable to offline dictionary attacks, MITM, and replay. LEAP is deprecated by Cisco. PAP/ASCII sends passwords in cleartext to the RADIUS server.</p>
+    <p class="rec"><strong>Recommendation:</strong> Disable PAP/ASCII, LEAP. Use EAP-TLS for certificate-based mutual authentication, PEAP-MSCHAPv2 for password-based, or EAP-FAST for environments that cannot deploy certificates. Document any legacy exception with a risk acceptance record.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead">
+    <span class="fnum">#15</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">HIGH</span>
+    <span class="ftitle">Legacy/Insecure Protocols Enabled: PAP/ASCII, CHAP, MS-CHAPv1, LEAP, EAP-MD5</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Allowed Protocols: Legacy Devices</p>
+    <p><strong>Detail:</strong> &#x27;Legacy Devices&#x27; permits: PAP/ASCII, CHAP, MS-CHAPv1, LEAP, EAP-MD5. These protocols transmit credentials in a form vulnerable to offline dictionary attacks, MITM, and replay. LEAP is deprecated by Cisco. PAP/ASCII sends passwords in cleartext to the RADIUS server.</p>
+    <p class="rec"><strong>Recommendation:</strong> Disable PAP/ASCII, CHAP, MS-CHAPv1, LEAP, EAP-MD5. Use EAP-TLS for certificate-based mutual authentication, PEAP-MSCHAPv2 for password-based, or EAP-FAST for environments that cannot deploy certificates. Document any legacy exception with a risk acceptance record.</p>
+  </div>
+</div>
+<div class="fcard warning" data-sev="warning">
+  <div class="fhead">
+    <span class="fnum">#16</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#d97706;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">WARNING</span>
+    <span class="ftitle">Unscoped MAB Rule (Internal Endpoints, No Conditions)</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authentication → Rule: MAB Any</p>
+    <p><strong>Detail:</strong> MAB via Internal Endpoints with no conditions matches every request that reaches this policy set. Any MAC address is authenticated.</p>
+    <p class="rec"><strong>Recommendation:</strong> Scope MAB rules: add a condition on NDG (e.g., &#x27;Access Layer Switches&#x27;) or use a Profiler condition (e.g., Device-Type=IP-Phone) to restrict which endpoints qualify for MAB.</p>
+  </div>
+</div>
+<div class="fcard warning" data-sev="warning">
+  <div class="fhead">
+    <span class="fnum">#17</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#d97706;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">WARNING</span>
+    <span class="ftitle">Access Profile Has No DACL</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: Limited_Access</p>
+    <p><strong>Detail:</strong> &#x27;Limited_Access&#x27; grants access without a Downloadable ACL. Enforcement relies solely on VLAN segmentation, which can be bypassed by a misconfigured trunk or VLAN hop.</p>
+    <p class="rec"><strong>Recommendation:</strong> Apply a DACL for every access profile. For full access use a named permit-all DACL (e.g., &#x27;PERMIT_ALL_TRAFFIC&#x27;) — this makes intent explicit and lets you tighten it later without touching the authorization rule.</p>
+  </div>
+</div>
+<div class="fcard warning" data-sev="warning">
+  <div class="fhead">
+    <span class="fnum">#18</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#d97706;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">WARNING</span>
+    <span class="ftitle">Access Profile Has No DACL</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: Guest_Access</p>
+    <p><strong>Detail:</strong> &#x27;Guest_Access&#x27; grants access without a Downloadable ACL. Enforcement relies solely on VLAN segmentation, which can be bypassed by a misconfigured trunk or VLAN hop.</p>
+    <p class="rec"><strong>Recommendation:</strong> Apply a DACL for every access profile. For full access use a named permit-all DACL (e.g., &#x27;PERMIT_ALL_TRAFFIC&#x27;) — this makes intent explicit and lets you tighten it later without touching the authorization rule.</p>
+  </div>
+</div>
+<div class="fcard warning" data-sev="warning">
+  <div class="fhead">
+    <span class="fnum">#19</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#d97706;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">WARNING</span>
+    <span class="ftitle">Access Profile Has No DACL</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: GhostProfile</p>
+    <p><strong>Detail:</strong> &#x27;GhostProfile&#x27; grants access without a Downloadable ACL. Enforcement relies solely on VLAN segmentation, which can be bypassed by a misconfigured trunk or VLAN hop.</p>
+    <p class="rec"><strong>Recommendation:</strong> Apply a DACL for every access profile. For full access use a named permit-all DACL (e.g., &#x27;PERMIT_ALL_TRAFFIC&#x27;) — this makes intent explicit and lets you tighten it later without touching the authorization rule.</p>
+  </div>
+</div>
+<div class="fcard warning" data-sev="warning">
+  <div class="fhead">
+    <span class="fnum">#20</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#d97706;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">WARNING</span>
+    <span class="ftitle">No Strong EAP Method Enabled</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Allowed Protocols: Legacy Devices</p>
+    <p><strong>Detail:</strong> &#x27;Legacy Devices&#x27; has no EAP-TLS, PEAP, or EAP-FAST configured. Without a strong EAP method, 802.1X deployments cannot proceed.</p>
+    <p class="rec"><strong>Recommendation:</strong> Enable EAP-TLS as the preferred method (certificate-based, mutually authenticated). Enable PEAP-MSCHAPv2 as a fallback for devices that cannot use certificates.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#21</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Policy Set Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X</p>
+    <p><strong>Detail:</strong> &#x27;Wired 802.1X&#x27; has no description, making policy intent opaque during audits.</p>
+    <p class="rec"><strong>Recommendation:</strong> Add a description that documents: purpose, covered device types, owning team, and creation/last-reviewed date.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#22</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Duplicate Identity Sources: AD1</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authentication</p>
+    <p><strong>Detail:</strong> Multiple authentication rules reference the same identity store(s). The lower-priority rule will never be evaluated unless conditions differ.</p>
+    <p class="rec"><strong>Recommendation:</strong> Consolidate rules that share the same identity source into a single rule with a compound condition, or verify they have distinct conditions.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#23</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Authorization Rule Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization → Rule: Corp Users</p>
+    <p><strong>Detail:</strong> &#x27;Corp Users&#x27; has no description.</p>
+    <p class="rec"><strong>Recommendation:</strong> Document purpose, owner, ticket reference, and review date. Descriptions are critical for SOC triage and compliance audits.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#24</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Disabled Rule Still Present in Policy</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization → Rule: Old_Test_Rule</p>
+    <p><strong>Detail:</strong> Rule &#x27;Old_Test_Rule&#x27; is disabled. Stale disabled rules clutter policy, can be accidentally re-enabled, and complicate audits.</p>
+    <p class="rec"><strong>Recommendation:</strong> Remove disabled rules from production. Document removed rules in your change management system or IPAM/ITSM tool instead.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#25</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Authorization Rule Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization → Rule: Bypass Rule</p>
+    <p><strong>Detail:</strong> &#x27;Bypass Rule&#x27; has no description.</p>
+    <p class="rec"><strong>Recommendation:</strong> Document purpose, owner, ticket reference, and review date. Descriptions are critical for SOC triage and compliance audits.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#26</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Authorization Rule Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Wired 802.1X → Authorization → Rule: Default</p>
+    <p><strong>Detail:</strong> &#x27;Default&#x27; has no description.</p>
+    <p class="rec"><strong>Recommendation:</strong> Document purpose, owner, ticket reference, and review date. Descriptions are critical for SOC triage and compliance audits.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#27</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Authorization Rule Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authorization → Rule: Approved Endpoints</p>
+    <p><strong>Detail:</strong> &#x27;Approved Endpoints&#x27; has no description.</p>
+    <p class="rec"><strong>Recommendation:</strong> Document purpose, owner, ticket reference, and review date. Descriptions are critical for SOC triage and compliance audits.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#28</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Authorization Rule Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: MAB Fallback → Authorization → Rule: Default</p>
+    <p><strong>Detail:</strong> &#x27;Default&#x27; has no description.</p>
+    <p class="rec"><strong>Recommendation:</strong> Document purpose, owner, ticket reference, and review date. Descriptions are critical for SOC triage and compliance audits.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#29</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">Authorization Rule Has No Description</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Policy Set: Default → Authorization → Rule: Catch-All Permit</p>
+    <p><strong>Detail:</strong> &#x27;Catch-All Permit&#x27; has no description.</p>
+    <p class="rec"><strong>Recommendation:</strong> Document purpose, owner, ticket reference, and review date. Descriptions are critical for SOC triage and compliance audits.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#30</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">VLAN Assignment Without DACL — L2-Only Enforcement</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: Limited_Access</p>
+    <p><strong>Detail:</strong> &#x27;Limited_Access&#x27; assigns VLAN &#x27;IOT&#x27; with no DACL. If VLAN segmentation fails or is misconfigured, there is no L3/L4 backstop.</p>
+    <p class="rec"><strong>Recommendation:</strong> Pair every VLAN assignment with a matching DACL. Defense-in-depth requires both L2 (VLAN) and L3 (ACL) controls.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#31</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">No Session or Re-Auth Timeout</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: Limited_Access</p>
+    <p><strong>Detail:</strong> &#x27;Limited_Access&#x27; has no session timeout or re-authentication timer. Sessions persist indefinitely regardless of posture or group changes.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set sessionTimeout (e.g., 28800 s for 8 h corporate; 3600 s for guests). Short timeouts force re-evaluation and are required by many compliance frameworks (PCI-DSS, HIPAA). Use CoA for real-time revocation.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#32</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">VLAN Assignment Without DACL — L2-Only Enforcement</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: Guest_Access</p>
+    <p><strong>Detail:</strong> &#x27;Guest_Access&#x27; assigns VLAN &#x27;GUEST&#x27; with no DACL. If VLAN segmentation fails or is misconfigured, there is no L3/L4 backstop.</p>
+    <p class="rec"><strong>Recommendation:</strong> Pair every VLAN assignment with a matching DACL. Defense-in-depth requires both L2 (VLAN) and L3 (ACL) controls.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#33</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">No Session or Re-Auth Timeout</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: Guest_Access</p>
+    <p><strong>Detail:</strong> &#x27;Guest_Access&#x27; has no session timeout or re-authentication timer. Sessions persist indefinitely regardless of posture or group changes.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set sessionTimeout (e.g., 28800 s for 8 h corporate; 3600 s for guests). Short timeouts force re-evaluation and are required by many compliance frameworks (PCI-DSS, HIPAA). Use CoA for real-time revocation.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#34</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">No Session or Re-Auth Timeout</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Authorization Profile: GhostProfile</p>
+    <p><strong>Detail:</strong> &#x27;GhostProfile&#x27; has no session timeout or re-authentication timer. Sessions persist indefinitely regardless of posture or group changes.</p>
+    <p class="rec"><strong>Recommendation:</strong> Set sessionTimeout (e.g., 28800 s for 8 h corporate; 3600 s for guests). Short timeouts force re-evaluation and are required by many compliance frameworks (PCI-DSS, HIPAA). Use CoA for real-time revocation.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead">
+    <span class="fnum">#35</span><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb;text-transform:uppercase;letter-spacing:.06em;margin-right:6px">INFO</span>
+    <span class="ftitle">EAP-TLS Enabled — Verify CRL/OCSP Checking is Active</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Allowed Protocols: Default Network Access</p>
+    <p><strong>Detail:</strong> &#x27;Default Network Access&#x27; uses EAP-TLS. If certificate revocation checking (CRL or OCSP) is not enabled in the CA Trust configuration, revoked client certificates will still be accepted.</p>
+    <p class="rec"><strong>Recommendation:</strong> Enable CRL or OCSP checking in ISE: Administration → System → Certificates → Certificate Authority → OCSP Client Profile. This is required for PCI-DSS and many enterprise security policies.</p>
+  </div>
+</div>
+</div>
+
+<!-- Recommended Structure -->
+<h2>Recommended Policy Architecture</h2>
+<div class="bp">
+  <p>The following represents the recommended policy structure for a secure enterprise
+  ISE 3.0 deployment aligned with Cisco's SAFE and TrustSec design guides.</p>
+
+  <h3>Policy Set Order (Top → Bottom)</h3>
+  <div class="tw" style="margin-bottom:16px">
+  <table>
+    <thead><tr><th>#</th><th>Policy Set Name</th><th>Match Condition</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Wired 802.1X Corporate</td><td>Wired NDG + Protocol=dot1x</td><td>Certificate-based auth for managed Windows/macOS endpoints</td></tr>
+      <tr><td>2</td><td>Wireless 802.1X Corporate</td><td>SSID=Corp + Protocol=dot1x</td><td>802.1X on corporate SSID — EAP-TLS preferred</td></tr>
+      <tr><td>3</td><td>Wired MAB — Approved IoT</td><td>Wired NDG + Protocol=MAB</td><td>MAC-based auth for IP phones, printers, cameras (whitelist only)</td></tr>
+      <tr><td>4</td><td>Wireless Guest</td><td>SSID=Guest</td><td>CWA or sponsor portal for guests — no corporate access</td></tr>
+      <tr><td>5</td><td>VPN Remote Access</td><td>NAS-IP=VPN Headend</td><td>RADIUS auth for remote access VPN with posture assessment</td></tr>
+      <tr><td>6</td><td>Default — Catch-All</td><td><em>No condition (default)</em></td><td>Explicit DenyAccess for all unmatched traffic + logging</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Authorization Policy Rule Order (per set)</h3>
+  <div class="tw">
+  <table>
+    <thead><tr><th>#</th><th>Rule Name</th><th>Conditions</th><th>Profile</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Compliant Corp Device</td><td>AD-Group=Corp_Users AND Posture=Compliant AND Certificate=Corp-CA</td><td>Corp_Full_Access (VLAN 10 + PERMIT_ALL DACL + 28800s timeout)</td></tr>
+      <tr><td>2</td><td>Non-Compliant Remediation</td><td>AD-Group=Corp_Users AND Posture=NonCompliant</td><td>Remediation (VLAN 99 + ACL-REMEDIATION + redirect to posture agent)</td></tr>
+      <tr><td>3</td><td>Unknown Posture — Redirect</td><td>AD-Group=Corp_Users AND Posture=Unknown</td><td>Limited (VLAN 99 + redirect URL + ACL-POSTURE-REDIRECT)</td></tr>
+      <tr><td>4</td><td>Cisco IP Phone</td><td>Profiled=Cisco-IP-Phone AND NDG=AccessSwitches</td><td>VoiceAccess (Voice VLAN 20 + ACL-VOICE)</td></tr>
+      <tr><td>5</td><td>Approved Printer</td><td>EndpointGroup=Approved-Printers AND Profiled=Printer</td><td>PrinterAccess (VLAN 30 + ACL-PRINTER)</td></tr>
+      <tr><td>6</td><td>Default Deny</td><td><em>Any</em></td><td><strong>DenyAccess</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Key Recommendations Summary -->
+<h2>Top Remediation Priorities</h2>
+<div class="bp">
+  <p>Address findings in this order to achieve the greatest security improvement:</p>
+  <ol style="font-size:.85rem;color:var(--muted);padding-left:20px;line-height:2">
+    <li><strong style="color:#dc2626">Critical:</strong> Remove or restrict any PermitAccess rules with no conditions — these create full-bypass vulnerabilities.</li>
+    <li><strong style="color:#ea580c">High:</strong> Ensure every authorization policy ends with a DenyAccess catch-all rule.</li>
+    <li><strong style="color:#ea580c">High:</strong> Set ifAuthFail and ifUserNotFound to REJECT on catch-all authentication rules.</li>
+    <li><strong style="color:#ea580c">High:</strong> Disable legacy protocols (PAP, LEAP, EAP-MD5) and replace with EAP-TLS / PEAP-MSCHAPv2.</li>
+    <li><strong style="color:#d97706">Warning:</strong> Apply DACLs to all access-granting authorization profiles for L3/L4 enforcement.</li>
+    <li><strong style="color:#d97706">Warning:</strong> Add session timeouts to all authorization profiles to force periodic re-evaluation.</li>
+    <li><strong style="color:#2563eb">Info:</strong> Add descriptions to all policy sets and rules for audit traceability.</li>
+    <li><strong style="color:#2563eb">Info:</strong> Enable CRL/OCSP validation for EAP-TLS to handle certificate revocation.</li>
+  </ol>
+</div>
+
+<footer>
+  Cisco ISE 3.0 Policy Analytics &nbsp;|&nbsp; Network Security Designer Report
+  &nbsp;|&nbsp; 2026-05-08 14:37:22 &nbsp;|&nbsp; 10.81.145.7
+</footer>
+
+<script>
+function filter(sev){
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  const sel = sev==='all' ? '.fa'
+    : sev==='critical' ? '.fc'
+    : sev==='high'     ? '.fh'
+    : sev==='warning'  ? '.fw' : '.fi';
+  document.querySelector(sel).classList.add('active');
+  document.querySelectorAll('.fcard').forEach(c=>{
+    c.style.display = (sev==='all'||c.dataset.sev===sev) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>
