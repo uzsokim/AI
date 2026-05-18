@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CPU Root-Cause — ST05-B52</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--border:#334155;--text:#e2e8f0;--muted:#94a3b8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+     background:var(--bg);color:var(--text);padding:28px;line-height:1.5}
+h1{font-size:1.75rem;font-weight:800;color:#f1f5f9}
+h2{font-size:1.05rem;font-weight:700;color:#cbd5e1;margin:32px 0 14px;
+   padding-bottom:6px;border-bottom:1px solid var(--border)}
+.header{display:flex;align-items:center;justify-content:space-between;
+        padding:22px 28px;background:var(--card);border:1px solid var(--border);
+        border-radius:14px;margin-bottom:26px}
+.meta{font-size:.78rem;color:var(--muted);margin-top:4px}
+.suspects{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-bottom:26px}
+.scard{background:var(--card);border-left:4px solid #334155;border-radius:12px;padding:18px 20px}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.tw{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;margin-bottom:26px}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{background:#162032;color:var(--muted);font-weight:700;font-size:.7rem;
+   text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+.muted{color:var(--muted)!important;font-style:italic}
+.mono{font-family:monospace;font-size:.75rem;word-break:break-all;white-space:normal}
+.warn-box{background:#78350f;border:1px solid #92400e;border-radius:10px;
+          padding:14px 20px;margin-bottom:20px;font-size:.84rem;color:#fef3c7}
+footer{text-align:center;color:var(--muted);font-size:.72rem;
+       margin-top:44px;padding-top:18px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>CPU Root-Cause Investigator</h1>
+    <div class="meta">
+      ST05-B52 &nbsp;|&nbsp; 10.63.65.24 &nbsp;|&nbsp;
+      User EXEC mode (privilege 1) &nbsp;|&nbsp; 2026-05-18 11:04:46
+    </div>
+    <div class="meta" style="margin-top:4px;font-style:italic;color:#475569">
+      "We don't have privilege 15, but we have determination. And sarcasm."
+    </div>
+  </div>
+  <div style="font-size:2.4rem">🕵️</div>
+</div>
+
+<div class="warn-box">
+  <strong>⚠ User EXEC only (privilege 1)</strong> — CPU process list unavailable.
+  Root-cause analysis is based on: STP topology changes, interface broadcast rates,
+  ARP table, CDP neighbors, storm-control, and external SNMP probe.
+  If you want the <em>actual</em> culprit process name, someone needs to grant privilege 15.
+  Just saying.
+</div>
+
+
+<div style="background:#1e293b;border:2px solid #dc2626;border-radius:14px;
+     padding:22px 28px;margin-bottom:26px">
+  <div style="font-size:.75rem;color:#64748b;text-transform:uppercase;
+       letter-spacing:.1em;margin-bottom:6px">Primary Suspect</div>
+  <div style="font-size:1.6rem;font-weight:900;color:#dc2626">
+    🔄 L2 Loop (CDP evidence)</div>
+  <div style="font-size:.85rem;color:#94a3b8;margin-top:8px">
+    Suspicion score: <strong style="color:#dc2626">100/100</strong>
+    &nbsp;·&nbsp; Verdict: <strong style="color:#dc2626">VERY LIKELY</strong>
+  </div>
+  <div style="font-size:.82rem;color:#64748b;margin-top:6px;font-style:italic">
+    "The evidence points here. Whether anyone fixes it is a separate philosophical question."
+  </div>
+</div>
+
+<h2>Suspect Ranking — Who Probably Killed Your CPU</h2>
+<div class="suspects">
+
+<div class="scard" style="border-left-color:#dc2626">
+  <div class="shead">
+    <span style="font-size:1.5rem">🔄</span>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:1rem;color:#f1f5f9">L2 Loop (CDP evidence)</div>
+      <div style="font-size:.75rem;color:#dc2626;font-weight:700;margin-top:2px">Guilty as charged</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:2rem;font-weight:900;color:#dc2626;line-height:1">100</div>
+      <div style="font-size:.65rem;color:#475569">suspicion score</div>
+    </div>
+  </div>
+  <div style="background:#0f172a;border-radius:4px;height:8px;margin:10px 0">
+    <div style="width:100%;height:100%;background:#dc2626;border-radius:4px;transition:width .3s"></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-top:6px"><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+60</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">Device &#x27;Recovery GW&#x27; seen on multiple local ports: TenGigabitEthernet2/1/1, TenGigabitEthernet2/1/2. This is either a loop, or your switch has developed feelings for this neighbor and wants to see it twice.</td></tr><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+60</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">Device &#x27;L3-MikroTik&#x27; seen on multiple local ports: TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44. This is either a loop, or your switch has developed feelings for this neighbor and wants to see it twice.</td></tr><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+15</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">High STP TCN count + CDP loop evidence: these two usually don&#x27;t happen independently. L2 loop is the most probable combined explanation.</td></tr></table>
+</div>
+<div class="scard" style="border-left-color:#dc2626">
+  <div class="shead">
+    <span style="font-size:1.5rem">🌪️</span>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:1rem;color:#f1f5f9">STP TCN Storm</div>
+      <div style="font-size:.75rem;color:#dc2626;font-weight:700;margin-top:2px">Guilty as charged</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:2rem;font-weight:900;color:#dc2626;line-height:1">100</div>
+      <div style="font-size:.65rem;color:#475569">suspicion score</div>
+    </div>
+  </div>
+  <div style="background:#0f172a;border-radius:4px;height:8px;margin:10px 0">
+    <div style="width:100%;height:100%;background:#dc2626;border-radius:4px;transition:width .3s"></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-top:6px"><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+50</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">Total topology changes: 12,518 — this is not a topology, this is a cry for help.</td></tr><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+40</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">Recent TCN in last 5 minutes on: VLAN810. The switch is actively having an existential crisis right now.</td></tr><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+20</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">BPDU Guard is disabled globally. So anyone can plug in a switch and become root. Great design.</td></tr></table>
+</div>
+<div class="scard" style="border-left-color:#dc2626">
+  <div class="shead">
+    <span style="font-size:1.5rem">📡</span>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:1rem;color:#f1f5f9">Broadcast / ARP Flood</div>
+      <div style="font-size:.75rem;color:#dc2626;font-weight:700;margin-top:2px">Guilty as charged</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:2rem;font-weight:900;color:#dc2626;line-height:1">95</div>
+      <div style="font-size:.65rem;color:#475569">suspicion score</div>
+    </div>
+  </div>
+  <div style="background:#0f172a;border-radius:4px;height:8px;margin:10px 0">
+    <div style="width:95%;height:100%;background:#dc2626;border-radius:4px;transition:width .3s"></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-top:6px"><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+50</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">Port TenGigabitEthernet2/1/1: 81.7% broadcast traffic. That&#x27;s not a switch port, that&#x27;s a broadcast cannon.</td></tr><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+25</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">1 port(s) between 10–30% broadcast traffic. Someone&#x27;s network is very chatty.</td></tr><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+20</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">High broadcast + high TCN: STP MAC table flush is causing broadcast flooding. The loop feeds the storm, the storm feeds the CPU. It&#x27;s the circle of pain.</td></tr></table>
+</div>
+<div class="scard" style="border-left-color:#4ade80">
+  <div class="shead">
+    <span style="font-size:1.5rem">⛈️</span>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:1rem;color:#f1f5f9">Storm Control / Port Meltdown</div>
+      <div style="font-size:.75rem;color:#4ade80;font-weight:700;margin-top:2px">Probably innocent</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:2rem;font-weight:900;color:#4ade80;line-height:1">10</div>
+      <div style="font-size:.65rem;color:#475569">suspicion score</div>
+    </div>
+  </div>
+  <div style="background:#0f172a;border-radius:4px;height:8px;margin:10px 0">
+    <div style="width:10%;height:100%;background:#4ade80;border-radius:4px;transition:width .3s"></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-top:6px"><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+10</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">Storm control configured on 2 port(s) — at least someone thought about this at some point.</td></tr></table>
+</div>
+<div class="scard" style="border-left-color:#4ade80">
+  <div class="shead">
+    <span style="font-size:1.5rem">👁️</span>
+    <div style="flex:1">
+      <div style="font-weight:800;font-size:1rem;color:#f1f5f9">SNMP Overpolling</div>
+      <div style="font-size:.75rem;color:#4ade80;font-weight:700;margin-top:2px">Probably innocent</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:2rem;font-weight:900;color:#4ade80;line-height:1">5</div>
+      <div style="font-size:.65rem;color:#475569">suspicion score</div>
+    </div>
+  </div>
+  <div style="background:#0f172a;border-radius:4px;height:8px;margin:10px 0">
+    <div style="width:5%;height:100%;background:#4ade80;border-radius:4px;transition:width .3s"></div>
+  </div>
+  <table style="width:100%;border-collapse:collapse;margin-top:6px"><tr><td style="color:#d97706;font-size:.75rem;padding:4px 0">+5</td><td style="font-size:.8rem;color:#cbd5e1;padding:4px 0 4px 10px">No common community strings worked — SNMP is either disabled or not using the obvious defaults. 10 points for your security team.</td></tr></table>
+</div>
+</div>
+
+<h2>STP Topology Changes — The Chaos Ledger</h2>
+<div class="tw"><table>
+  <thead><tr><th>VLAN</th><th>Total Changes</th><th>Last Change</th><th>Originating Port</th></tr></thead>
+  <tbody><tr><td>VLAN810</td><td>8,617 🔥</td><td>0h 0m ago</td><td>—</td></tr><tr><td>VLAN401</td><td>1,893 </td><td>0h 31m ago</td><td>—</td></tr><tr><td>VLAN100</td><td>554 </td><td>0h 32m ago</td><td>—</td></tr><tr><td>VLAN422</td><td>161 </td><td>2h 48m ago</td><td>—</td></tr><tr><td>VLAN603</td><td>128 </td><td>3h 30m ago</td><td>—</td></tr><tr><td>VLAN561</td><td>53 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN390</td><td>33 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN560</td><td>21 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN122</td><td>16 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN69</td><td>14 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN431</td><td>14 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN160</td><td>13 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN110</td><td>12 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN125</td><td>12 </td><td>Unknown</td><td>—</td></tr><tr><td>VLAN146</td><td>12 </td><td>Unknown</td><td>—</td></tr></tbody>
+</table></div>
+
+<h2>SNMP External Probe — How Open Is This Switch Really?</h2>
+<div class="tw"><table>
+  <thead><tr><th>Community String</th><th>Result</th><th>sysDescr</th><th>CPU (OID)</th></tr></thead>
+  <tbody><tr><td style='color:#475569'>public</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>private</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>cisco</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>admin</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>community</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>snmp</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>network</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>monitor</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>read</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>default</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>switch</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>manager</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>secret</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>password</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr><tr><td style='color:#475569'>semmelweis</td><td style='color:#4ade80'>silent</td><td class='muted'>—</td><td>—</td></tr></tbody>
+</table></div>
+
+<h2>Broadcast Traffic per Interface — The Spray-and-Pray Report</h2>
+<div class="tw"><table>
+  <thead><tr>
+    <th>Interface</th><th>Broadcast %</th><th>Broadcast Pkts</th>
+    <th>Total Input Pkts</th><th>Input Errors</th><th>CRC</th>
+  </tr></thead>
+  <tbody><tr><td>TenGigabitEthernet2/1/1</td><td style='color:#dc2626'>81.7%</td><td>316,679</td><td>387,413</td><td>1</td><td>0</td></tr><tr><td>GigabitEthernet2/0/5</td><td style='color:#dc2626'>68.9%</td><td>4,630,217</td><td>6,720,593</td><td>0</td><td>0</td></tr><tr><td>TenGigabitEthernet2/1/2</td><td style='color:#dc2626'>60.5%</td><td>299,742</td><td>495,383</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet1/0/6</td><td style='color:#dc2626'>57.4%</td><td>439,820</td><td>766,047</td><td>0</td><td>0</td></tr><tr><td>TenGigabitEthernet1/1/1</td><td style='color:#dc2626'>39.6%</td><td>6,347,548,903</td><td>16,034,478,522</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet2/0/22</td><td style='color:#dc2626'>33.1%</td><td>3,735</td><td>11,281</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet1/0/10</td><td style='color:#d97706'>25.1%</td><td>490,917</td><td>1,956,904</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet3/0/13</td><td style='color:#94a3b8'>9.7%</td><td>3,305,520</td><td>34,201,979</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet1/0/17</td><td style='color:#94a3b8'>7.7%</td><td>1,133,127</td><td>14,807,832</td><td>0</td><td>0</td></tr><tr><td>TenGigabitEthernet1/0/44</td><td style='color:#94a3b8'>7.6%</td><td>5,674,398</td><td>74,813,361</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet3/0/21</td><td style='color:#94a3b8'>7.6%</td><td>877,413</td><td>11,512,915</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet3/0/3</td><td style='color:#94a3b8'>6.0%</td><td>626,281</td><td>10,366,862</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet1/0/13</td><td style='color:#94a3b8'>3.9%</td><td>135,871</td><td>3,453,803</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet2/0/6</td><td style='color:#94a3b8'>3.3%</td><td>759,457</td><td>23,366,089</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet2/0/23</td><td style='color:#94a3b8'>2.8%</td><td>6,207,733</td><td>219,939,344</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet2/0/10</td><td style='color:#94a3b8'>2.5%</td><td>862,532</td><td>35,013,101</td><td>1</td><td>1</td></tr><tr><td>GigabitEthernet1/0/11</td><td style='color:#94a3b8'>1.9%</td><td>8,618</td><td>443,022</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet2/0/9</td><td style='color:#94a3b8'>1.8%</td><td>968,534</td><td>52,774,383</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet2/0/17</td><td style='color:#94a3b8'>1.8%</td><td>1,925,074</td><td>106,917,579</td><td>0</td><td>0</td></tr><tr><td>GigabitEthernet3/0/5</td><td style='color:#94a3b8'>1.7%</td><td>207,370</td><td>12,242,047</td><td>0</td><td>0</td></tr></tbody>
+</table></div>
+
+<h2>CDP Neighbor Loop Detection — Did Someone Plug a Cable Into Itself?</h2>
+<div class="tw"><table>
+  <thead><tr><th>Device ID</th><th>Seen on Local Ports</th><th>Assessment</th></tr></thead>
+  <tbody><tr><td style='color:#f87171;font-weight:700'>Recovery GW</td><td>TenGigabitEthernet2/1/1, TenGigabitEthernet2/1/2</td><td style='color:#f87171'>POTENTIAL LOOP</td></tr><tr><td style='color:#f87171;font-weight:700'>L3-MikroTik</td><td>TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44, TenGigabitEthernet1/0/44</td><td style='color:#f87171'>POTENTIAL LOOP</td></tr></tbody>
+</table></div>
+
+<h2>ARP Table — IP Address Disputes</h2>
+<p style="font-size:.82rem;color:var(--muted);margin-bottom:10px">
+  Total ARP entries: <strong style="color:#38bdf8">5</strong>
+  &nbsp;·&nbsp; IP conflicts: <strong style="color:#4ade80">0</strong>
+</p>
+<div class="tw"><table>
+  <thead><tr><th>IP Address</th><th>MAC Addresses (duplicate)</th><th>Verdict</th></tr></thead>
+  <tbody><tr><td colspan="3" class="muted">No duplicate ARP entries. IP addressing is surprisingly consistent.</td></tr></tbody>
+</table></div>
+
+<h2>Err-Disabled Ports — The Ports That Gave Up</h2>
+<p style="font-size:.82rem;color:var(--muted);margin-bottom:10px">
+<span style="color:#4ade80">No err-disabled ports. Someone configured this switch correctly. Surprising.</span>
+</p>
+
+<h2>Storm Control Status — Active Suppression?</h2>
+<p style="font-size:.82rem;color:var(--muted);margin-bottom:6px">
+  Ports with storm-control configured: <strong>2</strong>
+</p>
+<p style="font-size:.82rem;color:#4ade80">No active storm suppression. Either the storm passed, or there never was one.</p>
+
+<h2>Next Steps — What To Do Now</h2>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:26px">
+  <ol style="font-size:.85rem;color:var(--muted);padding-left:20px;line-height:2.4">
+    <li><strong style="color:#f1f5f9">Get privilege 15 on this switch</strong> — run
+        <code>show processes cpu sorted</code> and know <em>exactly</em> which process is
+        eating CPU. Everything else is detective work with a blindfold.</li>
+    <li><strong style="color:#f1f5f9">Fix STP first if TCN score is high</strong> —
+        <code>spanning-tree portfast default</code> +
+        <code>spanning-tree portfast bpduguard default</code>.
+        This one change resolves 60% of "switch is slow" tickets.</li>
+    <li><strong style="color:#f1f5f9">Change SNMP community strings immediately</strong> if
+        any hit above — set ACL on SNMP access:
+        <code>snmp-server community NEWSTRING ro ACL_SNMP</code>.</li>
+    <li><strong style="color:#f1f5f9">Investigate CDP loop ports</strong> —
+        physically trace the cable on any port appearing on multiple interfaces.
+        Spoiler: someone created a loop.</li>
+    <li><strong style="color:#f1f5f9">Clear err-disabled ports after fixing root cause</strong> —
+        <code>shutdown</code> then <code>no shutdown</code> — but only after you know
+        <em>why</em> they went err-disabled. Re-enabling a storm port is how you get
+        back to square one.</li>
+    <li><strong style="color:#f1f5f9">Resolve ARP conflicts</strong> if any found —
+        duplicate IPs cause constant ARP broadcasts and MAC table churn.
+        Find both devices and fix static IPs or DHCP exclusions.</li>
+  </ol>
+</div>
+
+<footer>
+  Cisco IOS/IOS-XE CPU Root-Cause Investigator &nbsp;|&nbsp;
+  ST05-B52 (10.63.65.24) &nbsp;|&nbsp; 2026-05-18 11:04:46<br>
+  <span style="font-style:italic">"The network doesn't lie. People do."</span>
+</footer>
+</body>
+</html>

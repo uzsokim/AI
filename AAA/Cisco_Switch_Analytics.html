@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Switch Analytics — ST05-B52</title>
+<style>
+:root{--bg:#0f172a;--card:#1e293b;--border:#334155;--text:#e2e8f0;--muted:#94a3b8;--accent:#38bdf8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);padding:28px;line-height:1.5}
+h1{font-size:1.75rem;font-weight:800;color:#f1f5f9}
+h2{font-size:1.1rem;font-weight:700;color:#cbd5e1;margin:32px 0 14px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.header{display:flex;align-items:center;justify-content:space-between;padding:24px 28px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:26px}
+.header-meta{font-size:.78rem;color:var(--muted);margin-top:4px}
+.score-row{display:flex;align-items:center;gap:24px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 28px;margin-bottom:26px}
+.score-num{font-size:4rem;font-weight:900;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-bottom:26px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.stat-n{font-size:2.2rem;font-weight:800;line-height:1}
+.stat-l{font-size:.72rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 22px}
+.card h3{font-size:.88rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #1e3040;font-size:.84rem}
+.metric:last-child{border-bottom:none}
+.metric label{color:var(--muted)}
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fb{padding:5px 16px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--muted);cursor:pointer;font-size:.78rem}
+.fb.active,.fb:hover{background:#334155;color:#f1f5f9}
+.fcard{background:var(--card);border-left:4px solid #334155;border-radius:10px;padding:16px 18px;margin-bottom:10px}
+.fcard.critical{border-left-color:#dc2626}
+.fcard.high{border-left-color:#ea580c}
+.fcard.warning{border-left-color:#d97706}
+.fcard.info{border-left-color:#2563eb}
+.fhead{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.fnum{font-size:.72rem;color:var(--muted)}
+.ftitle{font-weight:700;font-size:.92rem;color:#f1f5f9}
+.fbody p{font-size:.82rem;color:var(--muted);margin-bottom:5px}
+.fbody strong{color:#e2e8f0}
+.rec{color:#86efac!important}
+.tw{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;margin-bottom:26px}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+th{background:#162032;color:var(--muted);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+.muted{color:var(--muted)!important;font-style:italic}
+.mono{font-family:monospace;font-size:.75rem;word-break:break-all;white-space:normal}
+footer{text-align:center;color:var(--muted);font-size:.72rem;margin-top:44px;padding-top:18px;border-top:1px solid var(--border)}
+@media(max-width:768px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Cisco Switch Performance Analytics</h1>
+    <div class="header-meta">
+      ST05-B52 &nbsp;|&nbsp; 10.63.65.24 &nbsp;|&nbsp;
+      Model: C9200L-48PXG-4X &nbsp;|&nbsp; IOS: 17.15.04<br>
+      Uptime: 7 weeks, 4 days, 13 hours, 23 minutes &nbsp;|&nbsp; Serial: JAE27010PZY &nbsp;|&nbsp;
+      Generated: 2026-05-18 10:44:41
+    </div>
+  </div>
+  <div style="font-size:2.4rem">🔀</div>
+</div>
+
+
+<div class="score-row">
+  <div class="score-num" style="color:#dc2626">58</div>
+  <div>
+    <div style="font-size:1.15rem;font-weight:700;color:#f1f5f9">Switch Health Score <span style="font-size:.85rem;color:var(--muted)">/100</span></div>
+    <div style="color:#dc2626;font-weight:600;margin-top:3px">Critical — Immediate Action Required</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:4px">
+      0 Critical &nbsp;·&nbsp; 4 High &nbsp;·&nbsp;
+      0 Warning &nbsp;·&nbsp; 2 Info
+    </div>
+    <div style="font-size:.72rem;color:#475569;margin-top:6px">Score = 100 − critical×20 − high×10 − warning×4 − info×1</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n" style="color:#dc2626">0</div><div class="stat-l">Critical</div></div>
+  <div class="stat"><div class="stat-n" style="color:#ea580c">4</div><div class="stat-l">High</div></div>
+  <div class="stat"><div class="stat-n" style="color:#d97706">0</div><div class="stat-l">Warning</div></div>
+  <div class="stat"><div class="stat-n" style="color:#2563eb">2</div><div class="stat-l">Info</div></div>
+  <div class="stat"><div class="stat-n" style="color:#38bdf8">73%</div><div class="stat-l">CPU 5min</div></div>
+  <div class="stat"><div class="stat-n" style="color:#94a3b8">0%</div><div class="stat-l">Mem used</div></div>
+  <div class="stat"><div class="stat-n" style="color:#94a3b8">57</div><div class="stat-l">Ports Up</div></div>
+  <div class="stat"><div class="stat-n" style="color:#4ade80">0%</div><div class="stat-l">CAM Table</div></div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h3>CPU Utilization</h3>
+    <div class="metric"><label>5 seconds</label><div style="background:#1e293b;border-radius:4px;height:10px;width:200px;display:inline-block;vertical-align:middle"><div style="width:64%;height:100%;background:#d97706;border-radius:4px"></div></div> <span style="font-size:.82rem;color:#d97706">64%</span></div>
+    <div class="metric"><label>1 minute</label><div style="background:#1e293b;border-radius:4px;height:10px;width:200px;display:inline-block;vertical-align:middle"><div style="width:70%;height:100%;background:#d97706;border-radius:4px"></div></div> <span style="font-size:.82rem;color:#d97706">70%</span></div>
+    <div class="metric"><label>5 minutes</label><div style="background:#1e293b;border-radius:4px;height:10px;width:200px;display:inline-block;vertical-align:middle"><div style="width:73%;height:100%;background:#d97706;border-radius:4px"></div></div> <span style="font-size:.82rem;color:#d97706">73%</span></div>
+  </div>
+  <div class="card">
+    <h3>Memory</h3>
+    <div class="metric"><label>Used</label><div style="background:#1e293b;border-radius:4px;height:10px;width:200px;display:inline-block;vertical-align:middle"><div style="width:0%;height:100%;background:#38bdf8;border-radius:4px"></div></div> <span style="font-size:.82rem;color:#38bdf8">0%</span></div>
+    <div class="metric"><label>Total</label><span>0.0 MB</span></div>
+    <div class="metric"><label>Used</label><span>0.0 MB</span></div>
+    <div class="metric"><label>Free</label><span>0.0 MB</span></div>
+  </div>
+  <div class="card">
+    <h3>Spanning Tree</h3>
+    <div class="metric"><label>Mode</label><span>rapid-pvst</span></div>
+    <div class="metric"><label>Active VLANs</label><span>110</span></div>
+    <div class="metric"><label>BPDU Guard</label>
+      <span style="color:#f87171">
+        DISABLED</span></div>
+    <div class="metric"><label>PortFast Default</label>
+      <span style="color:#4ade80">
+        Enabled</span></div>
+    <div class="metric"><label>Loop Guard</label>
+      <span style="color:#d97706">
+        Disabled</span></div>
+    <div class="metric"><label>TCN Events (log)</label>
+      <span style="color:#dc2626">
+        476</span></div>
+  </div>
+  <div class="card">
+    <h3>CAM / MAC Table</h3>
+    <div class="metric"><label>Total MACs</label><span>2</span></div>
+    <div class="metric"><label>Dynamic</label><span>2</span></div>
+    <div class="metric"><label>Static</label><span>0</span></div>
+    <div class="metric"><label>Max Capacity</label><span>0</span></div>
+    <div class="metric"><label>Fill %</label>
+      <span style="color:#4ade80">0%</span></div>
+  </div>
+</div>
+
+<h2>Top CPU Processes</h2>
+<div class="tw">
+<table>
+  <thead><tr><th>PID</th><th>Process Name</th><th>CPU 5s</th><th>CPU 1m</th><th>CPU 5m</th></tr></thead>
+  <tbody><tr><td colspan="5" class="muted">No process data</td></tr></tbody>
+</table>
+</div>
+
+<h2>Interfaces (sorted by error count, top 40)</h2>
+<div class="tw">
+<table>
+  <thead><tr>
+    <th>Interface</th><th>Status</th><th>Description</th><th>Duplex</th><th>Speed</th>
+    <th>Input Err</th><th>CRC</th><th>Output Err</th><th>Drops</th><th>Resets</th><th>In Rate</th>
+  </tr></thead>
+  <tbody><tr><td>GigabitEthernet2/0/3</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#dc2626'>104,950</td><td style='color:#dc2626'>795</td><td style='color:#dc2626'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet2/0/25</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#dc2626'>33,810</td><td style='color:#dc2626'>347</td><td style='color:#dc2626'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/16</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>87</td><td style='color:#94a3b8'>39</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/34</td><td><span style='color:#4ade80'>up</span></td><td>Gahor_Krisztian</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>29</td><td style='color:#94a3b8'>16</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>46000 bits/sec</td></tr><tr><td>TenGigabitEthernet1/0/48</td><td><span style='color:#f87171'>down</span></td><td>INFI_MP</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>14</td><td style='color:#94a3b8'>5</td><td style='color:#94a3b8'>0</td><td>0</td><td>3</td><td>0 bits/sec</td></tr><tr><td>TenGigabitEthernet1/0/43</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>43000 bits/sec</td></tr><tr><td>GigabitEthernet2/0/10</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>13000 bits/sec</td></tr><tr><td>GigabitEthernet2/0/28</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet2/0/34</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>TenGigabitEthernet2/1/1</td><td><span style='color:#4ade80'>up</span></td><td>—</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>10Gb/s</td><td style='color:#94a3b8'>1</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>Vlan1</td><td><span style='color:#f87171'>administratively down</span></td><td>—</td><td><span style='color:#94a3b8'>—</span></td><td>—</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>1</td><td>0 bits/sec</td></tr><tr><td>Vlan69</td><td><span style='color:#4ade80'>up</span></td><td>—</td><td><span style='color:#94a3b8'>—</span></td><td>—</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet0/0</td><td><span style='color:#f87171'>down</span></td><td>—</td><td><span style='color:#94a3b8'>—</span></td><td>—</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>0</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/1</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>10Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/2</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/3</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/4</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/5</td><td><span style='color:#f87171'>down</span></td><td>320-szoba HARRY PLOTTER</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/6</td><td><span style='color:#4ade80'>up</span></td><td>INFADMIN</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/7</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/8</td><td><span style='color:#f87171'>down</span></td><td>3.128 VV</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/9</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/10</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>3000 bits/sec</td></tr><tr><td>GigabitEthernet1/0/11</td><td><span style='color:#4ade80'>up</span></td><td>IPTEL</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>100Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/12</td><td><span style='color:#f87171'>down</span></td><td>Vajk</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/13</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/14</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>100Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/15</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/17</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>5000 bits/sec</td></tr><tr><td>GigabitEthernet1/0/18</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/19</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/20</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>96000 bits/sec</td></tr><tr><td>GigabitEthernet1/0/21</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>203000 bits/sec</td></tr><tr><td>GigabitEthernet1/0/22</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>1000 bits/sec</td></tr><tr><td>GigabitEthernet1/0/23</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/24</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/25</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/26</td><td><span style='color:#f87171'>down</span></td><td>INFI</td><td><span style='color:#94a3b8'>Auto-duplex</span></td><td>Auto-speed</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>0 bits/sec</td></tr><tr><td>GigabitEthernet1/0/27</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>13000 bits/sec</td></tr><tr><td>GigabitEthernet1/0/28</td><td><span style='color:#4ade80'>up</span></td><td>INFI</td><td><span style='color:#94a3b8'>Full-duplex</span></td><td>1000Mb/s</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td style='color:#94a3b8'>0</td><td>0</td><td>2</td><td>104000 bits/sec</td></tr></tbody>
+</table>
+</div>
+
+<h2>Recent Syslog Events (0 relevant entries)</h2>
+<div class="tw">
+<table>
+  <thead><tr><th>Category</th><th>Log Line</th></tr></thead>
+  <tbody><tr><td colspan="2" class="muted">No relevant log events</td></tr></tbody>
+</table>
+</div>
+
+<h2>Findings &amp; Recommendations (6 total)</h2>
+<div class="filter-bar">
+  <button class="fb fa active" onclick="filt('all')">All (6)</button>
+  <button class="fb fc" onclick="filt('critical')">Critical (0)</button>
+  <button class="fb fh" onclick="filt('high')">High (4)</button>
+  <button class="fb fw" onclick="filt('warning')">Warning (0)</button>
+  <button class="fb fi" onclick="filt('info')">Info (2)</button>
+</div>
+<div id="fc">
+
+<div class="fcard high" data-sev="high">
+  <div class="fhead"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c">HIGH</span> <span class="fnum">#1</span>
+    <span class="ftitle">CPU utilization high: 73% (5-min avg)</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> CPU</p>
+    <p><strong>Detail:</strong> CPU above 70% for extended periods risks protocol adjacency drops.</p>
+    <p class="rec"><strong>Recommendation:</strong> Profile top processes. Check for STP TCN storms, excessive ARP/broadcast, or misconfigured SNMP community strings causing heavy polling.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c">HIGH</span> <span class="fnum">#2</span>
+    <span class="ftitle">2 port(s) with &gt;1000 errors</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Interfaces</p>
+    <p><strong>Detail:</strong> High error counts indicate layer 1 or duplex problems: GigabitEthernet2/0/3: 105745 total errors (CRC:795); GigabitEthernet2/0/25: 34157 total errors (CRC:347)</p>
+    <p class="rec"><strong>Recommendation:</strong> Check cabling (replace patch cable), SFP module health, duplex/speed mismatch. Use &#x27;show interfaces &lt;name&gt; counters errors&#x27; and clear counters after fixes to verify improvement.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c">HIGH</span> <span class="fnum">#3</span>
+    <span class="ftitle">High TCN (Topology Change Notification) activity: 476 events in logs</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Spanning Tree</p>
+    <p><strong>Detail:</strong> Excessive TCNs flush the MAC table causing temporary flooding on ALL ports, dramatically increasing CPU and broadcast traffic. Common cause: access port connected to a hub/IP phone cycling.</p>
+    <p class="rec"><strong>Recommendation:</strong> Enable &#x27;spanning-tree portfast&#x27; on all access ports and &#x27;spanning-tree bpduguard enable&#x27; to prevent non-switch devices from triggering TCNs. Check &#x27;show spanning-tree detail | inc exec|occur&#x27;.</p>
+  </div>
+</div>
+<div class="fcard high" data-sev="high">
+  <div class="fhead"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#ea580c">HIGH</span> <span class="fnum">#4</span>
+    <span class="ftitle">BPDU Guard not enabled globally</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Spanning Tree</p>
+    <p><strong>Detail:</strong> Without BPDU Guard on PortFast ports, a rogue switch or misconfigured device can trigger STP topology changes and potentially become root bridge.</p>
+    <p class="rec"><strong>Recommendation:</strong> Apply globally: &#x27;spanning-tree portfast bpduguard default&#x27;. This shuts the port immediately if a BPDU is received on a PortFast port.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb">INFO</span> <span class="fnum">#5</span>
+    <span class="ftitle">1 port(s) administratively shut down</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Interfaces</p>
+    <p><strong>Detail:</strong> Ensure these are intentionally disabled. Unused ports should be shut and placed in an unused VLAN as best practice.</p>
+    <p class="rec"><strong>Recommendation:</strong> Verify with: &#x27;show interfaces status | include disabled&#x27;. Place unused ports in a dedicated black-hole VLAN (e.g. VLAN 999) and apply &#x27;shutdown&#x27;.</p>
+  </div>
+</div>
+<div class="fcard info" data-sev="info">
+  <div class="fhead"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:.68rem;font-weight:700;color:#fff;background:#2563eb">INFO</span> <span class="fnum">#6</span>
+    <span class="ftitle">Loop Guard not enabled</span>
+  </div>
+  <div class="fbody">
+    <p><strong>Area:</strong> Spanning Tree</p>
+    <p><strong>Detail:</strong> Loop Guard protects against unidirectional link failures that could cause a blocked port to incorrectly transition to forwarding.</p>
+    <p class="rec"><strong>Recommendation:</strong> Enable: &#x27;spanning-tree loopguard default&#x27;. Particularly important on uplinks and trunk ports.</p>
+  </div>
+</div>
+</div>
+
+<h2>Remediation Priority Checklist</h2>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:26px">
+<ol style="font-size:.85rem;color:var(--muted);padding-left:20px;line-height:2.2">
+  <li><strong style="color:#dc2626">Critical first:</strong> Resolve CAM table overflow and CPU &gt;90% before any other work.</li>
+  <li><strong style="color:#ea580c">Half-duplex:</strong> Set explicit <code>duplex full</code> + <code>speed</code> on ALL uplinks — never leave auto/auto on trunks.</li>
+  <li><strong style="color:#ea580c">BPDU Guard:</strong> <code>spanning-tree portfast bpduguard default</code> on ALL switches in the domain.</li>
+  <li><strong style="color:#ea580c">High error ports:</strong> Replace cables, check SFPs, verify NIC settings on connected servers.</li>
+  <li><strong style="color:#d97706">PortFast:</strong> <code>spanning-tree portfast default</code> eliminates 30-second port delays for end devices.</li>
+  <li><strong style="color:#d97706">Storm control:</strong> Configure per-port storm-control thresholds: <code>storm-control broadcast level 20</code> on access ports.</li>
+  <li><strong style="color:#2563eb">Loop Guard:</strong> <code>spanning-tree loopguard default</code> on all non-edge ports.</li>
+  <li><strong style="color:#2563eb">Port security:</strong> Limit MAC per access port: <code>switchport port-security maximum 3</code>.</li>
+</ol>
+</div>
+
+<footer>
+  Cisco IOS/IOS-XE Switch Performance Analytics &nbsp;|&nbsp;
+  ST05-B52 (10.63.65.24) &nbsp;|&nbsp; 2026-05-18 10:44:41
+</footer>
+
+<script>
+function filt(sev){
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  const map={all:'.fa',critical:'.fc',high:'.fh',warning:'.fw',info:'.fi'};
+  document.querySelector(map[sev]||'.fa').classList.add('active');
+  document.querySelectorAll('.fcard').forEach(c=>{
+    c.style.display=(sev==='all'||c.dataset.sev===sev)?'block':'none';
+  });
+}
+</script>
+</body>
+</html>

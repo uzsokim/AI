@@ -11,6 +11,7 @@ Requirements:
 """
 
 import sys
+import getpass
 # Force UTF-8 output on Windows consoles (avoids cp1250 UnicodeEncodeError)
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -28,9 +29,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ─────────────────────────────────────────────────────────────
 # Configuration
 # ─────────────────────────────────────────────────────────────
-ISE_IP      = "10.81.145.7"
-USERNAME    = "admin"
-PASSWORD    = "Lab1%Dev2"
+ISE_IP      = "ise-dev.semmelweis.hu"
+USERNAME    = "uzsoki.mark"
+PASSWORD    = getpass.getpass(f"Password for {USERNAME}@{ISE_IP}: ")
 OUTPUT_HTML = "ISE_Policy_Analytics.html"
 TIMEOUT     = 30
 
