@@ -1,0 +1,915 @@
+#!/usr/bin/env python3
+"""
+EIGRP Study Guide Generator
+Generates a comprehensive EIGRP study guide in HTML format.
+"""
+
+from datetime import datetime
+
+HTML_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EIGRP Study Guide</title>
+    <style>
+        :root {{
+            --primary:   #1a73e8;
+            --secondary: #0d47a1;
+            --accent:    #e8f0fe;
+            --success:   #34a853;
+            --warning:   #fbbc04;
+            --danger:    #ea4335;
+            --dark:      #202124;
+            --light:     #f8f9fa;
+            --border:    #dadce0;
+            --code-bg:   #1e1e2e;
+            --code-fg:   #cdd6f4;
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4ff;
+            color: var(--dark);
+            line-height: 1.7;
+        }}
+        /* ── Sidebar ── */
+        #sidebar {{
+            position: fixed; top: 0; left: 0;
+            width: 270px; height: 100vh;
+            background: var(--secondary);
+            color: #fff;
+            overflow-y: auto;
+            padding: 0 0 2rem;
+            z-index: 100;
+            transition: transform .3s;
+        }}
+        #sidebar h2 {{
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            background: rgba(0,0,0,.2);
+        }}
+        #sidebar nav a {{
+            display: block;
+            padding: .5rem 1.5rem;
+            color: #c5cae9;
+            text-decoration: none;
+            font-size: .9rem;
+            border-left: 3px solid transparent;
+            transition: all .2s;
+        }}
+        #sidebar nav a:hover,
+        #sidebar nav a.active {{
+            color: #fff;
+            background: rgba(255,255,255,.08);
+            border-left-color: var(--warning);
+        }}
+        #sidebar nav .section-label {{
+            padding: .8rem 1.5rem .2rem;
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: #7986cb;
+        }}
+        /* ── Main ── */
+        #main {{
+            margin-left: 270px;
+            padding: 2rem 2.5rem 4rem;
+            max-width: 1100px;
+        }}
+        /* ── Hero ── */
+        .hero {{
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            border-radius: 16px;
+            padding: 2.5rem 3rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }}
+        .hero h1 {{ font-size: 2.2rem; font-weight: 800; }}
+        .hero p {{ opacity: .85; margin-top: .4rem; max-width: 600px; }}
+        .hero .badge {{
+            background: rgba(255,255,255,.15);
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 8px;
+            padding: .6rem 1.2rem;
+            font-size: .85rem;
+            text-align: center;
+            white-space: nowrap;
+        }}
+        /* ── Sections ── */
+        .section {{
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            border: 1px solid var(--border);
+        }}
+        .section h2 {{
+            font-size: 1.5rem;
+            color: var(--secondary);
+            padding-bottom: .6rem;
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }}
+        .section h3 {{
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 1.4rem 0 .5rem;
+        }}
+        .section h4 {{
+            font-size: .95rem;
+            color: var(--dark);
+            margin: 1rem 0 .3rem;
+            font-weight: 600;
+        }}
+        .section p, .section li {{ font-size: .95rem; margin-bottom: .4rem; }}
+        .section ul, .section ol {{ padding-left: 1.6rem; }}
+        /* ── Code ── */
+        pre {{
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            overflow-x: auto;
+            font-size: .85rem;
+            line-height: 1.6;
+            margin: .8rem 0 1.2rem;
+        }}
+        code {{ font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; }}
+        .inline-code {{
+            background: #e8f0fe;
+            color: #1a56db;
+            padding: .1em .4em;
+            border-radius: 4px;
+            font-family: 'Cascadia Code','Fira Code','Consolas',monospace;
+            font-size: .88em;
+        }}
+        /* ── Tables ── */
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: .8rem 0 1.2rem;
+            font-size: .9rem;
+        }}
+        th {{
+            background: var(--secondary);
+            color: #fff;
+            padding: .7rem 1rem;
+            text-align: left;
+        }}
+        td {{ padding: .6rem 1rem; border-bottom: 1px solid var(--border); }}
+        tr:nth-child(even) td {{ background: var(--accent); }}
+        /* ── Cards row ── */
+        .cards {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }}
+        .card {{
+            background: var(--accent);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+        }}
+        .card strong {{ display: block; color: var(--secondary); font-size: .9rem; }}
+        .card span {{ font-size: .88rem; }}
+        /* ── Callouts ── */
+        .callout {{
+            border-radius: 8px;
+            padding: .9rem 1.2rem;
+            margin: 1rem 0;
+            font-size: .9rem;
+            display: flex;
+            gap: .8rem;
+            align-items: flex-start;
+        }}
+        .callout-icon {{ font-size: 1.2rem; flex-shrink: 0; margin-top: .1rem; }}
+        .callout.tip    {{ background: #e6f4ea; border-left: 4px solid var(--success); }}
+        .callout.warn   {{ background: #fef7e0; border-left: 4px solid var(--warning); }}
+        .callout.danger {{ background: #fce8e6; border-left: 4px solid var(--danger); }}
+        .callout.info   {{ background: #e8f0fe; border-left: 4px solid var(--primary); }}
+        /* ── Formula ── */
+        .formula {{
+            background: #1e1e2e;
+            color: #f9e2af;
+            border-radius: 8px;
+            padding: .9rem 1.5rem;
+            font-family: 'Cascadia Code','Fira Code','Consolas',monospace;
+            font-size: .92rem;
+            margin: .8rem 0;
+            text-align: center;
+            letter-spacing: .03em;
+        }}
+        /* ── Progress bar (visual aid) ── */
+        .progress-label {{ font-size: .8rem; color: #555; margin-bottom: .2rem; }}
+        .progress-bar {{
+            background: #e0e0e0; border-radius: 99px; height: 10px; margin-bottom: .7rem;
+        }}
+        .progress-fill {{
+            height: 10px; border-radius: 99px; background: var(--primary);
+        }}
+        /* ── Print ── */
+        @media print {{
+            #sidebar {{ display: none; }}
+            #main {{ margin-left: 0; padding: 1rem; }}
+            .hero {{ print-color-adjust: exact; }}
+        }}
+        /* ── Mobile ── */
+        @media (max-width: 768px) {{
+            #sidebar {{ transform: translateX(-100%); }}
+            #main {{ margin-left: 0; padding: 1rem 1.2rem 3rem; }}
+        }}
+        /* ── Scroll spy active ── */
+        .section {{ scroll-margin-top: 1.5rem; }}
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<div id="sidebar">
+    <h2>📡 EIGRP Guide</h2>
+    <nav id="toc">
+        <div class="section-label">Foundation</div>
+        <a href="#overview">1. Overview</a>
+        <a href="#features">2. Key Features</a>
+        <a href="#terminology">3. Terminology</a>
+        <div class="section-label">Operation</div>
+        <a href="#neighbors">4. Neighbor Discovery</a>
+        <a href="#tables">5. EIGRP Tables</a>
+        <a href="#packets">6. Packet Types</a>
+        <a href="#dual">7. DUAL Algorithm</a>
+        <div class="section-label">Metrics & Design</div>
+        <a href="#metrics">8. Composite Metric</a>
+        <a href="#load-balancing">9. Load Balancing</a>
+        <a href="#summarization">10. Summarization</a>
+        <div class="section-label">Configuration</div>
+        <a href="#classic-config">11. Classic Config</a>
+        <a href="#named-config">12. Named Mode</a>
+        <a href="#redistribution">13. Redistribution</a>
+        <a href="#auth">14. Authentication</a>
+        <div class="section-label">Advanced</div>
+        <a href="#eigrpv6">15. EIGRP for IPv6</a>
+        <a href="#stub">16. Stub Routing</a>
+        <a href="#troubleshoot">17. Troubleshooting</a>
+        <a href="#exam-tips">18. Exam Tips</a>
+    </nav>
+</div>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div id="main">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div>
+            <h1>EIGRP Study Guide</h1>
+            <p>Enhanced Interior Gateway Routing Protocol — comprehensive reference for CCNA / CCNP / network engineers</p>
+        </div>
+        <div class="badge">
+            📅 Generated: {date}<br>
+            🎯 Level: CCNA → CCNP<br>
+            ⏱ ~45 min read
+        </div>
+    </div>
+
+    <!-- ══ 1. OVERVIEW ══ -->
+    <div class="section" id="overview">
+        <h2>📌 1. Overview</h2>
+        <p>EIGRP (Enhanced Interior Gateway Routing Protocol) is Cisco's <strong>advanced distance-vector</strong> routing protocol, originally proprietary (Cisco IOS 9.21, 1993) and partially open-standardised in <strong>RFC 7868 (2016)</strong>.</p>
+        <p>It combines the simplicity of distance-vector protocols with loop-prevention mechanisms and fast convergence borrowed from link-state protocols — often described as a <em>hybrid</em> or <em>advanced distance-vector</em> protocol.</p>
+
+        <h3>Protocol Identity</h3>
+        <table>
+            <tr><th>Property</th><th>Value</th></tr>
+            <tr><td>AD (Internal)</td><td><strong>90</strong></td></tr>
+            <tr><td>AD (External)</td><td><strong>170</strong></td></tr>
+            <tr><td>AD (Summary)</td><td><strong>5</strong></td></tr>
+            <tr><td>Transport</td><td>IP Protocol <strong>88</strong></td></tr>
+            <tr><td>Multicast address</td><td><strong>224.0.0.10</strong> / FF02::A</td></tr>
+            <tr><td>Algorithm</td><td>DUAL (Diffusing Update Algorithm)</td></tr>
+            <tr><td>RFC</td><td>RFC 7868</td></tr>
+        </table>
+    </div>
+
+    <!-- ══ 2. KEY FEATURES ══ -->
+    <div class="section" id="features">
+        <h2>⭐ 2. Key Features</h2>
+        <div class="cards">
+            <div class="card"><strong>Rapid Convergence</strong><span>Pre-computed backup routes (Feasible Successors) allow instant failover</span></div>
+            <div class="card"><strong>Partial Updates</strong><span>Only changes are sent, not the full routing table — saves bandwidth</span></div>
+            <div class="card"><strong>VLSM / CIDR</strong><span>Classless — subnet mask is included in updates</span></div>
+            <div class="card"><strong>Multiple Protocols</strong><span>IPv4, IPv6, IPX, AppleTalk (via PDMs)</span></div>
+            <div class="card"><strong>Loop-Free</strong><span>DUAL guarantees loop-free paths at every instant</span></div>
+            <div class="card"><strong>Unequal-Cost LB</strong><span>Variance command allows traffic sharing over unequal paths</span></div>
+            <div class="card"><strong>Neighbor Auth</strong><span>MD5 and SHA-256 (named mode) authentication</span></div>
+            <div class="card"><strong>Route Tagging</strong><span>Tag redistributed routes for policy control</span></div>
+        </div>
+
+        <h3>PDM — Protocol Dependent Modules</h3>
+        <p>EIGRP's modular architecture uses PDMs to handle different routed protocols (IPv4, IPv6, etc.) while sharing a common DUAL core and RTP transport engine.</p>
+    </div>
+
+    <!-- ══ 3. TERMINOLOGY ══ -->
+    <div class="section" id="terminology">
+        <h2>📖 3. Key Terminology</h2>
+        <table>
+            <tr><th>Term</th><th>Definition</th></tr>
+            <tr><td><strong>Reported Distance (RD)</strong></td><td>Metric a neighbor advertises to reach a destination (also: Advertised Distance)</td></tr>
+            <tr><td><strong>Feasible Distance (FD)</strong></td><td>Best local metric to reach a destination (RD + link cost to neighbor)</td></tr>
+            <tr><td><strong>Successor</strong></td><td>Best-path next-hop router; installed in the routing table</td></tr>
+            <tr><td><strong>Feasible Successor (FS)</strong></td><td>Backup next-hop that satisfies the Feasibility Condition</td></tr>
+            <tr><td><strong>Feasibility Condition (FC)</strong></td><td>FS's RD &lt; FD of current Successor — guarantees a loop-free backup</td></tr>
+            <tr><td><strong>Active route</strong></td><td>Route undergoing DUAL re-computation (Queries sent)</td></tr>
+            <tr><td><strong>Passive route</strong></td><td>Stable route — not in re-computation; desired state</td></tr>
+            <tr><td><strong>SIA (Stuck-in-Active)</strong></td><td>Router doesn't receive a Reply within SIA timer (default 90 s) → neighbor reset</td></tr>
+            <tr><td><strong>Autonomous System (AS)</strong></td><td>EIGRP process identifier (1–65535); must match between neighbors</td></tr>
+        </table>
+
+        <div class="callout info">
+            <span class="callout-icon">ℹ️</span>
+            <span>Remember: <strong>RD</strong> is what the <em>neighbor</em> tells you; <strong>FD</strong> is what <em>you</em> calculate (your metric to the destination). The Feasibility Condition compares the neighbor's RD to your current best FD.</span>
+        </div>
+    </div>
+
+    <!-- ══ 4. NEIGHBOR DISCOVERY ══ -->
+    <div class="section" id="neighbors">
+        <h2>🤝 4. Neighbor Discovery &amp; Relationships</h2>
+        <p>EIGRP uses <strong>Hello packets</strong> sent to multicast <span class="inline-code">224.0.0.10</span> to discover and maintain neighbors.</p>
+
+        <h3>Requirements to Form a Neighbor Adjacency</h3>
+        <ul>
+            <li>Same AS number</li>
+            <li>Matching K-values (metric weights)</li>
+            <li>Reachable IP address on the same subnet</li>
+            <li>Authentication (if configured — must match)</li>
+        </ul>
+
+        <h3>Hello &amp; Hold Timers</h3>
+        <table>
+            <tr><th>Interface Type</th><th>Hello</th><th>Hold</th></tr>
+            <tr><td>High-bandwidth (≥T1, point-to-point)</td><td>5 s</td><td>15 s</td></tr>
+            <tr><td>Low-bandwidth (multipoint, NBMA &lt;T1)</td><td>60 s</td><td>180 s</td></tr>
+        </table>
+        <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>Hello and Hold timers <strong>do not need to match</strong> between neighbors. Each router advertises its own Hold timer in Hello packets.</span>
+        </div>
+
+        <h3>Neighbor Table Entry Fields</h3>
+        <ul>
+            <li>Neighbor address &amp; interface</li>
+            <li>Hold time (countdown)</li>
+            <li>Uptime</li>
+            <li>SRTT (Smooth Round-Trip Time)</li>
+            <li>RTO (Retransmission Timeout)</li>
+            <li>Q count (pending packets in queue)</li>
+            <li>Sequence number</li>
+        </ul>
+
+        <pre><code>R1# show ip eigrp neighbors
+EIGRP-IPv4 Neighbors for AS(100)
+H   Address         Interface        Hold  Uptime   SRTT   RTO  Q  Seq
+                                     (sec)         (ms)       Cnt Num
+0   10.0.12.2       Gi0/0              13  00:10:41   4   200   0  7
+1   10.0.13.3       Gi0/1              12  00:09:55   8   200   0  5</code></pre>
+    </div>
+
+    <!-- ══ 5. TABLES ══ -->
+    <div class="section" id="tables">
+        <h2>📊 5. EIGRP Tables</h2>
+
+        <h3>Three Core Tables</h3>
+        <div class="cards">
+            <div class="card"><strong>Neighbor Table</strong><span>Discovered EIGRP neighbors and their state</span></div>
+            <div class="card"><strong>Topology Table</strong><span>All routes learned via EIGRP — Successors, FSs, and Active routes</span></div>
+            <div class="card"><strong>Routing Table</strong><span>Best routes (Successors) installed into the IP routing table</span></div>
+        </div>
+
+        <h3>Topology Table</h3>
+        <p>Shows <strong>all</strong> paths — not just the best. Key data per prefix:</p>
+        <pre><code>R1# show ip eigrp topology
+EIGRP-IPv4 Topology Table for AS(100)/ID(1.1.1.1)
+Codes: P - Passive, A - Active, U - Update, Q - Query, R - Reply,
+       r - reply Status, s - sia Status
+
+P 192.168.10.0/24, 1 successors, FD is 28160
+        via 10.0.12.2 (28160/25600), GigabitEthernet0/0   &lt;-- Successor
+        via 10.0.13.3 (30720/28160), GigabitEthernet0/1   &lt;-- Feasible Successor</code></pre>
+
+        <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span><strong>Format:</strong> <code>via &lt;next-hop&gt; (FD/RD)</code> — first number is your FD, second is the neighbor's RD (= Advertised Distance)</span>
+        </div>
+
+        <h3>Useful Show Commands</h3>
+        <pre><code>show ip eigrp neighbors           ! Neighbor table
+show ip eigrp topology            ! Full topology table
+show ip eigrp topology all-links  ! Including non-FS routes
+show ip eigrp topology summary    ! Stats summary
+show ip route eigrp               ! EIGRP routes in RIB
+show ip eigrp interfaces          ! Per-interface EIGRP info
+show ip eigrp traffic             ! Packet counters</code></pre>
+    </div>
+
+    <!-- ══ 6. PACKETS ══ -->
+    <div class="section" id="packets">
+        <h2>📦 6. EIGRP Packet Types (RTP)</h2>
+        <p>EIGRP uses its own <strong>Reliable Transport Protocol (RTP)</strong> for guaranteed delivery of some packet types — <em>no TCP/UDP involved</em>.</p>
+
+        <table>
+            <tr><th>Type</th><th>Code</th><th>Reliable?</th><th>Purpose</th></tr>
+            <tr><td><strong>Hello</strong></td><td>5</td><td>No (multicast)</td><td>Neighbor discovery &amp; keepalive</td></tr>
+            <tr><td><strong>Update</strong></td><td>1</td><td>Yes</td><td>Send routing changes</td></tr>
+            <tr><td><strong>Query</strong></td><td>3</td><td>Yes</td><td>Ask neighbors for a route during re-computation</td></tr>
+            <tr><td><strong>Reply</strong></td><td>4</td><td>Yes</td><td>Respond to a Query</td></tr>
+            <tr><td><strong>Acknowledge</strong></td><td>6</td><td>No (unicast)</td><td>ACK for reliable packets (unicast Hello with seq=0)</td></tr>
+            <tr><td><strong>SIA-Query</strong></td><td>10</td><td>Yes</td><td>Check if neighbor is still processing (avoid SIA reset)</td></tr>
+            <tr><td><strong>SIA-Reply</strong></td><td>11</td><td>Yes</td><td>Respond to SIA-Query — "I'm still working"</td></tr>
+        </table>
+
+        <div class="callout info">
+            <span class="callout-icon">ℹ️</span>
+            <span>Reliable delivery = sent unicast with an ACK expected. If no ACK within RTO, retransmit up to 16 times before declaring the neighbor down.</span>
+        </div>
+    </div>
+
+    <!-- ══ 7. DUAL ══ -->
+    <div class="section" id="dual">
+        <h2>⚙️ 7. DUAL Algorithm</h2>
+        <p>The <strong>Diffusing Update Algorithm (DUAL)</strong> is the engine that selects loop-free paths and drives convergence.</p>
+
+        <h3>Core Logic</h3>
+        <ol>
+            <li>When a route is received, compare the neighbor's <strong>RD vs. current FD</strong></li>
+            <li>If <code>RD &lt; FD</code> → satisfies Feasibility Condition → candidate for <strong>Feasible Successor</strong></li>
+            <li>Route with lowest FD is the <strong>Successor</strong></li>
+            <li>If Successor fails and an FS exists → <strong>instant failover</strong> (passive state maintained)</li>
+            <li>If no FS → route goes <strong>Active</strong> → Queries sent to all neighbors</li>
+        </ol>
+
+        <h3>Convergence Path Decision</h3>
+        <pre>
+  Successor fails?
+       │
+       ▼
+  FS exists?  ──YES──▶  Promote FS to Successor (instant, stays Passive)
+       │
+       NO
+       │
+       ▼
+  Send QUERY to neighbors ──▶ Wait for REPLYs ──▶ Re-run DUAL ──▶ New Successor
+        </pre>
+
+        <div class="callout danger">
+            <span class="callout-icon">🚨</span>
+            <span><strong>Stuck-in-Active (SIA):</strong> If a Reply is not received within the SIA timer (default 90 s), the non-responding neighbor is <strong>reset</strong>. This is often caused by large topologies or slow links. Mitigate with EIGRP Stub.</span>
+        </div>
+
+        <h3>FC Example</h3>
+        <table>
+            <tr><th>Path</th><th>RD</th><th>FD</th><th>FC Met?</th><th>Role</th></tr>
+            <tr><td>via R2</td><td>25600</td><td>28160</td><td>—</td><td>Successor (best FD)</td></tr>
+            <tr><td>via R3</td><td>28160</td><td>30720</td><td>28160 &gt; 28160? ❌</td><td>Not a FS</td></tr>
+            <tr><td>via R4</td><td>20480</td><td>25600</td><td>20480 &lt; 28160 ✅</td><td>Feasible Successor</td></tr>
+        </table>
+    </div>
+
+    <!-- ══ 8. METRICS ══ -->
+    <div class="section" id="metrics">
+        <h2>📐 8. Composite Metric</h2>
+        <p>EIGRP's metric uses a formula that considers up to five K-values.</p>
+
+        <h3>Default Formula (K1=1, K2=0, K3=1, K4=0, K5=0)</h3>
+        <div class="formula">Metric = 256 × [ (10⁷ / min_bandwidth_kbps) + cumulative_delay_10μs ]</div>
+
+        <h3>Full Formula</h3>
+        <div class="formula">Metric = 256 × [ K1×BW + (K2×BW)/(256−Load) + K3×Delay ] × [ K5/(Reliability+K4) ]</div>
+
+        <table>
+            <tr><th>K-value</th><th>Metric Component</th><th>Default</th></tr>
+            <tr><td>K1</td><td>Bandwidth</td><td>1</td></tr>
+            <tr><td>K2</td><td>Load</td><td>0</td></tr>
+            <tr><td>K3</td><td>Delay</td><td>1</td></tr>
+            <tr><td>K4</td><td>Reliability</td><td>0</td></tr>
+            <tr><td>K5</td><td>Reliability (denominator)</td><td>0</td></tr>
+        </table>
+
+        <h3>Interface Default Values</h3>
+        <table>
+            <tr><th>Interface</th><th>Bandwidth</th><th>Delay</th><th>EIGRP Metric</th></tr>
+            <tr><td>Serial (T1 1.544M)</td><td>1544 Kbps</td><td>20,000 μs</td><td>2,170,112</td></tr>
+            <tr><td>FastEthernet</td><td>100,000 Kbps</td><td>100 μs</td><td>28,160</td></tr>
+            <tr><td>GigabitEthernet</td><td>1,000,000 Kbps</td><td>10 μs</td><td>2,560</td></tr>
+            <tr><td>10 GigabitEthernet</td><td>10,000,000 Kbps</td><td>10 μs</td><td>256</td></tr>
+        </table>
+
+        <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>Bandwidth is the <strong>minimum</strong> along the path; Delay is the <strong>sum</strong> of all delays. Changing K-values must be consistent across all routers in the AS — a mismatch prevents adjacency.</span>
+        </div>
+
+        <h3>Modifying Metrics</h3>
+        <pre><code>! Change bandwidth (affects many protocols — prefer delay changes)
+interface GigabitEthernet0/0
+ bandwidth 500000
+
+! Change delay only (microseconds ÷ 10)
+interface GigabitEthernet0/0
+ delay 100      ! 100 × 10 = 1000 μs
+
+! Change K-values (must match all neighbors in AS)
+router eigrp 100
+ metric weights 0  1 0 1 0 0   ! TOS K1 K2 K3 K4 K5</code></pre>
+    </div>
+
+    <!-- ══ 9. LOAD BALANCING ══ -->
+    <div class="section" id="load-balancing">
+        <h2>⚖️ 9. Load Balancing</h2>
+
+        <h3>Equal-Cost Load Balancing</h3>
+        <p>Default: up to <strong>4 equal-cost paths</strong> (max 32 with <span class="inline-code">maximum-paths 32</span>).</p>
+
+        <h3>Unequal-Cost Load Balancing (Variance)</h3>
+        <p>EIGRP's unique feature — share traffic across paths with different metrics.</p>
+        <div class="formula">A route is eligible if:  route_FD  ≤  Successor_FD  ×  variance</div>
+
+        <pre><code>router eigrp 100
+ maximum-paths 8    ! Allow up to 8 equal-cost paths
+ variance 2         ! Include paths with FD ≤ 2× successor's FD</code></pre>
+
+        <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>The route must also be a <strong>Feasible Successor</strong> to be included in unequal-cost load balancing — it must satisfy the Feasibility Condition.</span>
+        </div>
+        <p>Traffic is proportionally distributed — a path with FD=2560 carries <strong>twice</strong> the traffic of a path with FD=5120 (inverse proportion to metric).</p>
+    </div>
+
+    <!-- ══ 10. SUMMARIZATION ══ -->
+    <div class="section" id="summarization">
+        <h2>🗺️ 10. Route Summarization</h2>
+
+        <h3>Auto-Summary (Legacy)</h3>
+        <p>EIGRP summarises routes at classful boundaries. <strong>Disabled by default</strong> since IOS 15. Causes black-holes with discontiguous subnets — best left off.</p>
+        <pre><code>router eigrp 100
+ no auto-summary    ! Recommended — ensure classless behaviour</code></pre>
+
+        <h3>Manual Summary</h3>
+        <p>Applied <strong>per interface</strong>, outbound:</p>
+        <pre><code>interface GigabitEthernet0/0
+ ip summary-address eigrp 100 192.168.0.0 255.255.0.0</code></pre>
+        <ul>
+            <li>Creates a <strong>Null0</strong> route for the summary prefix (AD 5) — prevents routing loops</li>
+            <li>Suppresses more-specific routes from being advertised out that interface</li>
+            <li>The metric used is the <strong>lowest FD</strong> among all component routes</li>
+        </ul>
+
+        <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>The Null0 discard route exists only while at least one component route exists. If all components disappear, the summary is withdrawn.</span>
+        </div>
+    </div>
+
+    <!-- ══ 11. CLASSIC CONFIG ══ -->
+    <div class="section" id="classic-config">
+        <h2>🔧 11. Classic Configuration</h2>
+        <pre><code>! Basic EIGRP process
+router eigrp 100
+ eigrp router-id 1.1.1.1        ! Manually set (recommended)
+ network 10.0.0.0 0.0.255.255   ! Wildcard mask (or classful)
+ network 192.168.1.0             ! Classful — matches 192.168.1.x
+ no auto-summary
+ passive-interface default       ! All interfaces passive by default
+ no passive-interface Gi0/0      ! Selectively enable
+ no passive-interface Gi0/1
+
+! Tuning
+ variance 2
+ maximum-paths 6
+ timers active-time 90           ! SIA timer (seconds)</code></pre>
+
+        <h3>Router-ID Selection Order</h3>
+        <ol>
+            <li>Manually configured (<span class="inline-code">eigrp router-id</span>)</li>
+            <li>Highest IP on a loopback interface</li>
+            <li>Highest IP on an active physical interface</li>
+        </ol>
+
+        <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Always set the router-ID manually to a loopback address for stability and predictability.</span>
+        </div>
+    </div>
+
+    <!-- ══ 12. NAMED MODE ══ -->
+    <div class="section" id="named-config">
+        <h2>🆕 12. Named EIGRP (IOS 15.0.1M+)</h2>
+        <p>Named mode is the recommended modern approach — it consolidates IPv4, IPv6, and VRF configuration under one process.</p>
+        <pre><code>router eigrp CORP-EIGRP            ! Process name (not AS number)
+ !
+ address-family ipv4 unicast autonomous-system 100
+  !
+  af-interface default
+   passive-interface
+  !
+  af-interface GigabitEthernet0/0
+   no passive-interface
+   hello-interval 5
+   hold-time 15
+   bandwidth-percent eigrp 100 50  ! Limit EIGRP to 50% of BW
+  !
+  topology base
+   variance 2
+   maximum-paths 8
+   redistribute static metric 10000 10 255 1 1500
+  !
+  network 10.0.0.0 0.0.255.255
+  eigrp router-id 1.1.1.1
+ !
+ address-family ipv6 unicast autonomous-system 100
+  !
+  af-interface GigabitEthernet0/0
+   no passive-interface
+  !
+  topology base
+  !
+  eigrp router-id 1.1.1.1</code></pre>
+
+        <h3>Named vs. Classic — Key Differences</h3>
+        <table>
+            <tr><th>Feature</th><th>Classic</th><th>Named</th></tr>
+            <tr><td>IPv6 config</td><td>Separate <code>ipv6 router eigrp</code></td><td>Unified under address-family</td></tr>
+            <tr><td>Authentication</td><td>MD5 only, per interface</td><td>MD5 + SHA-256, per af-interface</td></tr>
+            <tr><td>Wide metrics</td><td>No</td><td>Yes (64-bit)</td></tr>
+            <tr><td>VRF support</td><td>Limited</td><td>Native</td></tr>
+        </table>
+    </div>
+
+    <!-- ══ 13. REDISTRIBUTION ══ -->
+    <div class="section" id="redistribution">
+        <h2>🔄 13. Redistribution</h2>
+        <pre><code>! Redistribute from OSPF into EIGRP
+router eigrp 100
+ redistribute ospf 1 metric 10000 10 255 1 1500
+ !         BW(Kbps) Delay(10μs) Reliability Load MTU
+
+! Redistribute static routes
+ redistribute static metric 1000 10 255 1 1500
+
+! Redistribute connected networks
+ redistribute connected metric 1000 10 255 1 1500
+
+! Redistribute into OSPF from EIGRP
+router ospf 1
+ redistribute eigrp 100 subnets metric 20 metric-type E2</code></pre>
+
+        <div class="callout danger">
+            <span class="callout-icon">🚨</span>
+            <span>Mutual redistribution between two routing domains creates <strong>routing loops</strong> risk. Always use <strong>route tagging + distribute-lists</strong> or <strong>prefix-lists</strong> to prevent feedback loops.</span>
+        </div>
+    </div>
+
+    <!-- ══ 14. AUTHENTICATION ══ -->
+    <div class="section" id="auth">
+        <h2>🔐 14. Authentication</h2>
+
+        <h3>MD5 Authentication (Classic)</h3>
+        <pre><code>! Step 1 — Define key chain
+key chain EIGRP-KEYS
+ key 1
+  key-string MyS3cretP@ss
+  accept-lifetime 00:00:00 Jan 1 2024 infinite
+  send-lifetime 00:00:00 Jan 1 2024 infinite
+
+! Step 2 — Apply to interface
+interface GigabitEthernet0/0
+ ip authentication mode eigrp 100 md5
+ ip authentication key-chain eigrp 100 EIGRP-KEYS</code></pre>
+
+        <h3>SHA-256 Authentication (Named Mode)</h3>
+        <pre><code>router eigrp CORP-EIGRP
+ address-family ipv4 unicast autonomous-system 100
+  af-interface GigabitEthernet0/0
+   authentication mode hmac-sha-256 MyS3cretP@ss</code></pre>
+
+        <div class="callout tip">
+            <span class="callout-icon">💡</span>
+            <span>Key chains support multiple keys with time-based lifetimes — useful for key rotation without dropping adjacencies. The router tries the <strong>lowest key-id</strong> within send-lifetime first.</span>
+        </div>
+    </div>
+
+    <!-- ══ 15. EIGRP for IPv6 ══ -->
+    <div class="section" id="eigrpv6">
+        <h2>🌐 15. EIGRP for IPv6</h2>
+
+        <h3>Classic IPv6 EIGRP</h3>
+        <pre><code>! Enable IPv6 routing
+ipv6 unicast-routing
+
+! Create EIGRP IPv6 process
+ipv6 router eigrp 100
+ eigrp router-id 1.1.1.1      ! Mandatory — no IPv4 addr to derive from
+ no shutdown                   ! Process starts shutdown by default
+
+! Enable per interface (not network statement)
+interface GigabitEthernet0/0
+ ipv6 eigrp 100</code></pre>
+
+        <h3>Key Differences from IPv4 EIGRP</h3>
+        <ul>
+            <li>Uses <strong>multicast FF02::A</strong> instead of 224.0.0.10</li>
+            <li>Enabled per-interface (no <span class="inline-code">network</span> statement in classic mode)</li>
+            <li>Router-ID is <strong>mandatory</strong> (must be configured as 32-bit dotted decimal)</li>
+            <li>Process starts in <strong>shutdown</strong> state by default</li>
+            <li>Uses link-local addresses as next-hop</li>
+        </ul>
+
+        <h3>Named Mode IPv6 (Recommended)</h3>
+        <pre><code>router eigrp CORP
+ address-family ipv6 unicast autonomous-system 100
+  eigrp router-id 1.1.1.1
+  af-interface GigabitEthernet0/0
+   no passive-interface</code></pre>
+    </div>
+
+    <!-- ══ 16. STUB ══ -->
+    <div class="section" id="stub">
+        <h2>🏠 16. EIGRP Stub Routing</h2>
+        <p>Stub routers reduce Query scope — a hub router won't send Queries to stub spokes, preventing SIA and speeding convergence in hub-and-spoke topologies.</p>
+
+        <h3>Stub Options</h3>
+        <table>
+            <tr><th>Option</th><th>What is advertised</th></tr>
+            <tr><td><code>stub connected</code></td><td>Directly connected routes only</td></tr>
+            <tr><td><code>stub summary</code></td><td>Summary routes only</td></tr>
+            <tr><td><code>stub static</code></td><td>Static routes redistributed into EIGRP</td></tr>
+            <tr><td><code>stub redistributed</code></td><td>Redistributed routes</td></tr>
+            <tr><td><code>stub receive-only</code></td><td>Nothing — only receives routes (pure leaf)</td></tr>
+            <tr><td><code>stub</code> (default)</td><td>connected + summary</td></tr>
+        </table>
+
+        <pre><code>! On the spoke router
+router eigrp 100
+ eigrp stub connected summary
+
+! Verify
+show ip eigrp neighbors detail   ! Shows "Stub Peer Advertising ..." </code></pre>
+
+        <div class="callout warn">
+            <span class="callout-icon">⚠️</span>
+            <span>A stub router will <strong>never</strong> be used as a transit router. Traffic destined through a stub neighbor may be black-holed — ensure the hub has a default or summary route pointing elsewhere.</span>
+        </div>
+    </div>
+
+    <!-- ══ 17. TROUBLESHOOTING ══ -->
+    <div class="section" id="troubleshoot">
+        <h2>🛠️ 17. Troubleshooting</h2>
+
+        <h3>Adjacency Not Forming — Checklist</h3>
+        <table>
+            <tr><th>Check</th><th>Command</th></tr>
+            <tr><td>AS number match</td><td><code>show ip protocols</code></td></tr>
+            <tr><td>K-values match</td><td><code>show ip protocols | include K</code></td></tr>
+            <tr><td>Interface enabled</td><td><code>show ip eigrp interfaces</code></td></tr>
+            <tr><td>Not passive</td><td><code>show ip protocols | include Passive</code></td></tr>
+            <tr><td>Authentication</td><td><code>debug eigrp packets hello</code></td></tr>
+            <tr><td>Subnet overlap</td><td><code>show ip interface brief</code></td></tr>
+            <tr><td>ACL blocking 224.0.0.10</td><td><code>show ip access-lists</code></td></tr>
+        </table>
+
+        <h3>Route Missing — Checklist</h3>
+        <ul>
+            <li>Is the network statement correct? (<span class="inline-code">show ip protocols</span>)</li>
+            <li>Is the interface passive? Remove if so</li>
+            <li>Is auto-summary causing classful summarization? (<span class="inline-code">no auto-summary</span>)</li>
+            <li>Is a distribute-list or prefix-list filtering the route?</li>
+            <li>Check topology table — is route Active or stuck? (<span class="inline-code">show ip eigrp topology active</span>)</li>
+        </ul>
+
+        <h3>Debug Commands</h3>
+        <pre><code>debug eigrp packets             ! All EIGRP packets (verbose!)
+debug eigrp packets hello       ! Only Hello packets
+debug eigrp packets update      ! Only Update packets
+debug eigrp fsm                 ! DUAL finite state machine events
+debug ip eigrp                  ! Route events
+debug ip eigrp neighbor         ! Neighbor events
+
+! Turn off all debug
+undebug all</code></pre>
+
+        <div class="callout danger">
+            <span class="callout-icon">🚨</span>
+            <span>Use <strong><code>debug</code></strong> commands with caution on production routers — high CPU impact. Prefer <span class="inline-code">debug eigrp packets hello</span> (targeted) over <span class="inline-code">debug eigrp packets</span> (everything).</span>
+        </div>
+
+        <h3>SIA Troubleshooting</h3>
+        <pre><code>show ip eigrp topology active   ! See routes stuck in Active state
+debug eigrp fsm                 ! Watch DUAL state transitions
+
+! Mitigation strategies:
+! 1. Deploy EIGRP Stub on spoke routers
+! 2. Use summarization to reduce Query scope
+! 3. Split the AS at distribution layer (use redistribution)</code></pre>
+    </div>
+
+    <!-- ══ 18. EXAM TIPS ══ -->
+    <div class="section" id="exam-tips">
+        <h2>🎯 18. Exam Tips &amp; Quick Reference</h2>
+
+        <h3>Must-Know Numbers</h3>
+        <div class="cards">
+            <div class="card"><strong>AD Internal: 90</strong><span>EIGRP internal routes</span></div>
+            <div class="card"><strong>AD External: 170</strong><span>Redistributed into EIGRP</span></div>
+            <div class="card"><strong>AD Summary: 5</strong><span>Auto/manual summary routes</span></div>
+            <div class="card"><strong>IP Protocol: 88</strong><span>EIGRP transport layer</span></div>
+            <div class="card"><strong>Multicast: 224.0.0.10</strong><span>EIGRP all-routers group</span></div>
+            <div class="card"><strong>Hello / Hold: 5/15 s</strong><span>High-BW interfaces</span></div>
+            <div class="card"><strong>Hello / Hold: 60/180 s</strong><span>Low-BW / NBMA</span></div>
+            <div class="card"><strong>SIA Timer: 90 s</strong><span>Default stuck-in-active timeout</span></div>
+        </div>
+
+        <h3>Common Exam Traps</h3>
+        <ul>
+            <li>❌ "Hello timers must match" → <strong>FALSE</strong> — they are independent</li>
+            <li>❌ "Feasibility Condition: RD ≤ FD" → <strong>FALSE</strong> — it's strictly &lt; (less than)</li>
+            <li>❌ "EIGRP uses TCP for reliable delivery" → <strong>FALSE</strong> — uses its own RTP</li>
+            <li>❌ "Variance can use any path" → <strong>FALSE</strong> — path must be a Feasible Successor</li>
+            <li>❌ "auto-summary is off by default on old IOS" → <strong>FALSE</strong> — it was on before IOS 15</li>
+            <li>✅ Bandwidth = minimum along path; Delay = cumulative sum</li>
+            <li>✅ Router-ID is mandatory for EIGRP IPv6</li>
+            <li>✅ Named mode uses 64-bit (wide) metrics internally</li>
+        </ul>
+
+        <h3>Verification Quick Commands</h3>
+        <pre><code>show ip eigrp neighbors           ! Adjacency health
+show ip eigrp topology            ! Successor + FS per prefix
+show ip eigrp topology all-links  ! All known paths
+show ip route eigrp               ! Installed EIGRP routes
+show ip protocols                 ! AS, K-values, networks, filters
+show ip eigrp interfaces detail   ! BW%, hello/hold, auth status
+show ip eigrp traffic             ! Sent/rcvd packet counts</code></pre>
+
+        <h3>Configuration Checklist</h3>
+        <ol>
+            <li>Set router-ID manually (<span class="inline-code">eigrp router-id x.x.x.x</span>)</li>
+            <li>Define networks with wildcard masks</li>
+            <li><span class="inline-code">no auto-summary</span></li>
+            <li>Set interfaces passive by default, explicitly allow EIGRP interfaces</li>
+            <li>Enable MD5/SHA-256 authentication</li>
+            <li>Configure stub on spoke routers</li>
+            <li>Tune hello/hold timers if needed (WAN links)</li>
+            <li>Apply manual summarization at boundaries</li>
+            <li>Verify with <span class="inline-code">show ip eigrp neighbors</span> and <span class="inline-code">show ip eigrp topology</span></li>
+        </ol>
+    </div>
+
+    <footer style="text-align:center; color:#888; font-size:.8rem; padding: 2rem 0 0;">
+        Generated {date} — EIGRP Study Guide — For CCNA / CCNP exam preparation
+    </footer>
+
+</div>
+
+<script>
+// Simple scroll-spy to highlight active TOC item
+const sections = document.querySelectorAll('.section[id]');
+const links = document.querySelectorAll('#toc a');
+
+const observer = new IntersectionObserver(entries => {{
+    entries.forEach(e => {{
+        if (e.isIntersecting) {{
+            links.forEach(l => l.classList.remove('active'));
+            const active = document.querySelector('#toc a[href="#' + e.target.id + '"]');
+            if (active) active.classList.add('active');
+        }}
+    }});
+}}, {{ rootMargin: '-20% 0px -70% 0px' }});
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
+"""
+
+def generate_guide(output_path: str = "eigrp_study_guide.html") -> str:
+    today = datetime.now().strftime("%Y-%m-%d")
+    html = HTML_TEMPLATE.format(date=today)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    return output_path
+
+
+if __name__ == "__main__":
+    import sys
+    out = sys.argv[1] if len(sys.argv) > 1 else "eigrp_study_guide.html"
+    path = generate_guide(out)
+    print(f"[OK] EIGRP Study Guide generated -> {path}")

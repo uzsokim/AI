@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import docx; print\\(docx.__version__\\)\")",
+      "Bash(python generate_lld.py)",
+      "Bash(pip show *)",
+      "Bash(python generate_qed_pptx.py QED_Presentation.pptx)",
+      "Bash(python generate_eigrp_study_guide.py eigrp_study_guide.html)",
+      "PowerShell(\\(Get-Item \"c:\\\\Projects\\\\AI\\\\Prompting\\\\eigrp_study_guide.html\"\\).Length / 1KB)"
+    ]
+  }
+}
