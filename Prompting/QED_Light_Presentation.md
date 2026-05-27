@@ -1,7 +1,7 @@
 # Quantum Electrodynamics, Light, and the Speed of Light
 ### A Physicist's Tutorial Presentation
 
----
+Version 2
 
 ## Table of Contents
 
