@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Quiz | Cisco 9800 WLC 17.9.5</title>
+<style>
+:root{--navy:#1b2a4a;--teal:#00bceb;--green:#6cc04a;--red:#e2231a;--orange:#ff7300;--border:#dce2ed;--light:#f4f6f9;--text:#1e2330;--muted:#6b7a99;--sw:270px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--light);color:var(--text);line-height:1.65;font-size:15px}
+.header{background:var(--navy);color:#fff;height:58px;display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:200;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.header .logo{font-size:22px;font-weight:900;color:var(--teal);letter-spacing:-.5px}
+.header .pipe{color:rgba(255,255,255,.25)}
+.header .title{font-size:16px;font-weight:600}
+.header .subtitle{font-size:12px;color:rgba(255,255,255,.65)}
+.header .badge{margin-left:auto;background:var(--teal);color:var(--navy);font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px}
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{width:var(--sw);background:var(--navy);flex-shrink:0;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;padding-bottom:32px}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--teal)}
+.sb-group{border-bottom:1px solid rgba(255,255,255,.08);padding:6px 0}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--teal);padding:10px 16px 4px;display:block}
+.sidebar a{display:block;padding:7px 16px 7px 20px;color:rgba(255,255,255,.72);text-decoration:none;font-size:13px;border-left:3px solid transparent;transition:all .18s}
+.sidebar a:hover{background:rgba(0,188,235,.12);color:var(--teal);border-left-color:var(--teal)}
+.sidebar a.sub{padding-left:32px;font-size:12px}
+.sidebar a.sub2{padding-left:44px;font-size:12px}
+.main{flex:1;padding:32px 36px;max-width:920px}
+.card{background:#fff;border-radius:8px;margin-bottom:28px;box-shadow:0 1px 5px rgba(0,0,0,.08);overflow:hidden}
+.card-head{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.card-head .icon{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.card-head h2{font-size:17px;font-weight:600}
+.card-head .tag-badge{margin-left:auto;font-size:11px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px}
+.card-body{padding:22px 24px}
+.nav-path{background:#eef2fc;border:1px solid #c8d2ea;border-left:4px solid var(--teal);border-radius:5px;padding:9px 14px;font-family:'Consolas','Courier New',monospace;font-size:13px;color:var(--navy);margin:12px 0}
+.screenshot{background:linear-gradient(135deg,#111c2e 0%,#1b2a4a 60%,#243660 100%);border:2px dashed var(--teal);border-radius:8px;padding:36px 24px;text-align:center;margin:16px 0;position:relative;overflow:hidden}
+.screenshot::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.1)}
+.screenshot::after{content:'⬤  ⬤  ⬤';position:absolute;top:0;left:14px;font-size:10px;color:rgba(255,255,255,.4);line-height:32px}
+.ph-body{padding-top:12px}
+.ph-icon{font-size:44px;opacity:.5;margin-bottom:10px}
+.ph-title{font-size:14px;font-weight:600;color:var(--teal)}
+.ph-path{font-size:12px;color:rgba(255,255,255,.55);margin-top:6px;font-family:monospace}
+.ph-note{display:inline-block;margin-top:12px;background:rgba(0,188,235,.15);border:1px solid rgba(0,188,235,.4);border-radius:4px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.75)}
+.field-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+.field-table thead th{background:var(--navy);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.field-table td{padding:9px 13px;border-bottom:1px solid var(--border);vertical-align:top}
+.field-table tr:last-child td{border-bottom:none}
+.field-table tr:nth-child(even) td{background:#f7f9fc}
+.field-table td.fn{font-weight:600;color:var(--navy);white-space:nowrap}
+.field-table td.def{font-family:monospace;color:#7a6000;font-size:12px}
+.note{border-radius:5px;padding:11px 15px;margin:12px 0;font-size:13.5px;border-left:4px solid;display:flex;gap:10px;align-items:flex-start}
+.note .ni{font-size:16px;flex-shrink:0;margin-top:1px}
+.note.info{background:#e8f6fd;border-color:var(--teal)}
+.note.warning{background:#fff6e8;border-color:var(--orange)}
+.note.danger{background:#fef0f0;border-color:var(--red)}
+.note.success{background:#edf8e7;border-color:var(--green)}
+.subsec{margin:18px 0 10px}
+.subsec h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.subsec h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 5px}
+p{margin-bottom:10px;color:#3a3f54}
+ul,ol{padding-left:20px;margin:6px 0 10px}
+li{margin-bottom:4px;color:#3a3f54;font-size:14px}
+code{background:#eef2f8;border:1px solid #ccd5ea;border-radius:3px;padding:1px 6px;font-family:'Consolas',monospace;font-size:12.5px;color:#1a3a6b}
+.ex-card{border:1px solid var(--border);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.ex-header{background:var(--navy);color:#fff;padding:13px 18px;display:flex;align-items:center;gap:12px}
+.ex-num{width:30px;height:30px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--navy);flex-shrink:0}
+.ex-header h3{font-size:15px;font-weight:600}
+.diff{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700}
+.easy{background:rgba(108,192,74,.3);color:#2a6010}
+.medium{background:rgba(255,115,0,.25);color:#7a3800}
+.hard{background:rgba(226,35,26,.25);color:#7a1010}
+.ex-body{padding:18px 20px}
+.scenario{background:#f0f4ff;border-left:4px solid #5b80e8;border-radius:4px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.scenario strong{color:#2a44a0}
+.steps{counter-reset:sc;list-style:none;padding:0}
+.steps li{counter-increment:sc;display:flex;gap:12px;margin-bottom:10px;font-size:14px;align-items:flex-start}
+.steps li::before{content:counter(sc);min-width:24px;height:24px;background:var(--navy);color:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
+.expected{background:#edf8e7;border:1px solid #b8e0a8;border-radius:5px;padding:12px 14px;margin-top:14px;font-size:13.5px}
+.expected strong{color:#2a6a10}
+.verify{background:#e8f6fd;border:1px solid #a0d8f0;border-radius:5px;padding:12px 14px;margin-top:10px;font-size:13px}
+.verify strong{color:#0050a0}
+.quiz-bar{background:var(--navy);border-radius:8px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.quiz-bar h2{color:#fff;font-size:16px}
+#sd{margin-left:auto;color:var(--teal);font-size:22px;font-weight:800}
+.btn{padding:9px 20px;border-radius:5px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:var(--navy)}.btn-p:hover{background:#00a8d4}
+.btn-s{background:rgba(255,255,255,.15);color:#fff}.btn-s:hover{background:rgba(255,255,255,.25)}
+.qcat{background:var(--navy);color:var(--teal);padding:10px 18px;border-radius:6px;font-size:13px;font-weight:700;letter-spacing:.5px;margin:20px 0 14px;display:flex;align-items:center;gap:10px}
+.qcard{background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.qtext{padding:14px 18px;font-size:14px;font-weight:600;color:var(--navy);border-bottom:1px solid var(--border);display:flex;gap:10px}
+.qnum{color:var(--teal);flex-shrink:0}
+.opts{padding:10px 14px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:5px;margin-bottom:6px;cursor:pointer;transition:background .15s;border:2px solid transparent;font-size:14px}
+.opt:hover:not(.ans) .opt:hover{background:#f0f4ff;border-color:#b0c0e8}
+.opt.correct{background:#edf8e7!important;border-color:var(--green)!important}
+.opt.incorrect{background:#fef0f0!important;border-color:var(--red)!important}
+.opt.showcorrect{background:#edf8e7!important;border-color:var(--green)!important}
+.ol{min-width:24px;height:24px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;background:#fff}
+.opt.correct .ol{background:var(--green);border-color:var(--green);color:#fff}
+.opt.incorrect .ol{background:var(--red);border-color:var(--red);color:#fff}
+.opt.showcorrect .ol{background:var(--green);border-color:var(--green);color:#fff}
+.qexp{display:none;padding:10px 14px;border-top:1px solid var(--border);font-size:13px;background:#f8f9fc;color:#444;font-style:italic}
+.qexp.vis{display:block}
+.pbwrap{height:8px;background:rgba(255,255,255,.15);border-radius:4px;width:200px;overflow:hidden}
+#pb{height:100%;background:var(--teal);border-radius:4px;width:0;transition:width .3s}
+#rp{display:none;text-align:center;background:#fff;border-radius:8px;padding:40px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+#rp h2{font-size:28px;color:var(--navy);margin-bottom:10px}
+.grade{font-size:72px;font-weight:900;margin:10px 0}
+.pass{color:var(--green)}.fail{color:var(--red)}
+.tag-overview{background:var(--navy);border-radius:8px;padding:28px;margin-bottom:28px;color:#fff;text-align:center}
+.tag-overview h2{font-size:22px;margin-bottom:6px}
+.tag-overview p{color:rgba(255,255,255,.75);font-size:14px;max-width:620px;margin:0 auto 24px}
+.tag-trio{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.tbox{flex:1;min-width:180px;max-width:240px;border:2px solid;border-radius:8px;padding:18px 14px;text-align:center}
+.tbox.pol{border-color:var(--teal);background:rgba(0,188,235,.12)}
+.tbox.sit{border-color:var(--orange);background:rgba(255,115,0,.12)}
+.tbox.rf{border-color:var(--green);background:rgba(108,192,74,.12)}
+.tbox .tbi{font-size:36px;margin-bottom:8px}
+.tbox .tbt{font-size:14px;font-weight:700;margin-bottom:4px}
+.tbox.pol .tbt{color:var(--teal)}.tbox.sit .tbt{color:#ffaa55}.tbox.rf .tbt{color:#9ce870}
+.tbox .tbd{font-size:12px;color:rgba(255,255,255,.65)}
+.diagram{background:#0d1929;border-radius:8px;padding:20px 24px;font-family:'Consolas',monospace;font-size:13px;color:#c8d8f0;margin:16px 0;overflow-x:auto;line-height:1.9;border:1px solid rgba(255,255,255,.1)}
+.diagram .dt{color:var(--teal);font-weight:700}
+.diagram .dtag{color:#ffaa55}
+.diagram .dpr{color:#9ce870}
+.diagram .da{color:var(--teal)}
+.diagram .dv{color:#ff9f9f}
+.diagram .dn{color:rgba(255,255,255,.4);font-style:italic}
+.egcard{border:1px solid var(--border);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.eghead{background:linear-gradient(135deg,var(--navy) 0%,#243660 100%);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.egicon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.eghead h3{font-size:16px;font-weight:600}
+.mode{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.mode-loc{background:rgba(0,188,235,.3);color:#00bceb}
+.mode-flex{background:rgba(255,115,0,.3);color:#ff9f50}
+.mode-fab{background:rgba(108,192,74,.3);color:#6cc04a}
+.egbody{padding:20px 22px}
+@media(max-width:900px){.sidebar{display:none}.main{padding:20px;max-width:100%}}
+</style>
+</head>
+<body>
+<header class="header">
+  <span class="logo">CISCO</span><span class="pipe">|</span>
+  <div><div class="title">Catalyst 9800 WLC &mdash; Quiz</div>
+  <div class="subtitle">30-question scored quiz with instant feedback — pass mark 70%</div></div>
+  <span class="badge">IOS-XE 17.9.5</span>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="sb-group"><span class="sb-label">Quiz</span><a href="#cat-a" class="">Category A: Menu Knowledge</a><a href="#cat-b" class="">Category B: Concepts</a><a href="#cat-c" class="">Category C: Scenarios</a></div></nav>
+<main class="main"><div class="quiz-bar">
+<h2>🏆 Cisco 9800 WLC — Scored Quiz</h2>
+<div class="pbwrap"><div id="pb"></div></div>
+<div id="sd">0 / 0</div>
+<button class="btn btn-s" onclick="resetQ()">↺ Reset</button>
+</div>
+<div id="rp">
+<h2>Quiz Complete</h2>
+<div id="rsc" class="grade">0%</div>
+<div id="rl" style="font-size:20px;font-weight:700;margin-bottom:8px"></div>
+<div id="rd" style="color:#666;margin-bottom:24px"></div>
+<button class="btn btn-p" onclick="resetQ()">Retry Quiz</button>
+</div><div class="qcat" id="cat-a">📍 Category A: Menu Knowledge</div><div class="qcard" id="q1">
+<div class="qtext"><span class="qnum">Q1.</span><span>Where do you create a new WLAN profile (SSID) on the Cisco 9800?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(1,'A','A','exp1')"><span class="ol">A</span><span>Configuration &rsaquo; Wireless &rsaquo; WLANs</span></div><div class="opt" data-c="B" onclick="choose(1,'B','A','exp1')"><span class="ol">B</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Policy</span></div><div class="opt" data-c="C" onclick="choose(1,'C','A','exp1')"><span class="ol">C</span><span>Administration &rsaquo; Wireless &rsaquo; SSIDs</span></div><div class="opt" data-c="D" onclick="choose(1,'D','A','exp1')"><span class="ol">D</span><span>Monitoring &rsaquo; Wireless &rsaquo; WLANs</span></div></div>
+<div class="qexp" id="e1">💡 WLAN profiles (SSIDs) are created under Configuration &rsaquo; Wireless &rsaquo; WLANs. The Policy section is for Policy Profiles, not WLAN profiles.</div>
+</div><div class="qcard" id="q2">
+<div class="qtext"><span class="qnum">Q2.</span><span>Where do you statically assign Policy, Site, and RF Tags to a specific AP?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(2,'A','B','exp2')"><span class="ol">A</span><span>Monitoring &rsaquo; Access Points</span></div><div class="opt" data-c="B" onclick="choose(2,'B','B','exp2')"><span class="ol">B</span><span>Configuration &rsaquo; Wireless &rsaquo; Access Points</span></div><div class="opt" data-c="C" onclick="choose(2,'C','B','exp2')"><span class="ol">C</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Tags &rsaquo; Policy</span></div><div class="opt" data-c="D" onclick="choose(2,'D','B','exp2')"><span class="ol">D</span><span>Administration &rsaquo; AP Management</span></div></div>
+<div class="qexp" id="e2">💡 Tag assignment to individual APs is done under Configuration &rsaquo; Wireless &rsaquo; Access Points. You click the AP name and then change each tag in the General tab.</div>
+</div><div class="qcard" id="q3">
+<div class="qtext"><span class="qnum">Q3.</span><span>Where do you configure a RADIUS server on the Cisco 9800?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(3,'A','A','exp3')"><span class="ol">A</span><span>Configuration &rsaquo; Security &rsaquo; AAA &rsaquo; Servers/Groups &rsaquo; Servers</span></div><div class="opt" data-c="B" onclick="choose(3,'B','A','exp3')"><span class="ol">B</span><span>Administration &rsaquo; AAA &rsaquo; RADIUS</span></div><div class="opt" data-c="C" onclick="choose(3,'C','A','exp3')"><span class="ol">C</span><span>Configuration &rsaquo; Wireless &rsaquo; Security</span></div><div class="opt" data-c="D" onclick="choose(3,'D','A','exp3')"><span class="ol">D</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Security</span></div></div>
+<div class="qexp" id="e3">💡 RADIUS servers are added under Configuration &rsaquo; Security &rsaquo; AAA &rsaquo; Servers/Groups &rsaquo; Servers. After adding the server, it must be placed in a Server Group and referenced in a Method List.</div>
+</div><div class="qcard" id="q4">
+<div class="qtext"><span class="qnum">Q4.</span><span>Where do you run a Radioactive Trace on the 9800 WebUI?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(4,'A','C','exp4')"><span class="ol">A</span><span>Monitoring &rsaquo; Wireless &rsaquo; Clients</span></div><div class="opt" data-c="B" onclick="choose(4,'B','C','exp4')"><span class="ol">B</span><span>Administration &rsaquo; Debug</span></div><div class="opt" data-c="C" onclick="choose(4,'C','C','exp4')"><span class="ol">C</span><span>Troubleshooting &rsaquo; Radioactive Trace</span></div><div class="opt" data-c="D" onclick="choose(4,'D','C','exp4')"><span class="ol">D</span><span>Configuration &rsaquo; Diagnostic &rsaquo; Trace</span></div></div>
+<div class="qexp" id="e4">💡 Radioactive Trace is located under Troubleshooting &rsaquo; Radioactive Trace. It is the primary per-device conditional debug tool on the 9800.</div>
+</div><div class="qcard" id="q5">
+<div class="qtext"><span class="qnum">Q5.</span><span>Where do you configure a Flex Profile for FlexConnect deployments?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(5,'A','B','exp5')"><span class="ol">A</span><span>Configuration &rsaquo; Wireless &rsaquo; Mesh</span></div><div class="opt" data-c="B" onclick="choose(5,'B','B','exp5')"><span class="ol">B</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Flex</span></div><div class="opt" data-c="C" onclick="choose(5,'C','B','exp5')"><span class="ol">C</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Tags &rsaquo; Site</span></div><div class="opt" data-c="D" onclick="choose(5,'D','B','exp5')"><span class="ol">D</span><span>Configuration &rsaquo; Security &rsaquo; FlexConnect</span></div></div>
+<div class="qexp" id="e5">💡 Flex Profiles are created under Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Flex. The Site Tag then references the Flex Profile to put APs into FlexConnect mode.</div>
+</div><div class="qcard" id="q6">
+<div class="qtext"><span class="qnum">Q6.</span><span>Where do you perform a software upgrade on the Cisco 9800?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(6,'A','A','exp6')"><span class="ol">A</span><span>Administration &rsaquo; Software Management &rsaquo; Software Upgrade</span></div><div class="opt" data-c="B" onclick="choose(6,'B','A','exp6')"><span class="ol">B</span><span>Administration &rsaquo; Licensing</span></div><div class="opt" data-c="C" onclick="choose(6,'C','A','exp6')"><span class="ol">C</span><span>Configuration &rsaquo; System &rsaquo; Software</span></div><div class="opt" data-c="D" onclick="choose(6,'D','A','exp6')"><span class="ol">D</span><span>Troubleshooting &rsaquo; System &rsaquo; Upgrade</span></div></div>
+<div class="qexp" id="e6">💡 Software upgrades are performed under Administration &rsaquo; Software Management &rsaquo; Software Upgrade. Always pre-download to APs before activating.</div>
+</div><div class="qcard" id="q7">
+<div class="qtext"><span class="qnum">Q7.</span><span>Where can you view non-802.11 interference detected by CleanAir?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(7,'A','B','exp7')"><span class="ol">A</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; RF</span></div><div class="opt" data-c="B" onclick="choose(7,'B','B','exp7')"><span class="ol">B</span><span>Monitoring &rsaquo; RF &rsaquo; Spectrum</span></div><div class="opt" data-c="C" onclick="choose(7,'C','B','exp7')"><span class="ol">C</span><span>Monitoring &rsaquo; Wireless &rsaquo; Rogues</span></div><div class="opt" data-c="D" onclick="choose(7,'D','B','exp7')"><span class="ol">D</span><span>Troubleshooting &rsaquo; RF &rsaquo; Spectrum</span></div></div>
+<div class="qexp" id="e7">💡 CleanAir spectrum data (non-802.11 interferer detection) is found under Monitoring &rsaquo; RF &rsaquo; Spectrum. This requires CleanAir-capable APs.</div>
+</div><div class="qcard" id="q8">
+<div class="qtext"><span class="qnum">Q8.</span><span>Where do you create RF Profiles that control channel width and DCA settings?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(8,'A','A','exp8')"><span class="ol">A</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; RF (under Profiles)</span></div><div class="opt" data-c="B" onclick="choose(8,'B','A','exp8')"><span class="ol">B</span><span>Configuration &rsaquo; Wireless &rsaquo; RF</span></div><div class="opt" data-c="C" onclick="choose(8,'C','A','exp8')"><span class="ol">C</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Tags &rsaquo; RF</span></div><div class="opt" data-c="D" onclick="choose(8,'D','A','exp8')"><span class="ol">D</span><span>Monitoring &rsaquo; RF &rsaquo; Profiles</span></div></div>
+<div class="qexp" id="e8">💡 RF Profiles are created under Configuration &rsaquo; Tags &amp; Profiles &rsaquo; RF (the Profiles section, not the Tags section). RF Tags then reference these profiles.</div>
+</div><div class="qcard" id="q9">
+<div class="qtext"><span class="qnum">Q9.</span><span>Where do you configure Web Authentication (captive portal) settings on the 9800?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(9,'A','B','exp9')"><span class="ol">A</span><span>Configuration &rsaquo; Wireless &rsaquo; WLANs &rsaquo; Layer 3</span></div><div class="opt" data-c="B" onclick="choose(9,'B','B','exp9')"><span class="ol">B</span><span>Configuration &rsaquo; Security &rsaquo; Web Auth</span></div><div class="opt" data-c="C" onclick="choose(9,'C','B','exp9')"><span class="ol">C</span><span>Administration &rsaquo; AAA &rsaquo; Web Auth</span></div><div class="opt" data-c="D" onclick="choose(9,'D','B','exp9')"><span class="ol">D</span><span>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Policy</span></div></div>
+<div class="qexp" id="e9">💡 Global Web Auth parameters (virtual IP, login page) are configured under Configuration &rsaquo; Security &rsaquo; Web Auth. The WLAN Layer 3 security setting then enables Web Policy per SSID.</div>
+</div><div class="qcard" id="q10">
+<div class="qtext"><span class="qnum">Q10.</span><span>Where do you view all rogue APs detected in your wireless environment?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(10,'A','A','exp10')"><span class="ol">A</span><span>Monitoring &rsaquo; Wireless &rsaquo; Rogues</span></div><div class="opt" data-c="B" onclick="choose(10,'B','A','exp10')"><span class="ol">B</span><span>Configuration &rsaquo; Security &rsaquo; Wireless Protection Policies</span></div><div class="opt" data-c="C" onclick="choose(10,'C','A','exp10')"><span class="ol">C</span><span>Troubleshooting &rsaquo; Network &rsaquo; Rogues</span></div><div class="opt" data-c="D" onclick="choose(10,'D','A','exp10')"><span class="ol">D</span><span>Administration &rsaquo; Security &rsaquo; Rogues</span></div></div>
+<div class="qexp" id="e10">💡 Detected rogue APs and clients are listed under Monitoring &rsaquo; Wireless &rsaquo; Rogues. Rogue containment and classification rules are configured separately under Configuration &rsaquo; Security &rsaquo; Wireless Protection Policies.</div>
+</div><div class="qcat" id="cat-b">🧠 Category B: Concepts & Behavior</div><div class="qcard" id="q11">
+<div class="qtext"><span class="qnum">Q11.</span><span>What is the primary function of the Site Tag on the Cisco 9800?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(11,'A','B','exp11')"><span class="ol">A</span><span>Maps SSIDs to VLANs and defines client switching mode</span></div><div class="opt" data-c="B" onclick="choose(11,'B','B','exp11')"><span class="ol">B</span><span>Controls AP operating mode (Local vs FlexConnect) and references the AP Join Profile</span></div><div class="opt" data-c="C" onclick="choose(11,'C','B','exp11')"><span class="ol">C</span><span>Assigns radio channel and transmit power settings per band</span></div><div class="opt" data-c="D" onclick="choose(11,'D','B','exp11')"><span class="ol">D</span><span>Defines which RADIUS server to use for client authentication</span></div></div>
+<div class="qexp" id="e11">💡 The Site Tag controls AP operating mode: if a Flex Profile is attached the AP enters FlexConnect mode; without it, the AP operates in Local mode. It also references the AP Join Profile which controls management settings.</div>
+</div><div class="qcard" id="q12">
+<div class="qtext"><span class="qnum">Q12.</span><span>What happens when you attach a Flex Profile to a Site Tag?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(12,'A','B','exp12')"><span class="ol">A</span><span>APs reboot into Mesh Bridge mode</span></div><div class="opt" data-c="B" onclick="choose(12,'B','B','exp12')"><span class="ol">B</span><span>APs switch to FlexConnect operating mode</span></div><div class="opt" data-c="C" onclick="choose(12,'C','B','exp12')"><span class="ol">C</span><span>APs enable local web authentication only</span></div><div class="opt" data-c="D" onclick="choose(12,'D','B','exp12')"><span class="ol">D</span><span>APs begin using local RADIUS instead of central AAA</span></div></div>
+<div class="qexp" id="e12">💡 Attaching a Flex Profile to a Site Tag causes all APs referencing that tag to operate in FlexConnect mode. This allows local data switching at the AP/branch level.</div>
+</div><div class="qcard" id="q13">
+<div class="qtext"><span class="qnum">Q13.</span><span>Which profile directly controls the VLAN that wireless clients are placed on?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(13,'A','C','exp13')"><span class="ol">A</span><span>AP Join Profile</span></div><div class="opt" data-c="B" onclick="choose(13,'B','C','exp13')"><span class="ol">B</span><span>RF Profile</span></div><div class="opt" data-c="C" onclick="choose(13,'C','C','exp13')"><span class="ol">C</span><span>Policy Profile</span></div><div class="opt" data-c="D" onclick="choose(13,'D','C','exp13')"><span class="ol">D</span><span>Flex Profile</span></div></div>
+<div class="qexp" id="e13">💡 The Policy Profile contains the VLAN assignment for client traffic, along with the switching mode (Central/Local), ACL, and QoS settings. It is referenced by Policy Tags.</div>
+</div><div class="qcard" id="q14">
+<div class="qtext"><span class="qnum">Q14.</span><span>What is the name of the default Policy Tag on the Cisco 9800?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(14,'A','B','exp14')"><span class="ol">A</span><span>global-policy-tag</span></div><div class="opt" data-c="B" onclick="choose(14,'B','B','exp14')"><span class="ol">B</span><span>default-policy-tag</span></div><div class="opt" data-c="C" onclick="choose(14,'C','B','exp14')"><span class="ol">C</span><span>system-policy-tag</span></div><div class="opt" data-c="D" onclick="choose(14,'D','B','exp14')"><span class="ol">D</span><span>base-policy-tag</span></div></div>
+<div class="qexp" id="e14">💡 The three default tags are: default-policy-tag, default-site-tag, and default-rf-tag. Any AP not explicitly assigned a custom tag inherits these defaults.</div>
+</div><div class="qcard" id="q15">
+<div class="qtext"><span class="qnum">Q15.</span><span>In a Policy Profile, what does enabling 'Central Switching' mean for client traffic?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(15,'A','B','exp15')"><span class="ol">A</span><span>The AP switches client traffic locally without involving the WLC</span></div><div class="opt" data-c="B" onclick="choose(15,'B','B','exp15')"><span class="ol">B</span><span>All client data frames are tunneled via CAPWAP to the WLC for forwarding</span></div><div class="opt" data-c="C" onclick="choose(15,'C','B','exp15')"><span class="ol">C</span><span>The WLC uses a central aggregated VLAN for all SSIDs simultaneously</span></div><div class="opt" data-c="D" onclick="choose(15,'D','B','exp15')"><span class="ol">D</span><span>Clients authenticate centrally but their data bypasses the WLC</span></div></div>
+<div class="qexp" id="e15">💡 Central Switching means all client data frames are encapsulated in CAPWAP and sent to the WLC, which then forwards them into the wired network. This is the default mode for Local-mode APs.</div>
+</div><div class="qcard" id="q16">
+<div class="qtext"><span class="qnum">Q16.</span><span>How many Policy Tags, Site Tags, and RF Tags can a single AP have assigned simultaneously?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(16,'A','C','exp16')"><span class="ol">A</span><span>Multiple of each — one per SSID</span></div><div class="opt" data-c="B" onclick="choose(16,'B','C','exp16')"><span class="ol">B</span><span>One Policy Tag, multiple Site Tags, one RF Tag</span></div><div class="opt" data-c="C" onclick="choose(16,'C','C','exp16')"><span class="ol">C</span><span>Exactly one of each tag type</span></div><div class="opt" data-c="D" onclick="choose(16,'D','C','exp16')"><span class="ol">D</span><span>One Policy Tag and one RF Tag, unlimited Site Tags</span></div></div>
+<div class="qexp" id="e16">💡 Each AP has exactly ONE Policy Tag, ONE Site Tag, and ONE RF Tag at any given time. This is a fundamental constraint of the 9800 configuration model.</div>
+</div><div class="qcard" id="q17">
+<div class="qtext"><span class="qnum">Q17.</span><span>Which 802.11 standard introduced the 6 GHz band (Wi-Fi 6E)?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(17,'A','C','exp17')"><span class="ol">A</span><span>802.11ac (Wi-Fi 5)</span></div><div class="opt" data-c="B" onclick="choose(17,'B','C','exp17')"><span class="ol">B</span><span>802.11ax limited to 5 GHz only</span></div><div class="opt" data-c="C" onclick="choose(17,'C','C','exp17')"><span class="ol">C</span><span>802.11ax extended to include 6 GHz (Wi-Fi 6E)</span></div><div class="opt" data-c="D" onclick="choose(17,'D','C','exp17')"><span class="ol">D</span><span>802.11be (Wi-Fi 7)</span></div></div>
+<div class="qexp" id="e17">💡 Wi-Fi 6E extends 802.11ax into the 6 GHz band (5.925–7.125 GHz), providing additional spectrum free of legacy device interference. Cisco 9130AXE and 9136 series support 6 GHz.</div>
+</div><div class="qcard" id="q18">
+<div class="qtext"><span class="qnum">Q18.</span><span>A FlexConnect AP loses its WAN connection to the WLC. With Local Switching configured, what happens to connected clients?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(18,'A','B','exp18')"><span class="ol">A</span><span>All clients are immediately deauthenticated</span></div><div class="opt" data-c="B" onclick="choose(18,'B','B','exp18')"><span class="ol">B</span><span>Clients remain connected; traffic is switched locally at the AP (standalone mode)</span></div><div class="opt" data-c="C" onclick="choose(18,'C','B','exp18')"><span class="ol">C</span><span>The AP reboots and clients must reconnect via 4G backup</span></div><div class="opt" data-c="D" onclick="choose(18,'D','B','exp18')"><span class="ol">D</span><span>Clients are moved to a fallback SSID with degraded connectivity</span></div></div>
+<div class="qexp" id="e18">💡 FlexConnect APs in standalone mode (WAN down) continue to switch client traffic locally. Clients with locally switched SSIDs remain connected. New client authentication uses cached credentials or a local RADIUS server.</div>
+</div><div class="qcard" id="q19">
+<div class="qtext"><span class="qnum">Q19.</span><span>The 'Enable Local Site' checkbox in a Site Tag is unchecked. What does this indicate?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(19,'A','B','exp19')"><span class="ol">A</span><span>The AP will not broadcast any SSIDs locally</span></div><div class="opt" data-c="B" onclick="choose(19,'B','B','exp19')"><span class="ol">B</span><span>The APs are at a remote/branch site — typically used with FlexConnect</span></div><div class="opt" data-c="C" onclick="choose(19,'C','B','exp19')"><span class="ol">C</span><span>The site has no physical APs — it is a virtual site</span></div><div class="opt" data-c="D" onclick="choose(19,'D','B','exp19')"><span class="ol">D</span><span>Local DHCP is disabled for this site</span></div></div>
+<div class="qexp" id="e19">💡 Unchecking 'Enable Local Site' signals that APs are at a remote site (not directly connected to the WLC). Combined with a Flex Profile, this puts APs into FlexConnect remote-branch mode.</div>
+</div><div class="qcard" id="q20">
+<div class="qtext"><span class="qnum">Q20.</span><span>What High Availability mechanism does the Cisco 9800 WLC use for controller redundancy?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(20,'A','B','exp20')"><span class="ol">A</span><span>HSRP (Hot Standby Router Protocol) in Active/Standby</span></div><div class="opt" data-c="B" onclick="choose(20,'B','B','exp20')"><span class="ol">B</span><span>Stateful Switchover (SSO) with a dedicated HA port</span></div><div class="opt" data-c="C" onclick="choose(20,'C','B','exp20')"><span class="ol">C</span><span>VRRP (Virtual Router Redundancy Protocol)</span></div><div class="opt" data-c="D" onclick="choose(20,'D','B','exp20')"><span class="ol">D</span><span>Active/Active clustering with load balancing</span></div></div>
+<div class="qexp" id="e20">💡 The 9800 uses Stateful Switchover (SSO) for HA. The primary and secondary WLCs synchronize state over a dedicated HA port. On failover, client sessions are maintained (stateful) with minimal disruption.</div>
+</div><div class="qcat" id="cat-c">🎯 Category C: Scenarios</div><div class="qcard" id="q21">
+<div class="qtext"><span class="qnum">Q21.</span><span>An AP joins the WLC and clients associate, but they receive the wrong VLAN. What is the most likely cause?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(21,'A','B','exp21')"><span class="ol">A</span><span>The RF Tag is pointing to the wrong RF Profile</span></div><div class="opt" data-c="B" onclick="choose(21,'B','B','exp21')"><span class="ol">B</span><span>The Policy Profile has an incorrect VLAN configured</span></div><div class="opt" data-c="C" onclick="choose(21,'C','B','exp21')"><span class="ol">C</span><span>The Site Tag is missing a Flex Profile</span></div><div class="opt" data-c="D" onclick="choose(21,'D','B','exp21')"><span class="ol">D</span><span>The AP Join Profile has incorrect NTP settings</span></div></div>
+<div class="qexp" id="e21">💡 Client VLAN assignment is controlled by the Policy Profile. If clients are landing on the wrong VLAN, the Policy Profile referenced in the Policy Tag has the wrong VLAN configured.</div>
+</div><div class="qcard" id="q22">
+<div class="qtext"><span class="qnum">Q22.</span><span>You create a new WLAN and set Status = Enabled, but the SSID is not visible on any client device. What must you check first?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(22,'A','B','exp22')"><span class="ol">A</span><span>The RF Tag must explicitly reference this WLAN</span></div><div class="opt" data-c="B" onclick="choose(22,'B','B','exp22')"><span class="ol">B</span><span>The WLAN must be mapped in a Policy Tag, and that tag must be assigned to APs</span></div><div class="opt" data-c="C" onclick="choose(22,'C','B','exp22')"><span class="ol">C</span><span>The WLAN must be linked to the AP Join Profile</span></div><div class="opt" data-c="D" onclick="choose(22,'D','B','exp22')"><span class="ol">D</span><span>The Site Tag must include the WLAN name in its configuration</span></div></div>
+<div class="qexp" id="e22">💡 A WLAN profile alone does not broadcast. It must be: (1) Enabled, (2) mapped to a Policy Profile in a Policy Tag, and (3) the Policy Tag must be assigned to APs. Missing any of these three steps causes the SSID to not broadcast.</div>
+</div><div class="qcard" id="q23">
+<div class="qtext"><span class="qnum">Q23.</span><span>A branch office has 3 APs in FlexConnect mode. The WAN link fails. Which clients lose connectivity?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(23,'A','C','exp23')"><span class="ol">A</span><span>All clients — FlexConnect requires constant WLC connectivity</span></div><div class="opt" data-c="B" onclick="choose(23,'B','C','exp23')"><span class="ol">B</span><span>Only new clients trying to join; existing locally-switched clients stay connected</span></div><div class="opt" data-c="C" onclick="choose(23,'C','C','exp23')"><span class="ol">C</span><span>Only clients on central-switched SSIDs; locally-switched clients stay connected</span></div><div class="opt" data-c="D" onclick="choose(23,'D','C','exp23')"><span class="ol">D</span><span>All clients on 5 GHz; 2.4 GHz clients are unaffected</span></div></div>
+<div class="qexp" id="e23">💡 During a WAN outage, FlexConnect APs enter standalone mode. Clients on locally-switched SSIDs remain connected. Clients on centrally-switched SSIDs lose connectivity because their data must reach the WLC.</div>
+</div><div class="qcard" id="q24">
+<div class="qtext"><span class="qnum">Q24.</span><span>An AP is stuck in 'Discovering' state and never joins the WLC. What should you check FIRST?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(24,'A','B','exp24')"><span class="ol">A</span><span>Verify the RF Tag is correctly assigned to the AP</span></div><div class="opt" data-c="B" onclick="choose(24,'B','B','exp24')"><span class="ol">B</span><span>Verify CAPWAP connectivity: DNS resolution, DHCP option 43, or controller IP reachability</span></div><div class="opt" data-c="C" onclick="choose(24,'C','B','exp24')"><span class="ol">C</span><span>Verify the Policy Tag contains at least one WLAN mapping</span></div><div class="opt" data-c="D" onclick="choose(24,'D','B','exp24')"><span class="ol">D</span><span>Ensure the AP is running the same IOS-XE version as the WLC</span></div></div>
+<div class="qexp" id="e24">💡 An AP in Discovering state has not established a CAPWAP control channel with the WLC. Check: DNS lookup for 'CISCO-CAPWAP-CONTROLLER.localdomain', DHCP option 43 (controller IP), or static controller IP configured on the AP. Tags are irrelevant if the AP cannot even reach the WLC.</div>
+</div><div class="qcard" id="q25">
+<div class="qtext"><span class="qnum">Q25.</span><span>Users on Floor 5 report intermittent drops every 3–5 minutes at the same time every day. What tool do you use FIRST to investigate?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(25,'A','B','exp25')"><span class="ol">A</span><span>Radioactive Trace on affected client MACs</span></div><div class="opt" data-c="B" onclick="choose(25,'B','B','exp25')"><span class="ol">B</span><span>Monitoring &rsaquo; RF &rsaquo; Spectrum (CleanAir) to check for interference</span></div><div class="opt" data-c="C" onclick="choose(25,'C','B','exp25')"><span class="ol">C</span><span>Packet Capture on the AP radio</span></div><div class="opt" data-c="D" onclick="choose(25,'D','B','exp25')"><span class="ol">D</span><span>Monitoring &rsaquo; Wireless &rsaquo; Rogues</span></div></div>
+<div class="qexp" id="e25">💡 Periodic, time-based interference (every few minutes) strongly suggests a non-802.11 device such as a microwave oven, DECT phone, or wireless video camera. CleanAir Spectrum analysis is the correct first step to identify the source.</div>
+</div><div class="qcard" id="q26">
+<div class="qtext"><span class="qnum">Q26.</span><span>A security audit requires per-user dynamic VLAN assignment from RADIUS for 802.1X clients. Which setting must be enabled in the Policy Profile?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(26,'A','B','exp26')"><span class="ol">A</span><span>Central DHCP</span></div><div class="opt" data-c="B" onclick="choose(26,'B','B','exp26')"><span class="ol">B</span><span>AAA Override</span></div><div class="opt" data-c="C" onclick="choose(26,'C','B','exp26')"><span class="ol">C</span><span>NAC (Network Admission Control)</span></div><div class="opt" data-c="D" onclick="choose(26,'D','B','exp26')"><span class="ol">D</span><span>Web Policy</span></div></div>
+<div class="qexp" id="e26">💡 AAA Override must be enabled in the Policy Profile to allow RADIUS to dynamically override the VLAN, ACL, or QoS policy on a per-client basis using Cisco VSA attributes (e.g., Tunnel-Private-Group-ID for VLAN).</div>
+</div><div class="qcard" id="q27">
+<div class="qtext"><span class="qnum">Q27.</span><span>After upgrading the WLC from 17.9.3 to 17.9.5, several APs show 'Image Mismatch' status. What is the correct action?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(27,'A','C','exp27')"><span class="ol">A</span><span>Delete and re-add the APs from the WLC</span></div><div class="opt" data-c="B" onclick="choose(27,'B','C','exp27')"><span class="ol">B</span><span>Reset the Site Tag on the affected APs to trigger a reload</span></div><div class="opt" data-c="C" onclick="choose(27,'C','C','exp27')"><span class="ol">C</span><span>Trigger AP image pre-download and then reload the affected APs</span></div><div class="opt" data-c="D" onclick="choose(27,'D','C','exp27')"><span class="ol">D</span><span>Downgrade the WLC back to 17.9.3 to match the APs</span></div></div>
+<div class="qexp" id="e27">💡 Image Mismatch means the AP image version does not match the WLC. Navigate to Administration &rsaquo; Software Management and trigger an AP Pre-download. APs will download the correct image and reload to resolve the mismatch.</div>
+</div><div class="qcard" id="q28">
+<div class="qtext"><span class="qnum">Q28.</span><span>You need two SSIDs on the same AP: one corporate (central switching, VLAN 10) and one guest (local switching, VLAN 200). What is required?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(28,'A','A','exp28')"><span class="ol">A</span><span>Two separate WLANs with two Policy Profiles, both mapped in one Policy Tag</span></div><div class="opt" data-c="B" onclick="choose(28,'B','A','exp28')"><span class="ol">B</span><span>Two separate Policy Tags — one per SSID — both assigned to the same AP</span></div><div class="opt" data-c="C" onclick="choose(28,'C','A','exp28')"><span class="ol">C</span><span>One WLAN with dual-VLAN configuration in the Policy Profile</span></div><div class="opt" data-c="D" onclick="choose(28,'D','A','exp28')"><span class="ol">D</span><span>Two APs — one cannot serve both central and local switching simultaneously</span></div></div>
+<div class="qexp" id="e28">💡 One Policy Tag can contain multiple WLAN-Policy mappings. Create two WLANs (Corp and Guest), two Policy Profiles (central switching VLAN 10, local switching VLAN 200), and map both in the same Policy Tag assigned to the AP.</div>
+</div><div class="qcard" id="q29">
+<div class="qtext"><span class="qnum">Q29.</span><span>An 802.1X client connects but Radioactive Trace shows the RADIUS server returning an Access-Reject. The network team confirms the server is healthy. What is the most likely issue?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(29,'A','B','exp29')"><span class="ol">A</span><span>The RF Tag is missing a 5 GHz RF Profile</span></div><div class="opt" data-c="B" onclick="choose(29,'B','B','exp29')"><span class="ol">B</span><span>The RADIUS shared key on the WLC does not match the server configuration</span></div><div class="opt" data-c="C" onclick="choose(29,'C','B','exp29')"><span class="ol">C</span><span>The Site Tag has Local Site unchecked</span></div><div class="opt" data-c="D" onclick="choose(29,'D','B','exp29')"><span class="ol">D</span><span>Central DHCP is disabled in the Policy Profile</span></div></div>
+<div class="qexp" id="e29">💡 Access-Reject (not a timeout or unreachable) means the RADIUS server received and processed the request but denied it. The most common cause when the server is known healthy is a shared-key mismatch — the RADIUS server cannot decrypt the authentication request and rejects it.</div>
+</div><div class="qcard" id="q30">
+<div class="qtext"><span class="qnum">Q30.</span><span>You want to capture the actual EAPOL frames exchanged between a client and an AP. Which tool provides this?</span></div>
+<div class="opts"><div class="opt" data-c="A" onclick="choose(30,'A','B','exp30')"><span class="ol">A</span><span>Radioactive Trace — it captures EAPOL at the control-plane level</span></div><div class="opt" data-c="B" onclick="choose(30,'B','B','exp30')"><span class="ol">B</span><span>Troubleshooting &rsaquo; Packet Capture on the AP radio</span></div><div class="opt" data-c="C" onclick="choose(30,'C','B','exp30')"><span class="ol">C</span><span>Monitoring &rsaquo; Wireless &rsaquo; Clients &rsaquo; Client Detail</span></div><div class="opt" data-c="D" onclick="choose(30,'D','B','exp30')"><span class="ol">D</span><span>Administration &rsaquo; Logging with debug dot1x enabled</span></div></div>
+<div class="qexp" id="e30">💡 Packet Capture on the AP radio captures raw 802.11 frames over the air, including EAPOL. The resulting .pcap file shows the exact EAP message exchange. Radioactive Trace shows the WLC-side control-plane view, not the raw frames.</div>
+</div></main>
+</div>
+<script>
+var answered=0,correct=0,total=0;
+function initQuiz(){total=document.querySelectorAll('.qcard').length;upd()}
+function choose(qid,ch,cc,exp){
+  var card=document.getElementById('q'+qid);
+  if(card.classList.contains('ans'))return;
+  card.classList.add('ans');
+  card.querySelectorAll('.opt').forEach(function(o){
+    var l=o.getAttribute('data-c');
+    if(l===ch)o.classList.add(ch===cc?'correct':'incorrect');
+    if(l===cc&&ch!==cc)o.classList.add('showcorrect');
+  });
+  var e=document.getElementById('e'+qid);
+  if(e)e.classList.add('vis');
+  answered++;if(ch===cc)correct++;upd();
+}
+function upd(){
+  document.getElementById('sd').textContent=correct+' / '+answered;
+  var p=total>0?(answered/total)*100:0;
+  document.getElementById('pb').style.width=p+'%';
+  if(answered===total&&total>0)showR();
+}
+function showR(){
+  var p=Math.round((correct/total)*100),pass=p>=70;
+  document.getElementById('rsc').textContent=p+'%';
+  document.getElementById('rsc').className='grade '+(pass?'pass':'fail');
+  document.getElementById('rl').textContent=pass?'PASS — Excellent work!':'FAIL — Review the material and retry';
+  document.getElementById('rd').textContent=correct+' correct out of '+total+' questions';
+  document.getElementById('rp').style.display='block';
+}
+function resetQ(){
+  answered=0;correct=0;
+  document.querySelectorAll('.qcard').forEach(function(c){
+    c.classList.remove('ans');
+    c.querySelectorAll('.opt').forEach(function(o){o.classList.remove('correct','incorrect','showcorrect')});
+    var e=c.querySelector('.qexp');if(e)e.classList.remove('vis');
+  });
+  document.getElementById('rp').style.display='none';upd();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+window.onload=initQuiz;
+</script>
+</body></html>

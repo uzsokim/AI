@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Lab Exercises | Cisco 9800 WLC 17.9.5</title>
+<style>
+:root{--navy:#1b2a4a;--teal:#00bceb;--green:#6cc04a;--red:#e2231a;--orange:#ff7300;--border:#dce2ed;--light:#f4f6f9;--text:#1e2330;--muted:#6b7a99;--sw:270px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--light);color:var(--text);line-height:1.65;font-size:15px}
+.header{background:var(--navy);color:#fff;height:58px;display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:200;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.header .logo{font-size:22px;font-weight:900;color:var(--teal);letter-spacing:-.5px}
+.header .pipe{color:rgba(255,255,255,.25)}
+.header .title{font-size:16px;font-weight:600}
+.header .subtitle{font-size:12px;color:rgba(255,255,255,.65)}
+.header .badge{margin-left:auto;background:var(--teal);color:var(--navy);font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px}
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{width:var(--sw);background:var(--navy);flex-shrink:0;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;padding-bottom:32px}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--teal)}
+.sb-group{border-bottom:1px solid rgba(255,255,255,.08);padding:6px 0}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--teal);padding:10px 16px 4px;display:block}
+.sidebar a{display:block;padding:7px 16px 7px 20px;color:rgba(255,255,255,.72);text-decoration:none;font-size:13px;border-left:3px solid transparent;transition:all .18s}
+.sidebar a:hover{background:rgba(0,188,235,.12);color:var(--teal);border-left-color:var(--teal)}
+.sidebar a.sub{padding-left:32px;font-size:12px}
+.sidebar a.sub2{padding-left:44px;font-size:12px}
+.main{flex:1;padding:32px 36px;max-width:920px}
+.card{background:#fff;border-radius:8px;margin-bottom:28px;box-shadow:0 1px 5px rgba(0,0,0,.08);overflow:hidden}
+.card-head{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.card-head .icon{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.card-head h2{font-size:17px;font-weight:600}
+.card-head .tag-badge{margin-left:auto;font-size:11px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px}
+.card-body{padding:22px 24px}
+.nav-path{background:#eef2fc;border:1px solid #c8d2ea;border-left:4px solid var(--teal);border-radius:5px;padding:9px 14px;font-family:'Consolas','Courier New',monospace;font-size:13px;color:var(--navy);margin:12px 0}
+.screenshot{background:linear-gradient(135deg,#111c2e 0%,#1b2a4a 60%,#243660 100%);border:2px dashed var(--teal);border-radius:8px;padding:36px 24px;text-align:center;margin:16px 0;position:relative;overflow:hidden}
+.screenshot::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.1)}
+.screenshot::after{content:'⬤  ⬤  ⬤';position:absolute;top:0;left:14px;font-size:10px;color:rgba(255,255,255,.4);line-height:32px}
+.ph-body{padding-top:12px}
+.ph-icon{font-size:44px;opacity:.5;margin-bottom:10px}
+.ph-title{font-size:14px;font-weight:600;color:var(--teal)}
+.ph-path{font-size:12px;color:rgba(255,255,255,.55);margin-top:6px;font-family:monospace}
+.ph-note{display:inline-block;margin-top:12px;background:rgba(0,188,235,.15);border:1px solid rgba(0,188,235,.4);border-radius:4px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.75)}
+.field-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+.field-table thead th{background:var(--navy);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.field-table td{padding:9px 13px;border-bottom:1px solid var(--border);vertical-align:top}
+.field-table tr:last-child td{border-bottom:none}
+.field-table tr:nth-child(even) td{background:#f7f9fc}
+.field-table td.fn{font-weight:600;color:var(--navy);white-space:nowrap}
+.field-table td.def{font-family:monospace;color:#7a6000;font-size:12px}
+.note{border-radius:5px;padding:11px 15px;margin:12px 0;font-size:13.5px;border-left:4px solid;display:flex;gap:10px;align-items:flex-start}
+.note .ni{font-size:16px;flex-shrink:0;margin-top:1px}
+.note.info{background:#e8f6fd;border-color:var(--teal)}
+.note.warning{background:#fff6e8;border-color:var(--orange)}
+.note.danger{background:#fef0f0;border-color:var(--red)}
+.note.success{background:#edf8e7;border-color:var(--green)}
+.subsec{margin:18px 0 10px}
+.subsec h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.subsec h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 5px}
+p{margin-bottom:10px;color:#3a3f54}
+ul,ol{padding-left:20px;margin:6px 0 10px}
+li{margin-bottom:4px;color:#3a3f54;font-size:14px}
+code{background:#eef2f8;border:1px solid #ccd5ea;border-radius:3px;padding:1px 6px;font-family:'Consolas',monospace;font-size:12.5px;color:#1a3a6b}
+.ex-card{border:1px solid var(--border);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.ex-header{background:var(--navy);color:#fff;padding:13px 18px;display:flex;align-items:center;gap:12px}
+.ex-num{width:30px;height:30px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--navy);flex-shrink:0}
+.ex-header h3{font-size:15px;font-weight:600}
+.diff{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700}
+.easy{background:rgba(108,192,74,.3);color:#2a6010}
+.medium{background:rgba(255,115,0,.25);color:#7a3800}
+.hard{background:rgba(226,35,26,.25);color:#7a1010}
+.ex-body{padding:18px 20px}
+.scenario{background:#f0f4ff;border-left:4px solid #5b80e8;border-radius:4px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.scenario strong{color:#2a44a0}
+.steps{counter-reset:sc;list-style:none;padding:0}
+.steps li{counter-increment:sc;display:flex;gap:12px;margin-bottom:10px;font-size:14px;align-items:flex-start}
+.steps li::before{content:counter(sc);min-width:24px;height:24px;background:var(--navy);color:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
+.expected{background:#edf8e7;border:1px solid #b8e0a8;border-radius:5px;padding:12px 14px;margin-top:14px;font-size:13.5px}
+.expected strong{color:#2a6a10}
+.verify{background:#e8f6fd;border:1px solid #a0d8f0;border-radius:5px;padding:12px 14px;margin-top:10px;font-size:13px}
+.verify strong{color:#0050a0}
+.quiz-bar{background:var(--navy);border-radius:8px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.quiz-bar h2{color:#fff;font-size:16px}
+#sd{margin-left:auto;color:var(--teal);font-size:22px;font-weight:800}
+.btn{padding:9px 20px;border-radius:5px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:var(--navy)}.btn-p:hover{background:#00a8d4}
+.btn-s{background:rgba(255,255,255,.15);color:#fff}.btn-s:hover{background:rgba(255,255,255,.25)}
+.qcat{background:var(--navy);color:var(--teal);padding:10px 18px;border-radius:6px;font-size:13px;font-weight:700;letter-spacing:.5px;margin:20px 0 14px;display:flex;align-items:center;gap:10px}
+.qcard{background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.qtext{padding:14px 18px;font-size:14px;font-weight:600;color:var(--navy);border-bottom:1px solid var(--border);display:flex;gap:10px}
+.qnum{color:var(--teal);flex-shrink:0}
+.opts{padding:10px 14px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:5px;margin-bottom:6px;cursor:pointer;transition:background .15s;border:2px solid transparent;font-size:14px}
+.opt:hover:not(.ans) .opt:hover{background:#f0f4ff;border-color:#b0c0e8}
+.opt.correct{background:#edf8e7!important;border-color:var(--green)!important}
+.opt.incorrect{background:#fef0f0!important;border-color:var(--red)!important}
+.opt.showcorrect{background:#edf8e7!important;border-color:var(--green)!important}
+.ol{min-width:24px;height:24px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;background:#fff}
+.opt.correct .ol{background:var(--green);border-color:var(--green);color:#fff}
+.opt.incorrect .ol{background:var(--red);border-color:var(--red);color:#fff}
+.opt.showcorrect .ol{background:var(--green);border-color:var(--green);color:#fff}
+.qexp{display:none;padding:10px 14px;border-top:1px solid var(--border);font-size:13px;background:#f8f9fc;color:#444;font-style:italic}
+.qexp.vis{display:block}
+.pbwrap{height:8px;background:rgba(255,255,255,.15);border-radius:4px;width:200px;overflow:hidden}
+#pb{height:100%;background:var(--teal);border-radius:4px;width:0;transition:width .3s}
+#rp{display:none;text-align:center;background:#fff;border-radius:8px;padding:40px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+#rp h2{font-size:28px;color:var(--navy);margin-bottom:10px}
+.grade{font-size:72px;font-weight:900;margin:10px 0}
+.pass{color:var(--green)}.fail{color:var(--red)}
+.tag-overview{background:var(--navy);border-radius:8px;padding:28px;margin-bottom:28px;color:#fff;text-align:center}
+.tag-overview h2{font-size:22px;margin-bottom:6px}
+.tag-overview p{color:rgba(255,255,255,.75);font-size:14px;max-width:620px;margin:0 auto 24px}
+.tag-trio{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.tbox{flex:1;min-width:180px;max-width:240px;border:2px solid;border-radius:8px;padding:18px 14px;text-align:center}
+.tbox.pol{border-color:var(--teal);background:rgba(0,188,235,.12)}
+.tbox.sit{border-color:var(--orange);background:rgba(255,115,0,.12)}
+.tbox.rf{border-color:var(--green);background:rgba(108,192,74,.12)}
+.tbox .tbi{font-size:36px;margin-bottom:8px}
+.tbox .tbt{font-size:14px;font-weight:700;margin-bottom:4px}
+.tbox.pol .tbt{color:var(--teal)}.tbox.sit .tbt{color:#ffaa55}.tbox.rf .tbt{color:#9ce870}
+.tbox .tbd{font-size:12px;color:rgba(255,255,255,.65)}
+.diagram{background:#0d1929;border-radius:8px;padding:20px 24px;font-family:'Consolas',monospace;font-size:13px;color:#c8d8f0;margin:16px 0;overflow-x:auto;line-height:1.9;border:1px solid rgba(255,255,255,.1)}
+.diagram .dt{color:var(--teal);font-weight:700}
+.diagram .dtag{color:#ffaa55}
+.diagram .dpr{color:#9ce870}
+.diagram .da{color:var(--teal)}
+.diagram .dv{color:#ff9f9f}
+.diagram .dn{color:rgba(255,255,255,.4);font-style:italic}
+.egcard{border:1px solid var(--border);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.eghead{background:linear-gradient(135deg,var(--navy) 0%,#243660 100%);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.egicon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.eghead h3{font-size:16px;font-weight:600}
+.mode{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.mode-loc{background:rgba(0,188,235,.3);color:#00bceb}
+.mode-flex{background:rgba(255,115,0,.3);color:#ff9f50}
+.mode-fab{background:rgba(108,192,74,.3);color:#6cc04a}
+.egbody{padding:20px 22px}
+@media(max-width:900px){.sidebar{display:none}.main{padding:20px;max-width:100%}}
+</style>
+</head>
+<body>
+<header class="header">
+  <span class="logo">CISCO</span><span class="pipe">|</span>
+  <div><div class="title">Catalyst 9800 WLC &mdash; Lab Exercises</div>
+  <div class="subtitle">10 hands-on GUI-based configuration exercises</div></div>
+  <span class="badge">IOS-XE 17.9.5</span>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="sb-group"><span class="sb-label">Exercises</span><a href="#ex1" class="">Exercise 1</a><a href="#ex2" class="">Exercise 2</a><a href="#ex3" class="">Exercise 3</a><a href="#ex4" class="">Exercise 4</a><a href="#ex5" class="">Exercise 5</a><a href="#ex6" class="">Exercise 6</a><a href="#ex7" class="">Exercise 7</a><a href="#ex8" class="">Exercise 8</a><a href="#ex9" class="">Exercise 9</a><a href="#ex10" class="">Exercise 10</a></div></nav>
+<main class="main"><div class="card"><div class="card-head">
+<div class="icon">🧪</div>
+<h2>GUI-Based Lab Exercises</h2>
+<span class="tag-badge">10 Labs</span>
+</div><div class="card-body">
+<p>These exercises guide you through real configuration tasks on the Cisco 9800 WLC WebUI. Each lab includes a scenario, step-by-step GUI navigation instructions, expected results, and a CLI verification command. Complete them in order for a progressive learning experience — later exercises build on earlier ones.</p>
+</div></div><div class="ex-card" id="ex1">
+<div class="ex-header">
+  <div class="ex-num">1</div>
+  <h3>Create a Corporate WPA3 SSID with Central Switching</h3>
+  <span class="diff easy">Easy</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> Your company needs a new corporate SSID called <em>Corp-WiFi6</em> using WPA3 security. All client traffic must be centrally forwarded to the WLC and placed on VLAN 100.</div>
+  <ol class="steps"><li>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; WLANs</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Profile Name</strong> = <code>Corp-WiFi6</code>, <strong>SSID</strong> = <code>Corp-WiFi6</code>, <strong>Status</strong> = Enabled.</li><li>Click the <strong>Security</strong> tab &rsaquo; <strong>Layer 2</strong>. Select <strong>WPA3 Personal (SAE)</strong>. Set a strong passphrase. Enable <strong>PMF</strong> = Required (mandatory for WPA3).</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Policy</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Profile Name</strong> = <code>Policy-Corp</code>, Status = Enabled.</li><li>Under <strong>Access Policies</strong>: set <strong>VLAN</strong> = <code>100</code>. Ensure <strong>Central Switching</strong> = Enabled and <strong>Central DHCP</strong> = Enabled.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Tags &rsaquo; Policy</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Tag Name</strong> = <code>Tag-Corp</code>. In the WLAN-Policy table, click <strong>+ Add</strong>: select <strong>WLAN Profile</strong> = <code>Corp-WiFi6</code>, <strong>Policy Profile</strong> = <code>Policy-Corp</code>.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; Access Points</strong>, click the target AP.</li><li>Change <strong>Policy Tag</strong> = <code>Tag-Corp</code>. Click <strong>Update &amp; Apply to Device</strong>.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> The SSID <code>Corp-WiFi6</code> broadcasts on the target AP. Connecting clients receive an IP address on VLAN 100 via central DHCP. Verify under <strong>Monitoring &rsaquo; Wireless &rsaquo; Clients</strong> — VLAN column should show 100.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> CLI: <code>show wireless client summary</code> | <code>show wireless wlan summary</code></div>
+</div>
+</div><div class="ex-card" id="ex2">
+<div class="ex-header">
+  <div class="ex-num">2</div>
+  <h3>Configure a FlexConnect Site Tag for a Remote Branch</h3>
+  <span class="diff medium">Medium</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> A remote branch office has 2 Cisco APs connected over a WAN link. Configure them for FlexConnect with local switching so that client traffic is handled locally — even if the WAN link to the WLC goes down.</div>
+  <ol class="steps"><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Flex</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Profile Name</strong> = <code>Flex-Branch</code>.</li><li>Under <strong>VLAN</strong>, add a VLAN mapping: WLAN <code>Corp-WiFi6</code> &rarr; VLAN <code>100</code> (the local VLAN at the branch switch).</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; AP Join</strong> and click <strong>+ Add</strong> (or use existing).</li><li>Set <strong>Profile Name</strong> = <code>APJoin-Branch</code>. Set NTP and syslog server IPs appropriate for the branch.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Tags &rsaquo; Site</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Tag Name</strong> = <code>Tag-Site-Branch</code>. <strong>AP Join Profile</strong> = <code>APJoin-Branch</code>. <strong>Flex Profile</strong> = <code>Flex-Branch</code>.</li><li><strong>Uncheck</strong> &ldquo;Enable Local Site&rdquo; — this declares the APs as remote (not directly connected to the WLC).</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; Access Points</strong>, select each branch AP.</li><li>Change <strong>Site Tag</strong> = <code>Tag-Site-Branch</code>. Also ensure <strong>Policy Tag</strong> = <code>Tag-Corp</code> (from Exercise 1). Click <strong>Update &amp; Apply to Device</strong>.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> Branch APs switch to FlexConnect mode (verify under Monitoring &rsaquo; Access Points — AP Mode column shows FlexConnect). Client traffic is locally switched at the branch without traversing the WAN. If WAN fails, clients remain connected.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> CLI: <code>show ap config general &lt;ap-name&gt;</code> — confirm AP Mode: FlexConnect</div>
+</div>
+</div><div class="ex-card" id="ex3">
+<div class="ex-header">
+  <div class="ex-num">3</div>
+  <h3>Configure RADIUS 802.1X Authentication</h3>
+  <span class="diff medium">Medium</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> Security policy requires 802.1X Enterprise authentication for the corporate SSID. Configure RADIUS server at 10.1.1.100 (port 1812, secret: <em>Cisco12345!</em>) and apply it to the <em>Corp-WiFi6</em> WLAN.</div>
+  <ol class="steps"><li>Navigate to <strong>Configuration &rsaquo; Security &rsaquo; AAA &rsaquo; Servers / Groups &rsaquo; Servers</strong>. Click <strong>+ Add</strong>.</li><li>Set <strong>Server Address</strong> = <code>10.1.1.100</code>, <strong>Auth Port</strong> = 1812, <strong>Acct Port</strong> = 1813, <strong>Key</strong> = <code>Cisco12345!</code>. Click <strong>Save</strong>.</li><li>Navigate to <strong>AAA &rsaquo; Servers / Groups &rsaquo; Server Groups</strong>. Click <strong>+ Add</strong>.</li><li>Set <strong>Group Name</strong> = <code>RADIUS-Corp</code>, <strong>Group Type</strong> = RADIUS. Add <code>10.1.1.100</code> to the group. Click <strong>Save</strong>.</li><li>Navigate to <strong>AAA &rsaquo; Method Lists &rsaquo; Authentication</strong>. Click <strong>+ Add</strong>.</li><li>Set <strong>Method List Name</strong> = <code>dot1x-corp</code>, <strong>Type</strong> = dot1x. Add <strong>Group</strong> = <code>RADIUS-Corp</code>. Click <strong>Save</strong>.</li><li>Navigate to <strong>AAA &rsaquo; Method Lists &rsaquo; Accounting</strong>. Click <strong>+ Add</strong>.</li><li>Set <strong>Method List Name</strong> = <code>acct-corp</code>, <strong>Type</strong> = identity. Add <code>RADIUS-Corp</code>. Click <strong>Save</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; WLANs</strong>, edit <code>Corp-WiFi6</code>.</li><li>Security tab &rsaquo; Layer 2: Change to <strong>WPA2 Enterprise (802.1X)</strong>. Set <strong>Auth Key Management</strong> = 802.1X. Set <strong>Authentication List</strong> = <code>dot1x-corp</code>.</li><li>Save &amp; Apply to Device.</li><li>Edit Policy Profile <code>Policy-Corp</code>: ensure <strong>AAA Override</strong> = Enabled (allows RADIUS to push dynamic VLAN/ACL).</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> Clients connecting to Corp-WiFi6 are prompted for credentials (EAP). Successful 802.1X authentication results in association; rejected credentials result in disconnection. Verify under Monitoring &rsaquo; Clients: Auth Method = Dot1x.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> Troubleshooting &rsaquo; Radioactive Trace on the client MAC — look for RADIUS Access-Accept message in the log.</div>
+</div>
+</div><div class="ex-card" id="ex4">
+<div class="ex-header">
+  <div class="ex-num">4</div>
+  <h3>Create a Guest SSID with Local Web Authentication</h3>
+  <span class="diff easy">Easy</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> Create an open guest SSID called <em>Guest-WiFi</em> with a local captive portal. Guest clients should land on VLAN 200 and be redirected to a login page before accessing the internet.</div>
+  <ol class="steps"><li>Navigate to <strong>Configuration &rsaquo; Security &rsaquo; Web Auth</strong>. Confirm <strong>Virtual IP</strong> is set (default <code>192.0.2.1</code>). This IP must be non-routable on your network.</li><li>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; WLANs</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Profile Name</strong> = <code>Guest-WiFi</code>, <strong>SSID</strong> = <code>Guest-WiFi</code>, Status = Enabled.</li><li>Security tab &rsaquo; Layer 2: set to <strong>None</strong> (open network). Layer 3: select <strong>Web Policy</strong>. Type = <strong>Webauth</strong>. Authentication List = <code>default</code> (local user database).</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Policy</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Profile Name</strong> = <code>Policy-Guest</code>. VLAN = <code>200</code>. Central Switching = Enabled.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Tags &amp; Profiles &rsaquo; Tags &rsaquo; Policy</strong>, edit or create a tag. Add mapping: <code>Guest-WiFi</code> &rarr; <code>Policy-Guest</code>.</li><li>Assign the Policy Tag to target APs via <strong>Configuration &rsaquo; Wireless &rsaquo; Access Points</strong>.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> Guest clients associate to Guest-WiFi without a password and are placed on VLAN 200. On first HTTP request, they are redirected to the Cisco captive portal login page. After login, internet access is granted.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> Connect a test device to Guest-WiFi. Open a browser and navigate to any HTTP site — you should see the WLC login page.</div>
+</div>
+</div><div class="ex-card" id="ex5">
+<div class="ex-header">
+  <div class="ex-num">5</div>
+  <h3>Run a Radioactive Trace on a Failing Client</h3>
+  <span class="diff easy">Easy</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> A user reports their laptop (MAC: <code>AA:BB:CC:DD:EE:FF</code>) cannot connect to the corporate SSID. Use Radioactive Trace to capture the failure.</div>
+  <ol class="steps"><li>Navigate to <strong>Troubleshooting &rsaquo; Radioactive Trace</strong>.</li><li>Click <strong>+ Add</strong>. Enter MAC address: <code>AA:BB:CC:DD:EE:FF</code>. Click <strong>Apply to Device</strong>.</li><li>Click <strong>Start</strong> next to the MAC entry — debug collection begins.</li><li>On the client device: forget the network and attempt to reconnect (or re-enable Wi-Fi).</li><li>Wait 30–60 seconds to capture the full authentication sequence.</li><li>Click <strong>Stop</strong> to end the trace.</li><li>Click <strong>Log Download</strong> to save the trace log file (.txt).</li><li>Open the log file and search for keywords: <code>FAILED</code>, <code>REJECT</code>, <code>ERROR</code>, <code>TIMEOUT</code>, <code>policy</code>.</li><li>Common findings: RADIUS Access-Reject (wrong password/cert), DHCP timeout, Policy Tag missing WLAN mapping, PMF mismatch.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> A timestamped log file contains every control-plane event for the client MAC: probe, auth, assoc, 802.1X exchange, RADIUS response, DHCP, and policy application. The root cause of the failure is visible as an error or reject event.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> In the log, a successful authentication shows: <code>AUTHMGR-5-SUCCESS</code>. A RADIUS rejection shows: <code>Access-Reject</code>.</div>
+</div>
+</div><div class="ex-card" id="ex6">
+<div class="ex-header">
+  <div class="ex-num">6</div>
+  <h3>Perform a Packet Capture on an AP Radio</h3>
+  <span class="diff medium">Medium</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> An 802.1X client is failing silently — Radioactive Trace shows the session starting but no RADIUS response. Capture the actual EAPOL frames over the air on AP <em>AP-Floor2-01</em> to determine if EAP frames are reaching the client.</div>
+  <ol class="steps"><li>Navigate to <strong>Troubleshooting &rsaquo; Packet Capture</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Capture Name</strong> = <code>PCAP-EAP-Debug</code>.</li><li>Select <strong>AP Name</strong> = <code>AP-Floor2-01</code>.</li><li>Select the radio the client is using: <strong>radio1</strong> (5 GHz) or <strong>radio0</strong> (2.4 GHz). Check Monitoring &rsaquo; Clients first to confirm the band.</li><li>Set <strong>Direction</strong> = Both, <strong>Duration</strong> = 60 seconds, <strong>Buffer Size</strong> = 10 MB.</li><li>Optionally set <strong>Inner MAC filter</strong> = <code>AA:BB:CC:DD:EE:FF</code> to capture only the target client's frames.</li><li>Click <strong>Start</strong>. Immediately attempt to connect the client device.</li><li>After 60 seconds (or click <strong>Stop</strong> early), click <strong>Download</strong> to save the .pcap file.</li><li>Open in Wireshark. Apply filter: <code>eapol</code>. Analyze the EAP conversation — look for EAP-Request, EAP-Response, and whether EAP-Success or EAP-Failure is received.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> Wireshark shows the EAPOL 4-way handshake or EAP exchange. If EAP-Failure or no EAP-Success frame is visible, the issue is in the RADIUS exchange or the supplicant configuration. If no EAPOL frames at all are captured, the client may not be attempting 802.1X.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> Wireshark filter <code>eapol</code> reveals: EAP Start &rarr; EAP-Request Identity &rarr; EAP-Response Identity &rarr; EAP-Success (or EAP-Failure).</div>
+</div>
+</div><div class="ex-card" id="ex7">
+<div class="ex-header">
+  <div class="ex-num">7</div>
+  <h3>Create and Apply a Custom RF Profile</h3>
+  <span class="diff medium">Medium</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> The 5 GHz band on your APs is using too-wide channels, causing co-channel interference. Create an RF Profile that limits DCA to channels 36–64, uses 40 MHz width, and caps Tx Power at 17 dBm.</div>
+  <ol class="steps"><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; RF</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Profile Name</strong> = <code>RF-5GHz-Corp</code>, <strong>Band</strong> = 5 GHz.</li><li>Under <strong>RF Profile General</strong>: set <strong>Maximum Transmit Power</strong> = 17 dBm, <strong>Minimum Transmit Power</strong> = 5 dBm.</li><li>Under <strong>DCA</strong>: ensure DCA is Enabled. Click <strong>Channel Assignment</strong> and select only channels 36, 40, 44, 48, 52, 56, 60, 64 (UNII-1 and UNII-2A). Deselect all DFS/UNII-3 channels.</li><li>Set <strong>Channel Width</strong> = 40 MHz.</li><li>Enable <strong>TPC</strong> (Transmit Power Control). Leave algorithm = Automatic.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Tags &rsaquo; RF</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>Tag Name</strong> = <code>Tag-RF-Corp</code>. Set <strong>5 GHz Band RF Profile</strong> = <code>RF-5GHz-Corp</code>.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; Access Points</strong>. Select target APs and assign <strong>RF Tag</strong> = <code>Tag-RF-Corp</code>.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> APs using Tag-RF-Corp now operate only on channels 36–64 with 40 MHz channel width and a maximum of 17 dBm. Verify under Monitoring &rsaquo; Access Points — Channel column shows only channels in the 36–64 range.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> CLI: <code>show ap dot11 5ghz summary</code> — verify channels and power levels.</div>
+</div>
+</div><div class="ex-card" id="ex8">
+<div class="ex-header">
+  <div class="ex-num">8</div>
+  <h3>Configure a Client ACL to Restrict Guest Traffic</h3>
+  <span class="diff medium">Medium</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> Guest clients on VLAN 200 must not be able to reach the corporate network (10.0.0.0/8). Create an ACL and apply it to the Guest Policy Profile.</div>
+  <ol class="steps"><li>Navigate to <strong>Configuration &rsaquo; Security &rsaquo; ACL</strong> and click <strong>+ Add</strong>.</li><li>Set <strong>ACL Name</strong> = <code>ACL-Block-Corporate</code>, <strong>Type</strong> = IPv4 Extended.</li><li>Click <strong>+ Add</strong> to add ACE 1: Action = <strong>Deny</strong>, Protocol = IP, Source = <code>any</code>, Destination = <code>10.0.0.0 / 0.255.255.255</code>. Sequence = 10.</li><li>Click <strong>+ Add</strong> to add ACE 2: Action = <strong>Permit</strong>, Protocol = IP, Source = <code>any</code>, Destination = <code>any</code>. Sequence = 20.</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li><li>Navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; Policy</strong>, edit <code>Policy-Guest</code>.</li><li>Under <strong>Access Policies</strong>: set <strong>IPv4 ACL</strong> = <code>ACL-Block-Corporate</code> (apply as Egress or both directions depending on requirement).</li><li>Click <strong>Save &amp; Apply to Device</strong>.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> Guest clients on VLAN 200 cannot ping or access any 10.0.0.0/8 address. Internet access (non-10.0.0.0/8 destinations) remains functional. Verify by trying <code>ping 10.1.1.1</code> from a guest device — should timeout.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> CLI: <code>show ip access-lists ACL-Block-Corporate</code> — match counters increment when guest traffic hits the deny rule.</div>
+</div>
+</div><div class="ex-card" id="ex9">
+<div class="ex-header">
+  <div class="ex-num">9</div>
+  <h3>Upgrade WLC Software to 17.9.5</h3>
+  <span class="diff hard">Hard</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> The WLC is running 17.9.3 and must be upgraded to 17.9.5. An SFTP server at 192.168.1.50 hosts the image. Perform the upgrade with AP pre-download to minimize downtime.</div>
+  <ol class="steps"><li>Download the IOS-XE 17.9.5 image from <strong>Cisco Software Download</strong> (requires valid CCO/service contract). Filename format: <code>C9800-universalk9_wlc.17.09.05.SPA.bin</code>.</li><li>Place the image on your SFTP server at <code>192.168.1.50</code> in the configured SFTP directory.</li><li>Navigate to <strong>Administration &rsaquo; Software Management &rsaquo; Software Upgrade</strong>.</li><li>Set <strong>Transfer Mode</strong> = SFTP, <strong>Server IP</strong> = <code>192.168.1.50</code>, <strong>Username</strong> and <strong>Password</strong> for SFTP access, <strong>File Path</strong> = path to the .bin file.</li><li>Click <strong>Download</strong>. Monitor the download progress bar — this may take 5–15 minutes.</li><li>After successful download, verify the new version appears under <strong>Current Version</strong> on the upgrade page.</li><li><strong>Before activating the WLC:</strong> click <strong>AP Pre-download</strong>. This pushes the new image to all joined APs in the background.</li><li>Monitor <strong>Monitoring &rsaquo; Wireless &rsaquo; Access Points</strong> — wait until all APs show <strong>Pre-downloaded</strong> status.</li><li>Schedule or immediately click <strong>Activate</strong>. The WLC will save config and reload into the new image.</li><li>WLC outage lasts approximately 5–7 minutes. APs enter standalone mode, existing client sessions on FlexConnect APs with local switching continue.</li><li>After WLC comes back online, verify version: <strong>Administration &rsaquo; Software Management</strong> shows 17.9.5. Check all APs rejoin.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> WLC and all APs running IOS-XE 17.9.5. No permanent AP or client loss. APs that were pre-downloaded reload simultaneously with the WLC — typical downtime is 5–10 minutes total.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> CLI: <code>show version</code> — confirms IOS-XE 17.09.05. GUI: Administration &rsaquo; Software Management shows 17.9.5.</div>
+</div>
+</div><div class="ex-card" id="ex10">
+<div class="ex-header">
+  <div class="ex-num">10</div>
+  <h3>Investigate RF Interference with CleanAir</h3>
+  <span class="diff easy">Easy</span>
+</div>
+<div class="ex-body">
+  <div class="scenario"><strong>Scenario:</strong> Users on Floor 3 report intermittent Wi-Fi drops every few minutes. You suspect a non-802.11 interferer. Use CleanAir and RF statistics to identify and mitigate the issue.</div>
+  <ol class="steps"><li>Navigate to <strong>Monitoring &rsaquo; RF &rsaquo; RF Statistics</strong>. Filter by APs on Floor 3.</li><li>Check <strong>Channel Utilization</strong>: values above 70% indicate congestion. Note which channels are most affected.</li><li>Check <strong>Noise Floor</strong>: values worse than −85 dBm indicate a noise problem.</li><li>Navigate to <strong>Monitoring &rsaquo; RF &rsaquo; Spectrum</strong> (CleanAir). Look for detected interferers.</li><li>Note interferer <strong>Type</strong> (Microwave, DECT, Bluetooth, Video Camera, Jammer), <strong>Channel</strong>, <strong>Severity</strong>, and <strong>Duty Cycle</strong>.</li><li>Identify the <strong>Closest AP</strong> to the interferer — use this to physically locate the interference source.</li><li>Mitigation options: (a) Remove/relocate the interfering device. (b) Edit the RF Profile to exclude the affected channel from DCA. (c) Enable Event Driven RRM to trigger an immediate channel change when interference is detected.</li><li>To exclude a channel: navigate to <strong>Configuration &rsaquo; Tags &amp; Profiles &rsaquo; RF</strong>, edit the relevant RF Profile, remove the affected channel from the DCA channel list.</li><li>To enable ED-RRM: in the RF Profile, enable <strong>Event Driven RRM</strong> with sensitivity = Medium.</li></ol>
+  <div class="expected"><strong>✅ Expected Result:</strong> CleanAir identifies the interferer type and affected channel. After excluding the channel from DCA or relocating the interfering device, channel utilization and noise floor return to normal levels. Client drop rate decreases.</div>
+  <div class="verify"><strong>🔍 Verification:</strong> Monitoring &rsaquo; RF &rsaquo; RF Statistics — confirm Channel Utilization drops below 50% and Noise Floor improves to < −90 dBm after mitigation.</div>
+</div>
+</div></main>
+</div>
+
+</body></html>

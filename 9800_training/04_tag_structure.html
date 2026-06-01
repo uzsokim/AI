@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TAG Structure | Cisco 9800 WLC 17.9.5</title>
+<style>
+:root{--navy:#1b2a4a;--teal:#00bceb;--green:#6cc04a;--red:#e2231a;--orange:#ff7300;--border:#dce2ed;--light:#f4f6f9;--text:#1e2330;--muted:#6b7a99;--sw:270px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--light);color:var(--text);line-height:1.65;font-size:15px}
+.header{background:var(--navy);color:#fff;height:58px;display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:200;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.header .logo{font-size:22px;font-weight:900;color:var(--teal);letter-spacing:-.5px}
+.header .pipe{color:rgba(255,255,255,.25)}
+.header .title{font-size:16px;font-weight:600}
+.header .subtitle{font-size:12px;color:rgba(255,255,255,.65)}
+.header .badge{margin-left:auto;background:var(--teal);color:var(--navy);font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px}
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{width:var(--sw);background:var(--navy);flex-shrink:0;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;padding-bottom:32px}
+.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:var(--teal)}
+.sb-group{border-bottom:1px solid rgba(255,255,255,.08);padding:6px 0}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--teal);padding:10px 16px 4px;display:block}
+.sidebar a{display:block;padding:7px 16px 7px 20px;color:rgba(255,255,255,.72);text-decoration:none;font-size:13px;border-left:3px solid transparent;transition:all .18s}
+.sidebar a:hover{background:rgba(0,188,235,.12);color:var(--teal);border-left-color:var(--teal)}
+.sidebar a.sub{padding-left:32px;font-size:12px}
+.sidebar a.sub2{padding-left:44px;font-size:12px}
+.main{flex:1;padding:32px 36px;max-width:920px}
+.card{background:#fff;border-radius:8px;margin-bottom:28px;box-shadow:0 1px 5px rgba(0,0,0,.08);overflow:hidden}
+.card-head{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.card-head .icon{width:34px;height:34px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.card-head h2{font-size:17px;font-weight:600}
+.card-head .tag-badge{margin-left:auto;font-size:11px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px}
+.card-body{padding:22px 24px}
+.nav-path{background:#eef2fc;border:1px solid #c8d2ea;border-left:4px solid var(--teal);border-radius:5px;padding:9px 14px;font-family:'Consolas','Courier New',monospace;font-size:13px;color:var(--navy);margin:12px 0}
+.screenshot{background:linear-gradient(135deg,#111c2e 0%,#1b2a4a 60%,#243660 100%);border:2px dashed var(--teal);border-radius:8px;padding:36px 24px;text-align:center;margin:16px 0;position:relative;overflow:hidden}
+.screenshot::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.1)}
+.screenshot::after{content:'⬤  ⬤  ⬤';position:absolute;top:0;left:14px;font-size:10px;color:rgba(255,255,255,.4);line-height:32px}
+.ph-body{padding-top:12px}
+.ph-icon{font-size:44px;opacity:.5;margin-bottom:10px}
+.ph-title{font-size:14px;font-weight:600;color:var(--teal)}
+.ph-path{font-size:12px;color:rgba(255,255,255,.55);margin-top:6px;font-family:monospace}
+.ph-note{display:inline-block;margin-top:12px;background:rgba(0,188,235,.15);border:1px solid rgba(0,188,235,.4);border-radius:4px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.75)}
+.field-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+.field-table thead th{background:var(--navy);color:#fff;padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.field-table td{padding:9px 13px;border-bottom:1px solid var(--border);vertical-align:top}
+.field-table tr:last-child td{border-bottom:none}
+.field-table tr:nth-child(even) td{background:#f7f9fc}
+.field-table td.fn{font-weight:600;color:var(--navy);white-space:nowrap}
+.field-table td.def{font-family:monospace;color:#7a6000;font-size:12px}
+.note{border-radius:5px;padding:11px 15px;margin:12px 0;font-size:13.5px;border-left:4px solid;display:flex;gap:10px;align-items:flex-start}
+.note .ni{font-size:16px;flex-shrink:0;margin-top:1px}
+.note.info{background:#e8f6fd;border-color:var(--teal)}
+.note.warning{background:#fff6e8;border-color:var(--orange)}
+.note.danger{background:#fef0f0;border-color:var(--red)}
+.note.success{background:#edf8e7;border-color:var(--green)}
+.subsec{margin:18px 0 10px}
+.subsec h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.subsec h4{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 5px}
+p{margin-bottom:10px;color:#3a3f54}
+ul,ol{padding-left:20px;margin:6px 0 10px}
+li{margin-bottom:4px;color:#3a3f54;font-size:14px}
+code{background:#eef2f8;border:1px solid #ccd5ea;border-radius:3px;padding:1px 6px;font-family:'Consolas',monospace;font-size:12.5px;color:#1a3a6b}
+.ex-card{border:1px solid var(--border);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.ex-header{background:var(--navy);color:#fff;padding:13px 18px;display:flex;align-items:center;gap:12px}
+.ex-num{width:30px;height:30px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--navy);flex-shrink:0}
+.ex-header h3{font-size:15px;font-weight:600}
+.diff{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700}
+.easy{background:rgba(108,192,74,.3);color:#2a6010}
+.medium{background:rgba(255,115,0,.25);color:#7a3800}
+.hard{background:rgba(226,35,26,.25);color:#7a1010}
+.ex-body{padding:18px 20px}
+.scenario{background:#f0f4ff;border-left:4px solid #5b80e8;border-radius:4px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.scenario strong{color:#2a44a0}
+.steps{counter-reset:sc;list-style:none;padding:0}
+.steps li{counter-increment:sc;display:flex;gap:12px;margin-bottom:10px;font-size:14px;align-items:flex-start}
+.steps li::before{content:counter(sc);min-width:24px;height:24px;background:var(--navy);color:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:2px}
+.expected{background:#edf8e7;border:1px solid #b8e0a8;border-radius:5px;padding:12px 14px;margin-top:14px;font-size:13.5px}
+.expected strong{color:#2a6a10}
+.verify{background:#e8f6fd;border:1px solid #a0d8f0;border-radius:5px;padding:12px 14px;margin-top:10px;font-size:13px}
+.verify strong{color:#0050a0}
+.quiz-bar{background:var(--navy);border-radius:8px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.quiz-bar h2{color:#fff;font-size:16px}
+#sd{margin-left:auto;color:var(--teal);font-size:22px;font-weight:800}
+.btn{padding:9px 20px;border-radius:5px;border:none;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:var(--navy)}.btn-p:hover{background:#00a8d4}
+.btn-s{background:rgba(255,255,255,.15);color:#fff}.btn-s:hover{background:rgba(255,255,255,.25)}
+.qcat{background:var(--navy);color:var(--teal);padding:10px 18px;border-radius:6px;font-size:13px;font-weight:700;letter-spacing:.5px;margin:20px 0 14px;display:flex;align-items:center;gap:10px}
+.qcard{background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:14px;overflow:hidden}
+.qtext{padding:14px 18px;font-size:14px;font-weight:600;color:var(--navy);border-bottom:1px solid var(--border);display:flex;gap:10px}
+.qnum{color:var(--teal);flex-shrink:0}
+.opts{padding:10px 14px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:5px;margin-bottom:6px;cursor:pointer;transition:background .15s;border:2px solid transparent;font-size:14px}
+.opt:hover:not(.ans) .opt:hover{background:#f0f4ff;border-color:#b0c0e8}
+.opt.correct{background:#edf8e7!important;border-color:var(--green)!important}
+.opt.incorrect{background:#fef0f0!important;border-color:var(--red)!important}
+.opt.showcorrect{background:#edf8e7!important;border-color:var(--green)!important}
+.ol{min-width:24px;height:24px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;background:#fff}
+.opt.correct .ol{background:var(--green);border-color:var(--green);color:#fff}
+.opt.incorrect .ol{background:var(--red);border-color:var(--red);color:#fff}
+.opt.showcorrect .ol{background:var(--green);border-color:var(--green);color:#fff}
+.qexp{display:none;padding:10px 14px;border-top:1px solid var(--border);font-size:13px;background:#f8f9fc;color:#444;font-style:italic}
+.qexp.vis{display:block}
+.pbwrap{height:8px;background:rgba(255,255,255,.15);border-radius:4px;width:200px;overflow:hidden}
+#pb{height:100%;background:var(--teal);border-radius:4px;width:0;transition:width .3s}
+#rp{display:none;text-align:center;background:#fff;border-radius:8px;padding:40px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+#rp h2{font-size:28px;color:var(--navy);margin-bottom:10px}
+.grade{font-size:72px;font-weight:900;margin:10px 0}
+.pass{color:var(--green)}.fail{color:var(--red)}
+.tag-overview{background:var(--navy);border-radius:8px;padding:28px;margin-bottom:28px;color:#fff;text-align:center}
+.tag-overview h2{font-size:22px;margin-bottom:6px}
+.tag-overview p{color:rgba(255,255,255,.75);font-size:14px;max-width:620px;margin:0 auto 24px}
+.tag-trio{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.tbox{flex:1;min-width:180px;max-width:240px;border:2px solid;border-radius:8px;padding:18px 14px;text-align:center}
+.tbox.pol{border-color:var(--teal);background:rgba(0,188,235,.12)}
+.tbox.sit{border-color:var(--orange);background:rgba(255,115,0,.12)}
+.tbox.rf{border-color:var(--green);background:rgba(108,192,74,.12)}
+.tbox .tbi{font-size:36px;margin-bottom:8px}
+.tbox .tbt{font-size:14px;font-weight:700;margin-bottom:4px}
+.tbox.pol .tbt{color:var(--teal)}.tbox.sit .tbt{color:#ffaa55}.tbox.rf .tbt{color:#9ce870}
+.tbox .tbd{font-size:12px;color:rgba(255,255,255,.65)}
+.diagram{background:#0d1929;border-radius:8px;padding:20px 24px;font-family:'Consolas',monospace;font-size:13px;color:#c8d8f0;margin:16px 0;overflow-x:auto;line-height:1.9;border:1px solid rgba(255,255,255,.1)}
+.diagram .dt{color:var(--teal);font-weight:700}
+.diagram .dtag{color:#ffaa55}
+.diagram .dpr{color:#9ce870}
+.diagram .da{color:var(--teal)}
+.diagram .dv{color:#ff9f9f}
+.diagram .dn{color:rgba(255,255,255,.4);font-style:italic}
+.egcard{border:1px solid var(--border);border-radius:8px;margin-bottom:24px;overflow:hidden}
+.eghead{background:linear-gradient(135deg,var(--navy) 0%,#243660 100%);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.egicon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.eghead h3{font-size:16px;font-weight:600}
+.mode{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.mode-loc{background:rgba(0,188,235,.3);color:#00bceb}
+.mode-flex{background:rgba(255,115,0,.3);color:#ff9f50}
+.mode-fab{background:rgba(108,192,74,.3);color:#6cc04a}
+.egbody{padding:20px 22px}
+@media(max-width:900px){.sidebar{display:none}.main{padding:20px;max-width:100%}}
+</style>
+</head>
+<body>
+<header class="header">
+  <span class="logo">CISCO</span><span class="pipe">|</span>
+  <div><div class="title">Catalyst 9800 WLC &mdash; TAG Structure</div>
+  <div class="subtitle">Deep dive into Policy Tag, Site Tag, and RF Tag architecture with 8 real-world examples</div></div>
+  <span class="badge">IOS-XE 17.9.5</span>
+</header>
+<div class="layout">
+<nav class="sidebar"><div class="sb-group"><span class="sb-label">Overview</span><a href="#overview" class="">TAG Architecture Overview</a><a href="#three-tags" class="">The Three Tags</a></div><div class="sb-group"><span class="sb-label">Deep Dive</span><a href="#policy-tag" class="sub">Policy Tag</a><a href="#site-tag" class="sub">Site Tag</a><a href="#rf-tag" class="sub">RF Tag</a><a href="#profiles" class="sub">Profiles Quick Reference</a></div><div class="sb-group"><span class="sb-label">TAG Assignment</span><a href="#assignment" class="">How Tags Are Assigned</a><a href="#defaults-trap" class="">The Default Tags Trap</a></div><div class="sb-group"><span class="sb-label">Design &amp; Migration</span><a href="#aireos-migration" class="">AireOS AP Group → C9800</a><a href="#tag-sources-persistency" class="">Tag Sources &amp; Persistency</a><a href="#wncd-design" class="">WNCd &amp; Site Tag Design</a><a href="#roaming-policy-tags" class="">Roaming Between Policy Tags</a><a href="#flex-site-design" class="">FlexConnect Site Tag Design</a></div><div class="sb-group"><span class="sb-label">Examples</span><a href="#eg1" class="sub">1 — Central Switching (Local mode)</a><a href="#eg2" class="sub">2 — FlexConnect Local Switching</a><a href="#eg3" class="sub">3 — Dual SSID: Corp + Guest</a><a href="#eg4" class="sub">4 — Branch Failover</a><a href="#eg5" class="sub">5 — FlexConnect Central Switching</a><a href="#eg6" class="sub">6 — The Default Tag Trap</a><a href="#eg7" class="sub">7 — Dynamic TAG via RADIUS</a><a href="#eg8" class="sub">8 — SD-Access / Fabric Mode</a><a href="#eg9" class="sub">9 — University Multi-VLAN + vlan-persistent</a><a href="#eg10" class="sub">10 — Zone ACL Enforcement + vlan-persistent</a></div></nav>
+<main class="main">
+<div class="tag-overview" id="overview">
+  <h2>The Cisco 9800 TAG Architecture</h2>
+  <p>Every AP joined to a Cisco 9800 WLC is assigned exactly <strong>three tags</strong>. Tags are pointers — they reference Profiles which contain the actual configuration. This separation makes large-scale changes efficient: update one profile and every AP using that tag inherits the change instantly.</p>
+  <div class="tag-trio">
+    <div class="tbox pol"><div class="tbi">🏷️</div><div class="tbt">Policy Tag</div><div class="tbd">What SSIDs the AP broadcasts<br>+ how clients are treated</div></div>
+    <div class="tbox sit"><div class="tbi">🏢</div><div class="tbt">Site Tag</div><div class="tbd">How the AP operates<br>Local mode or FlexConnect</div></div>
+    <div class="tbox rf"><div class="tbi">📡</div><div class="tbt">RF Tag</div><div class="tbd">Radio behavior per band<br>Channel, power, width</div></div>
+  </div>
+</div>
+
+<div class="card" id="three-tags">
+<div class="card-head"><div class="icon">🔑</div><h2>The Three Tags — Mental Model</h2></div>
+<div class="card-body">
+<p>Think of tags as <strong>personality slots</strong> on each AP. When an AP joins, the WLC checks which tags are assigned and loads the referenced configuration:</p>
+<div class="diagram">
+<div class="dt">AP joins WLC</div>
+    │
+    ├─ <span class="dtag">Policy Tag</span>  ->  <span class="dpr">Policy Profile</span>    (VLAN, switching mode, QoS, ACL)
+    │                  ->  <span class="dpr">WLAN Profile(s)</span>  (which SSIDs to broadcast)
+    │
+    ├─ <span class="dtag">Site Tag</span>    ->  <span class="dpr">AP Join Profile</span>   (NTP, syslog, CAPWAP timers)
+    │                  ->  <span class="dpr">Flex Profile</span>     (if present -> FlexConnect mode)
+    │
+    └─ <span class="dtag">RF Tag</span>      ->  <span class="dpr">RF Profile 2.4G</span>   (channel, power, DCA for 2.4 GHz)
+                       ->  <span class="dpr">RF Profile 5G</span>    (channel, power, DCA for 5 GHz)
+                       ->  <span class="dpr">RF Profile 6G</span>    (channel, power, DCA for 6 GHz)
+</div>
+<div class="note info"><span class="ni">ℹ️</span><span><strong>Key Rule:</strong> One AP = exactly one Policy Tag + one Site Tag + one RF Tag. You cannot assign multiple tags of the same type to a single AP.</span></div>
+<div class="note success"><span class="ni">✅</span><span>Tags and profiles are created independently. One profile can be referenced by many tags — change the profile once and all APs using it update immediately.</span></div>
+</div></div>
+
+<div class="card" id="policy-tag">
+<div class="card-head"><div class="icon">🏷️</div><h2>Policy Tag — Deep Dive</h2></div>
+<div class="card-body">
+<div class="subsec"><h3>Purpose</h3>
+<p>The Policy Tag answers: <em>Which SSIDs does this AP broadcast, and what happens to clients on each SSID?</em> It is a mapping table: each row pairs a WLAN Profile (SSID definition) with a Policy Profile (client behavior).</p>
+</div>
+<div class="diagram">
+<div class="dt">Policy Tag: Tag-HQ-Floor2</div>
+
+  WLAN Profile        ->   Policy Profile
+  ─────────────────────────────────────────
+  <span class="dpr">Corp-WiFi6</span>         ->   <span class="dpr">Policy-Corp</span>     (<span class="dv">VLAN 10</span>, Central, 802.1X)
+  <span class="dpr">Guest-WiFi</span>         ->   <span class="dpr">Policy-Guest</span>    (<span class="dv">VLAN 200</span>, Central, Web Auth)
+  <span class="dpr">IoT-Sensors</span>        ->   <span class="dpr">Policy-IoT</span>      (<span class="dv">VLAN 300</span>, Local Switch, PSK)
+
+<span class="dn">  ↑ up to 16 WLAN-Policy pairs per tag</span>
+</div>
+<div class="subsec"><h3>Key Constraints</h3></div>
+<ul>
+<li>Maximum <strong>16 WLAN-Policy mappings</strong> per Policy Tag</li>
+<li>One AP can have only <strong>one Policy Tag</strong> — choose mappings carefully</li>
+<li>The same WLAN Profile can appear in multiple Policy Tags (with different Policy Profiles) to serve different floors/sites differently</li>
+<li>Removing a WLAN from a Policy Tag immediately stops that SSID on all APs with that tag — <strong>no grace period</strong></li>
+</ul>
+<div class="nav-path">Configuration <span style="color:var(--teal)">›</span> Tags &amp; Profiles <span style="color:var(--teal)">›</span> Tags <span style="color:var(--teal)">›</span> Policy</div>
+</div></div>
+
+<div class="card" id="site-tag">
+<div class="card-head"><div class="icon">🏢</div><h2>Site Tag — Deep Dive</h2></div>
+<div class="card-body">
+<div class="subsec"><h3>Purpose</h3>
+<p>The Site Tag controls <strong>how the AP operates</strong> — its mode (Local or FlexConnect) and its management settings. It references two profiles:</p>
+<ul>
+<li><strong>AP Join Profile</strong> — always required. Controls NTP, syslog, CAPWAP timers, SSH access, statistics interval.</li>
+<li><strong>Flex Profile</strong> — optional. <em>Its presence is what puts the AP into FlexConnect mode.</em></li>
+</ul>
+</div>
+<div class="diagram">
+<div class="dt">Site Tag Decision Logic</div>
+
+  Site Tag has Flex Profile?
+  │
+  ├── <span class="dpr">NO</span>  -> AP operates in <span class="dtag">Local Mode</span>
+  │           All client data tunneled via CAPWAP to WLC
+  │           VLAN assignment: WLC-side (Policy Profile VLAN)
+  │
+  └── <span class="dpr">YES</span> -> AP operates in <span class="dtag">FlexConnect Mode</span>
+              Client data can be switched locally at the AP
+              VLAN assignment: Flex Profile VLAN override (branch VLAN)
+              AP survives WAN outage in standalone mode
+</div>
+<div class="subsec"><h3>"Enable Local Site" Checkbox</h3></div>
+<ul>
+<li><strong>Checked (default)</strong> — APs are directly/locally connected to the WLC. Data keepalive and CAPWAP control traffic behave as if WLC is close.</li>
+<li><strong>Unchecked</strong> — APs are at a remote site (branch over WAN). Combined with a Flex Profile = FlexConnect remote-branch deployment.</li>
+</ul>
+<div class="note danger"><span class="ni">🚨</span><span>Adding or removing a Flex Profile from a live Site Tag causes all APs using that tag to change operating modes. This triggers a brief client disconnect (~5–10 seconds) as radios reset.</span></div>
+<div class="nav-path">Configuration <span style="color:var(--teal)">›</span> Tags &amp; Profiles <span style="color:var(--teal)">›</span> Tags <span style="color:var(--teal)">›</span> Site</div>
+</div></div>
+
+<div class="card" id="rf-tag">
+<div class="card-head"><div class="icon">📡</div><h2>RF Tag — Deep Dive</h2></div>
+<div class="card-body">
+<div class="subsec"><h3>Purpose</h3>
+<p>The RF Tag controls <strong>radio behavior</strong> — channel selection, transmit power, channel width, and Wi-Fi generation settings per band. It references up to three RF Profiles: one per band (2.4 GHz, 5 GHz, 6 GHz).</p>
+</div>
+<div class="diagram">
+<div class="dt">RF Tag: Tag-RF-Enterprise</div>
+
+  Band     ->  RF Profile           Key Settings
+  ──────────────────────────────────────────────────
+  <span class="dpr">2.4 GHz</span>  ->  <span class="dpr">RF-2.4-Corp</span>     Ch 1/6/11, 20 MHz, TPC enabled
+  <span class="dpr">5 GHz</span>    ->  <span class="dpr">RF-5-Corp</span>       Ch 36-64, 80 MHz, DCA, TPC
+  <span class="dpr">6 GHz</span>    ->  <span class="dpr">RF-6-Corp</span>       Ch 1-93, 80/160 MHz (6E APs)
+
+<span class="dn">  Different floor types can use different RF Tags for density tuning</span>
+</div>
+<div class="note info"><span class="ni">ℹ️</span><span>You can use the same RF Profile for 2.4 GHz and 5 GHz, or create separate profiles for fine-grained control. A common practice is one RF Tag per 'zone type' (e.g., open office, conference room, warehouse).</span></div>
+<div class="nav-path">Configuration <span style="color:var(--teal)">›</span> Tags &amp; Profiles <span style="color:var(--teal)">›</span> Tags <span style="color:var(--teal)">›</span> RF</div>
+</div></div>
+
+<div class="card" id="profiles">
+<div class="card-head"><div class="icon">📋</div><h2>Profiles Quick Reference</h2></div>
+<div class="card-body">
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th><th>Default</th></tr></thead><tbody><tr><td class="fn">AP Join Profile</td><td>AP management behavior: NTP, syslog, CAPWAP timers, SSH, LED, stats interval. Referenced by Site Tag.</td><td class="def">default-ap-join-profile</td></tr><tr><td class="fn">Policy Profile</td><td>Client data plane: VLAN, Central/Local switching, Central/Local DHCP, ACL, QoS, AAA Override, NAC, mDNS. Referenced by Policy Tag.</td><td class="def">default-policy-profile</td></tr><tr><td class="fn">RF Profile</td><td>Radio behavior per band: channel, power range, channel width, DCA, TPC, BSS Color, 802.11ax. Referenced by RF Tag.</td><td class="def">default-rf-profile</td></tr><tr><td class="fn">Flex Profile</td><td>FlexConnect-specific: VLAN overrides per WLAN, local RADIUS, ACL for standalone mode. Referenced by Site Tag.</td><td class="def">—</td></tr><tr><td class="fn">AP Group (legacy)</td><td>Pre-9800 concept, replaced by tags. Still visible for migration compatibility.</td><td class="def">default-ap-group</td></tr><tr><td class="fn">Fabric Profile</td><td>SD-Access-specific: VNID, SGT, LISP config. Referenced by Site Tag in fabric deployments.</td><td class="def">—</td></tr></tbody></table>
+</div></div>
+
+<div class="card" id="assignment">
+<div class="card-head"><div class="icon">🎯</div><h2>TAG Assignment Methods</h2></div>
+<div class="card-body">
+<p>Tags can be assigned to APs using three different methods, from most specific to least specific:</p>
+<div class="subsec"><h3>Method 1 — Static (per AP MAC)</h3>
+<p>Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; Access Points</strong>, click the AP, and manually set each tag. This is the most explicit method and overrides everything else.</p>
+<div class="nav-path">Configuration <span style="color:var(--teal)">›</span> Wireless <span style="color:var(--teal)">›</span> Access Points <span style="color:var(--teal)">›</span> &lt;AP Name&gt; <span style="color:var(--teal)">›</span> General Tab <span style="color:var(--teal)">›</span> Tags</div>
+</div>
+<div class="subsec"><h3>Method 2 — Dynamic via RADIUS VSA</h3>
+<p>The RADIUS server can push tag assignments in the Access-Accept message using Cisco AVPair attributes. This allows different users/devices to trigger different AP tag configurations dynamically — useful for multi-tenant or context-aware deployments.</p>
+<div class="diagram">
+RADIUS Access-Accept includes:
+  Cisco-AVPair = <span class="dpr">"policy-tag=Tag-Corp"</span>
+  Cisco-AVPair = <span class="dpr">"site-tag=Tag-Site-HQ"</span>
+  Cisco-AVPair = <span class="dpr">"rf-tag=Tag-RF-High-Density"</span>
+</div>
+</div>
+<div class="subsec"><h3>Method 3 — Filter Rules (AP Filters)</h3>
+<p>Create rules based on AP name, AP model, or location to automatically assign tags when APs join. Navigate to <strong>Configuration &rsaquo; Wireless &rsaquo; Advanced &rsaquo; AP Filter</strong>.</p>
+</div>
+<div class="note info"><span class="ni">ℹ️</span><span>Priority: Static assignment > Dynamic RADIUS > Filter rules > Default tags. Static assignment always wins.</span></div>
+</div></div>
+
+<div class="card" id="defaults-trap">
+<div class="card-head"><div class="icon">⚠️</div><h2>The Default Tags Trap</h2></div>
+<div class="card-body">
+<p>The 9800 ships with three default tags pre-configured. Any AP that joins without an explicit tag assignment uses these defaults. This is convenient in a lab but <strong>dangerous in production</strong>.</p>
+<div class="diagram">
+<span class="dn">DANGER SCENARIO:</span>
+
+  Engineer adds WLAN "Corp-WiFi6" to default-policy-tag
+  to test on one AP.
+
+  Result: <span class="dv">EVERY AP</span> in the network (200+ APs) that hasn't been
+  explicitly tagged now broadcasts "Corp-WiFi6"
+  — including APs in the parking lot, reception,
+  conference rooms, and all branches.
+
+  <span class="dn">This is not a hypothetical — it has happened in production networks.</span>
+</div>
+<div class="note danger"><span class="ni">🚨</span><span><strong>Production Best Practice:</strong> Immediately after deployment, assign custom tags to all APs. Never use default-policy-tag for production SSIDs. Use default tags only as a safety net for untagged/new APs with no SSIDs (empty WLAN list).</span></div>
+<div class="note success"><span class="ni">✅</span><span>Recommended approach: Create a 'quarantine' Policy Tag with no WLANs mapped. Assign this to unmanaged APs so they join but broadcast nothing until explicitly configured.</span></div>
+</div></div>
+
+<!-- ═════════════════════ DESIGN & MIGRATION ═════════════════════ -->
+
+<div class="card" id="aireos-migration">
+<div class="card-head"><div class="icon">🔄</div><h2>AireOS AP Group → C9800 Configuration Mapping</h2></div>
+<div class="card-body">
+<p>The <strong>Policy Tag</strong> is the closest equivalent to the AireOS <strong>AP Group</strong> — it defines which SSIDs an AP broadcasts. However, the AireOS AP Group settings are now distributed across all three C9800 tags:</p>
+<table class="field-table"><thead><tr><th>AireOS AP Group Setting</th><th>C9800 Equivalent</th><th>Tag / Profile</th></tr></thead><tbody>
+<tr><td class="fn">List of WLANs + Interface/VLAN mapping</td><td>WLAN Profile → Policy Profile mappings</td><td class="def">Policy Tag</td></tr>
+<tr><td class="fn">General settings (coverage hole, etc.)</td><td>General settings</td><td class="def">Policy Tag</td></tr>
+<tr><td class="fn">RLAN Settings</td><td>RLAN settings</td><td class="def">Policy Tag</td></tr>
+<tr><td class="fn">802.11a / 802.11b RF Profile</td><td>RF Profile 2.4 GHz + 5 GHz</td><td class="def">RF Tag</td></tr>
+<tr><td class="fn">Hyperlocation / Location</td><td>Hyperlocation</td><td class="def">Site Tag</td></tr>
+<tr><td class="fn">Intelligent Capture (iCap)</td><td>Intelligent Capture</td><td class="def">Site Tag</td></tr>
+<tr><td class="fn">FlexConnect Group</td><td>Site Tag (Enable Local Site = OFF) + Flex Profile</td><td class="def">Site Tag</td></tr>
+<tr><td class="fn">CAPWAP timers, AP dot1x, Backup WLC</td><td>AP Join Profile</td><td class="def">Site Tag (via AP Join Profile)</td></tr>
+</tbody></table>
+<div class="note info"><span class="ni">ℹ️</span><span><strong>Key difference from AireOS:</strong> In AireOS, FlexConnect is a mode configured at the AP level. In C9800, it is a <em>site-level configuration</em> — all APs assigned to a Site Tag with "Enable Local Site" unchecked automatically become FlexConnect APs.</span></div>
+<div class="note success"><span class="ni">✅</span><span>When migrating APs from AireOS to C9800, the AP carries no tag information — it will receive default tags unless static or filter-based tag assignment is pre-configured on the C9800 controller.</span></div>
+<div class="note warning"><span class="ni">⚠️</span><span><strong>CAPWAP restart behavior:</strong> Changing the <em>tag assigned to an AP</em> triggers a CAPWAP restart (~20–25 sec downtime). Changing a <em>setting within an already-assigned profile</em> does NOT cause a CAPWAP disconnect — the change takes effect immediately.</span></div>
+</div></div>
+
+<div class="card" id="tag-sources-persistency">
+<div class="card-head"><div class="icon">🔖</div><h2>Tag Sources, Priority &amp; AP Tag Persistency</h2></div>
+<div class="card-body">
+<div class="subsec"><h3>Tag Source Priority (highest → lowest)</h3></div>
+<table class="field-table"><thead><tr><th>Priority</th><th>Source</th><th>Description</th></tr></thead><tbody>
+<tr><td class="fn">1 — Highest</td><td>Static</td><td>Admin manually assigns tags per AP (stored by Ethernet MAC). Always honored when that AP joins this controller.</td></tr>
+<tr><td class="fn">2</td><td>Location</td><td>Internal C9800 construct used in the Basic Setup WebUI wizard. Groups three tags and assigns APs to a named location. Ignore unless using Basic Setup flow.</td></tr>
+<tr><td class="fn">3</td><td>Filter</td><td>Regex rules applied to AP names as they join. Useful for brownfield migrations where APs already have structured names (e.g. <code>AP_Floor1_*</code>). GUI: <strong>Configuration › Tags &amp; Profiles › Tags › AP › Filter</strong></td></tr>
+<tr><td class="fn">4</td><td>AP (saved on AP)</td><td>Tags saved on the AP itself via the tag persistency feature or exec command. Honored if no Static/Filter mapping exists on the controller.</td></tr>
+<tr><td class="fn">5 — Lowest</td><td>Default</td><td>Fallback when no explicit mapping exists. AP receives default-policy-tag, default-site-tag, default-rf-tag.</td></tr>
+</tbody></table>
+<div class="subsec"><h3>AP Tag Persistency (Release 17.6+)</h3></div>
+<p>Starting with IOS-XE 17.6, configured tags are <strong>automatically saved on the AP</strong>. This is critical for N+1 HA failover and AP migration between controllers — the AP carries its tag assignment with it.</p>
+<div class="diagram">
+<div class="dt">Enable tag persistency globally (17.6+):</div>
+C9800(config)#<span class="dpr">ap tag persistency enable</span>
+
+<span class="dn">  Before 17.6 — save tags to AP manually (per AP):</span>
+c9800-1#<span class="dpr">ap name</span> &lt;APname&gt; <span class="dpr">write tag-config</span>
+<span class="dn">  (Available in GUI per-AP from release 17.4.1)</span>
+
+<span class="dn">  Check tag assignments and source:</span>
+C9800#<span class="dpr">show ap tag summary</span>
+
+<span class="dn">  Validate all tag/profile configurations:</span>
+C9800#<span class="dpr">wireless config validate</span>
+</div>
+<div class="subsec"><h3>Moving APs Between Controllers — What to Expect</h3></div>
+<ul>
+<li>AP holds no tag info AND no mapping on new WLC → AP gets <strong>default tags</strong> (may broadcast wrong/no SSIDs)</li>
+<li>Both WLCs have identical AP-to-tag mapping (static, location, or filter) → tags are <strong>preserved</strong></li>
+<li>Tags are saved on the AP and the tags exist on the new controller with no higher-priority override → tags are <strong>preserved</strong></li>
+<li>Tags saved on AP but the tags don't exist on new controller → AP falls back to <strong>default tags</strong></li>
+<li>Tag name matches but profile settings differ → AP operates with the <strong>new controller's profile settings</strong></li>
+</ul>
+<div class="note info"><span class="ni">ℹ️</span><span>This applies to APs moving from primary to secondary controller during N+1 redundancy failover. Pre-configure matching tag mappings on both controllers, or use tag persistency to avoid SSID disruption.</span></div>
+<div class="subsec"><h3>Bulk Assignment via CSV Import</h3></div>
+<p>For large deployments, import a CSV file: <strong>Configuration › Tags &amp; Profiles › Tags › AP tab › Static tab › Select File</strong></p>
+<div class="diagram">
+<span class="dn">CSV format: AP Ethernet MAC, policy tag, site tag, RF tag</span>
+<span class="dpr">b0e8.6fd8.61e0</span>,OEAP-policy-tag,OEAP-site,default-rf-tag
+<span class="dpr">c4f7.d54d.0b7c</span>,OEAP-policy-tag,OEAP-site,default-rf-tag
+</div>
+</div></div>
+
+<div class="card" id="wncd-design">
+<div class="card-head"><div class="icon">⚙️</div><h2>WNCd Architecture &amp; Site Tag Design (Local Mode APs)</h2></div>
+<div class="card-body">
+<p>The C9800 runs a multiprocess architecture. The process responsible for AP and client sessions is the <strong>Wireless Network Controller daemon (WNCd)</strong>. The number of WNCd instances determines parallelism — and site tag assignment determines which WNCd manages each AP.</p>
+<table class="field-table"><thead><tr><th>Platform</th><th>WNCd Instances</th></tr></thead><tbody>
+<tr><td class="fn">EWC (on AP or C9k switch)</td><td>1</td></tr>
+<tr><td class="fn">C9800-L</td><td>1</td></tr>
+<tr><td class="fn">C9800-CL (small)</td><td>1</td></tr>
+<tr><td class="fn">C9800-CL (medium)</td><td>3</td></tr>
+<tr><td class="fn">C9800-40</td><td>5</td></tr>
+<tr><td class="fn">C9800-CL (large)</td><td>7</td></tr>
+<tr><td class="fn">C9800-80</td><td>8</td></tr>
+</tbody></table>
+<div class="diagram">
+C9800#<span class="dpr">show processes platform | include wncd</span>
+</div>
+<div class="note warning"><span class="ni">⚠️</span><span><strong>default-site-tag distributes APs round-robin across all WNCd processes.</strong> When clients roam between APs on different WNCds, interprocess communication is required — functional, but not optimal for performance or fast roaming.</span></div>
+<div class="note success"><span class="ni">✅</span><span><strong>Recommendation:</strong> Use custom named site tags. APs in the same site tag land on the same WNCd → all roaming is intra-WNCd (intraprocess) → lower latency, less CPU overhead, and better fast-roaming support.</span></div>
+<div class="subsec"><h3>Site Tag Design Recommendations (Local Mode)</h3></div>
+<ol>
+<li>Use <strong>custom site tags</strong> — avoid default-site-tag when roaming or fast roaming is required</li>
+<li>Assign <strong>all APs in the same roaming domain</strong> to the same site tag</li>
+<li>Target <strong>~500 APs per site tag</strong> for best performance (applies to all C9800 form factors)</li>
+<li>Do not exceed the platform-specific maximums in the table below</li>
+<li>In high-density deployments, use the platform-recommended number of site tags and distribute APs evenly</li>
+</ol>
+<table class="field-table"><thead><tr><th>Platform</th><th>Max APs per Site Tag (Local)</th><th>Recommended Number of Site Tags</th></tr></thead><tbody>
+<tr><td class="fn">C9800-80</td><td>1600</td><td class="def">8 or multiples (16, 24…)</td></tr>
+<tr><td class="fn">C9800-CL (large)</td><td>1600</td><td class="def">7 or multiples (14, 21…)</td></tr>
+<tr><td class="fn">C9800-40</td><td>800</td><td class="def">5 or multiples (10, 15…)</td></tr>
+<tr><td class="fn">C9800-CL (medium)</td><td>1600</td><td class="def">3 or multiples (6, 9…)</td></tr>
+<tr><td class="fn">Any other C9800</td><td>Equal to max APs supported by platform</td><td class="def">—</td></tr>
+</tbody></table>
+<div class="note info"><span class="ni">ℹ️</span><span><strong>802.11k/v note:</strong> Before release 17.6, 802.11k/v neighbor assist only works within the same site tag (same WNCd). Seamless roaming with 802.11r/OKC/CCKM works across site tags regardless. This limitation is resolved in 17.6.1 (manual check) and 17.7.1 (automatic).</span></div>
+<div class="note success"><span class="ni">✅</span><span>Using Cisco DNA Center (release 2.1.x+) automates site tag assignment — it applies the 500 AP/site-tag rule automatically, creates additional site tags when needed, and can be overridden from release 2.2.2+.</span></div>
+</div></div>
+
+<div class="card" id="roaming-policy-tags">
+<div class="card-head"><div class="icon">🔀</div><h2>Roaming Between Policy Tags — wireless client vlan-persistent</h2></div>
+<div class="card-body">
+
+<div class="subsec"><h3>The Problem: Slow Roam Across Different Policy Profiles</h3></div>
+<p>When a client roams between two APs where the <strong>same SSID is mapped to different Policy Profile names</strong>, the C9800 triggers a full reauthentication by design — the controller wants to re-evaluate the client's policy before allowing access. The side effect is a 2–5 second connectivity gap that breaks VoIP calls and interrupts TCP sessions.</p>
+<div class="diagram">
+<span class="dv">WITHOUT vlan-persistent — slow roam (full reauthentication):</span>
+
+  Building A APs  →  Policy Tag A  →  Corp SSID  →  <span class="dv">Policy-Corp-BldgA</span>  (VLAN 10)
+  Building B APs  →  Policy Tag B  →  Corp SSID  →  <span class="dv">Policy-Corp-BldgB</span>  (VLAN 20)
+
+  Client roams Bldg-A → Bldg-B:
+    1. 802.11 reassociation
+    2. <span class="dv">Full 802.1X EAP exchange</span>   ← 2–5 seconds, RADIUS round-trip
+    3. <span class="dv">New DHCP lease</span>               ← client gets new IP on VLAN 20
+    4. <span class="dv">TCP sessions broken</span>          ← VoIP call drops, SSH disconnects
+    5. New policy profile applied
+
+<span class="da">WITH vlan-persistent — seamless roam:</span>
+
+  Same policy tag / profile setup as above
+  Client roams Bldg-A → Bldg-B:
+    1. 802.11 reassociation
+    2. WLC compares policy profiles  ← only VLAN differs → allowed
+    3. <span class="da">Client KEEPS original IP on VLAN 10</span>
+    4. Target profile ACL applied immediately
+    5. <span class="da">TCP sessions survive</span>          ← VoIP call continues
+</div>
+<div class="note info"><span class="ni">ℹ️</span><span>Slow roam is by design when policy profiles <em>fundamentally</em> differ. <code>wireless client vlan-persistent</code> only bypasses reauthentication when the difference is in <strong>allowed attributes</strong> (VLAN, ACL, etc.). It does not suppress reauthentication when security parameters change.</span></div>
+
+<div class="subsec"><h3>How wireless client vlan-persistent Works Internally</h3></div>
+<p>At roam time the WLC performs a <strong>policy profile compatibility check</strong> between the source and target profiles:</p>
+<ol>
+<li>Client sends 802.11 Reassociation Request to the new AP</li>
+<li>C9800 identifies the target AP's Policy Tag → Policy Profile</li>
+<li>WLC compares source and target policy profiles attribute by attribute</li>
+<li>If <em>only allowed-to-differ attributes</em> differ → seamless migration (PMK reused, no new EAP)</li>
+<li>The client retains its original VLAN and IP address — "persistent VLAN"</li>
+<li>New ACLs from the target profile are applied to the client session immediately</li>
+</ol>
+<div class="note info"><span class="ni">ℹ️</span><span>The feature name says "vlan" but VLAN is just the most common use case. ACL-only differences (same VLAN, different ACL) also benefit from this feature — client has no connectivity gap while the new ACL takes effect.</span></div>
+
+<div class="subsec"><h3>Attributes That CAN Differ — Seamless Roam Allowed</h3></div>
+<table class="field-table"><thead><tr><th>Attribute</th><th>Behavior After Roam</th></tr></thead><tbody>
+<tr><td class="fn">Client VLAN</td><td>Client retains original VLAN and IP address (the "persistent" part). New VLAN only takes effect after next DHCP renew or forced reassociation.</td></tr>
+<tr><td class="fn">VLAN Group</td><td>Client retains the specific VLAN originally assigned from the group; does not re-roll round-robin.</td></tr>
+<tr><td class="fn">IPv4 ACL (input/output)</td><td>New ACL replaces the old one immediately with no client disruption.</td></tr>
+<tr><td class="fn">IPv6 ACL (input/output)</td><td>New ACL applied immediately.</td></tr>
+<tr><td class="fn">Session timeout / Idle timeout</td><td>New timeout values take effect from the moment of roam.</td></tr>
+<tr><td class="fn">Local subscriber policy name</td><td>Updated policy applied after roam.</td></tr>
+<tr><td class="fn">mDNS service policy</td><td>New mDNS policy takes effect after roam.</td></tr>
+</tbody></table>
+
+<div class="subsec"><h3>Attributes That CANNOT Differ — Still Forces Slow Roam</h3></div>
+<table class="field-table"><thead><tr><th>Attribute</th><th>Why it forces full reauthentication</th></tr></thead><tbody>
+<tr><td class="fn">Switching mode (Central ↔ Local)</td><td>Fundamental data-plane change — data path must be renegotiated via CAPWAP.</td></tr>
+<tr><td class="fn">Security type (802.1X ↔ PSK)</td><td>Incompatible key derivation — new PMK required, full auth exchange mandatory.</td></tr>
+<tr><td class="fn">Fabric mode vs non-fabric</td><td>VXLAN/LISP session context is not transferable between modes.</td></tr>
+<tr><td class="fn">AVC profile (if it differs)</td><td>Deep packet inspection context cannot be migrated mid-session.</td></tr>
+<tr><td class="fn">Mobility anchor (if target anchor differs)</td><td>Anchor controller owns the client session; changing anchors requires a new session.</td></tr>
+</tbody></table>
+
+<div class="subsec"><h3>Configuration — Step by Step (CLI)</h3></div>
+<div class="diagram">
+<span class="dn">Step 1: Create policy profiles differing only in VLAN and/or ACL</span>
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Corp-BldgA
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">central dhcp</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 10
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Corp-BldgB
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">central dhcp</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 20
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+<span class="dn">Step 2: Create policy tags — same WLAN, different policy profiles per building</span>
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Policy-BldgA
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> Corp-WiFi6 <span class="dpr">policy</span> Policy-Corp-BldgA
+
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Policy-BldgB
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> Corp-WiFi6 <span class="dpr">policy</span> Policy-Corp-BldgB
+
+<span class="dn">Step 3: Assign policy tags to APs (per AP MAC)</span>
+C9800(config)#<span class="dpr">ap</span> 00a0.e511.1234
+C9800(config-ap-tag)#  <span class="dpr">policy-tag</span> Tag-Policy-BldgA
+
+C9800(config)#<span class="dpr">ap</span> 00a0.e511.5678
+C9800(config-ap-tag)#  <span class="dpr">policy-tag</span> Tag-Policy-BldgB
+
+<span class="dn">Step 4: Enable vlan-persistent globally (one command, no restart needed)</span>
+C9800(config)#<span class="dpr">wireless client vlan-persistent</span>
+</div>
+
+<div class="subsec"><h3>Verification Commands</h3></div>
+<div class="diagram">
+<span class="dn">Confirm feature is active:</span>
+C9800#<span class="dpr">show running-config | include vlan-persistent</span>
+  wireless client vlan-persistent
+
+<span class="dn">Verify client retained original VLAN after roaming to Building B AP:</span>
+C9800#<span class="dpr">show wireless client detail mac</span> aabb.cc11.2233
+  ...
+  Policy Profile       : <span class="da">Policy-Corp-BldgB</span>   ← NEW profile from Bldg B AP
+  VLAN                 : <span class="da">10</span>                   ← ORIGINAL VLAN retained!
+  IPv4 Address         : <span class="da">10.10.0.45</span>          ← SAME IP as before roam
+  ...
+
+<span class="dn">Roaming statistics (counts seamless vs full roams):</span>
+C9800#<span class="dpr">show wireless statistics client roaming</span>
+
+<span class="dn">Live debug for a specific client roam event:</span>
+C9800#<span class="dpr">debug wireless mac</span> aabb.cc11.2233 <span class="dpr">monitor-time 100</span>
+</div>
+
+<div class="note warning"><span class="ni">⚠️</span><span><strong>Intra-controller only.</strong> This feature applies to roaming between APs managed by the <em>same</em> C9800 WLC. For inter-controller roaming (client moving to APs on a different WLC), a mobility group is required regardless of this setting.</span></div>
+<div class="note warning"><span class="ni">⚠️</span><span><strong>Client keeps OLD VLAN/IP.</strong> "Persistent" means the original VLAN sticks — the client does NOT migrate to the target building's VLAN. If IP addressing per location is strictly required for security or network segmentation, do not use this feature — use RADIUS VLAN override or VLAN Groups instead.</span></div>
+
+<div class="subsec"><h3>Multiple Subnets on One SSID — Three Approaches Compared</h3></div>
+<table class="field-table"><thead><tr><th>Approach</th><th>How it works</th><th>Best for</th><th>Roaming behavior</th></tr></thead><tbody>
+<tr><td class="fn">VLAN AAA Override</td><td>RADIUS assigns VLAN per user in Access-Accept</td><td>User-identity-based segmentation (same SSID, different user groups)</td><td>Seamless — user retains RADIUS-assigned VLAN across roam</td></tr>
+<tr><td class="fn">VLAN Group (VLAN Select)</td><td>VLANs pooled; clients assigned round-robin at join time. GUI: Configuration › Layer2 › VLAN › VLAN Group</td><td>IP address pool scaling — no location logic needed</td><td>Seamless — client retains assigned VLAN from pool</td></tr>
+<tr><td class="fn">Policy Tags per zone + vlan-persistent</td><td>Different policy profiles (VLAN/ACL) per AP zone, same SSID. Requires IOS-XE 17.3+</td><td>Location-based policy enforcement with seamless roaming</td><td>Seamless — client retains original zone's VLAN, new ACL applies</td></tr>
+</tbody></table>
+</div></div>
+
+<div class="card" id="flex-site-design">
+<div class="card-head"><div class="icon">🏭</div><h2>FlexConnect Site Tag Design Guidelines</h2></div>
+<div class="card-body">
+<p>For FlexConnect deployments, the Site Tag defines the <strong>fast-roaming domain</strong> — client keys (PMK cache) are distributed only among APs within the same Flex site tag.</p>
+<table class="field-table"><thead><tr><th>Rule</th><th>Detail</th></tr></thead><tbody>
+<tr><td class="fn">Never use default-site-tag for Flex</td><td>Client keys are NOT distributed among APs in default-site-tag. 802.11r, CCKM, and OKC fast roaming will not work. Always use custom named site tags.</td></tr>
+<tr><td class="fn">One site tag per physical location</td><td>Don't share a site tag across multiple geographically separate branches. Cross-branch key distribution wastes AP memory for clients that will never roam there.</td></tr>
+<tr><td class="fn">AP limit per Flex site tag</td><td>Max 100 APs per site tag for seamless fast roaming (extended to 300 with release 17.8). Roaming across Flex site tags = full client reauthentication.</td></tr>
+<tr><td class="fn">Unique site tag names per branch</td><td>Required for overlapping IP address support across FlexConnect sites. Same site tag name = same roaming domain in the controller's view.</td></tr>
+</tbody></table>
+<div class="subsec"><h3>Overlapping IP Address Support (Release 17.3.3+)</h3></div>
+<p>C9800 supports clients with the same IP address at different branch locations when:</p>
+<ul>
+<li>Policy profile is configured for <strong>FlexConnect local switching</strong></li>
+<li>Each branch location uses its own <strong>unique named site tag</strong></li>
+</ul>
+<div class="note warning"><span class="ni">⚠️</span><span>Overlapping IP addresses are NOT supported for centrally switched policy profiles — regardless of AP mode (local or FlexConnect).</span></div>
+<div class="subsec"><h3>Mixed Campus + Branch Deployment</h3></div>
+<p>When a single deployment combines a campus (local-mode APs) with many small branches (FlexConnect APs), site tag design constraints conflict:</p>
+<ul>
+<li><strong>Campus (local mode):</strong> few large site tags (~500 APs each, aligned to WNCd count)</li>
+<li><strong>Branches (FlexConnect):</strong> many small site tags (one per branch, often only 5–20 APs each)</li>
+</ul>
+<div class="note success"><span class="ni">✅</span><span><strong>Best practice for mixed deployments:</strong> Use two separate WLC instances — one dedicated to campus APs (optimized for large site tags) and one for all branches, potentially a C9800-CL to optimize licensing cost.</span></div>
+</div></div>
+
+<!-- ═════════════════════ EXAMPLES ═════════════════════ -->
+
+<div class="egcard" id="eg1">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(0,188,235,.2)">🏢</div>
+  <h3>Example 1 — Corporate SSID with Central Switching (Local-Mode AP)</h3>
+  <span class="mode mode-loc">Local Mode</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> HQ building with direct layer-2 connectivity between APs and the WLC (same campus). All client traffic must reach the WLC for security inspection and centralized routing.</p>
+<div class="diagram">
+<div class="dt">Traffic Flow — Central Switching</div>
+
+  [Client] ──802.11──&gt; [AP]
+                         │
+                         │ CAPWAP tunnel (UDP 5247)
+                         ▼
+                       [WLC]
+                         │
+                         │ VLAN 10 (Corp)
+                         ▼
+                      [Core Switch] ──&gt; Internet / DC
+
+<span class="dn">  Client data rides inside CAPWAP all the way to the WLC</span>
+</div>
+<p><strong>Required configuration:</strong></p>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">WLAN Profile</td><td>Corp-WiFi6 | Security: WPA3-SAE | Status: Enabled</td></tr><tr><td class="fn">Policy Profile</td><td>Policy-Corp | VLAN: 10 | Central Switching: ON | Central DHCP: ON</td></tr><tr><td class="fn">Policy Tag</td><td>Tag-Corp | Mapping: Corp-WiFi6 -> Policy-Corp</td></tr><tr><td class="fn">Site Tag</td><td>Tag-Site-HQ | AP Join Profile: APJoin-HQ | Flex Profile: NONE | Local Site: ✓</td></tr><tr><td class="fn">RF Tag</td><td>Tag-RF-HQ | 5G Profile: RF-5G-Corp | 2.4G Profile: RF-2.4-Corp</td></tr></tbody></table>
+<div class="note success"><span class="ni">✅</span><span>Best for: HQ, campus, data center floors — anywhere APs have low-latency, high-bandwidth connectivity to the WLC.</span></div>
+</div></div>
+
+<div class="egcard" id="eg2">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(255,115,0,.2)">🏭</div>
+  <h3>Example 2 — FlexConnect Local Switching for a Remote Branch</h3>
+  <span class="mode mode-flex">FlexConnect</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> Remote branch office connected to HQ via WAN (MPLS or SD-WAN). Client traffic should NOT traverse the WAN — it must be switched locally at the branch to keep latency low and WAN bandwidth free.</p>
+<div class="diagram">
+<div class="dt">Traffic Flow — FlexConnect Local Switching</div>
+
+  Branch Site                    HQ / WLC
+  ─────────────────              ────────────────
+  [Client] ──802.11──&gt; [AP]      [WLC]
+                         │  ◄──── CAPWAP Control only ───►
+                         │        (no data traffic on WAN)
+                         │
+                    [Branch Switch]
+                         │
+                    VLAN 100 (local)
+                         │
+                    [Branch Router] ──&gt; Internet (local breakout)
+
+<span class="dn">  Only CAPWAP control packets cross the WAN — data stays local</span>
+</div>
+<p><strong>Required configuration:</strong></p>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">WLAN Profile</td><td>Corp-WiFi6 | WPA2-PSK or 802.1X</td></tr><tr><td class="fn">Flex Profile</td><td>Flex-Branch | VLAN override: Corp-WiFi6 -> VLAN 100 (branch local VLAN)</td></tr><tr><td class="fn">Policy Profile</td><td>Policy-Corp | Central Switching: OFF | Local Switching: ON | Local DHCP: ON</td></tr><tr><td class="fn">Site Tag</td><td>Tag-Site-Branch | AP Join Profile: APJoin-Branch | Flex Profile: Flex-Branch | Local Site: ✗</td></tr></tbody></table>
+<div class="note success"><span class="ni">✅</span><span>WAN failover: if the WAN link fails, connected clients remain on the network. The AP enters standalone mode and continues local switching. New client auth uses cached credentials (up to 100 MACs) or local RADIUS.</span></div>
+<div class="note warning"><span class="ni">⚠️</span><span>The VLAN number in the Flex Profile VLAN override does NOT need to match the WLC-side VLAN. Branch VLAN 100 is completely independent of the central VLAN 10 at HQ.</span></div>
+</div></div>
+
+<div class="egcard" id="eg3">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(108,192,74,.2)">🔀</div>
+  <h3>Example 3 — Dual SSID: Corporate (Central) + Guest (Local) on Same AP</h3>
+  <span class="mode mode-loc">Mixed Mode</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> A single AP must serve two SSIDs simultaneously — one corporate SSID with central switching to VLAN 10 for secure access, and one guest SSID with local switching directly to VLAN 200 at the AP for internet breakout.</p>
+<div class="diagram">
+<div class="dt">Same AP — Two Traffic Paths</div>
+
+                [AP]
+               /       Corp-WiFi6 /      \ Guest-WiFi
+             /            CAPWAP tunnel    Local switch
+             │              │
+           [WLC]      [Access Switch]
+             │              │
+          VLAN 10        VLAN 200
+             │              │
+        Corporate         Guest DMZ /
+          Network          Internet
+
+<span class="dn">  One AP, one Policy Tag, two WLAN->Policy mappings, two traffic paths</span>
+</div>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">Policy Tag</td><td>Tag-AP-Mixed</td></tr><tr><td class="fn">Mapping 1</td><td>Corp-WiFi6 -> Policy-Corp (VLAN 10, Central Switching, 802.1X)</td></tr><tr><td class="fn">Mapping 2</td><td>Guest-WiFi -> Policy-Guest (VLAN 200, Local Switching, Web Auth)</td></tr><tr><td class="fn">Site Tag</td><td>Tag-Site-HQ (Local mode — no Flex Profile needed for local switching on Local-mode AP)</td></tr></tbody></table>
+<div class="note info"><span class="ni">ℹ️</span><span>On a Local-mode AP, local switching in the Policy Profile means the AP natively bridges traffic to the local VLAN without CAPWAP tunneling. This is different from FlexConnect local switching — it works even without a Flex Profile.</span></div>
+</div></div>
+
+<div class="egcard" id="eg4">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(255,115,0,.2)">🔌</div>
+  <h3>Example 4 — Branch WAN Failover with Local Auth</h3>
+  <span class="mode mode-flex">FlexConnect</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> A retail branch with strict uptime requirements. When the WAN fails, existing clients stay connected AND new clients must be able to authenticate (not just cached ones). A local RADIUS server at the branch handles authentication during outage.</p>
+<div class="diagram">
+<div class="dt">Normal Operation (WAN up)</div>
+
+  [Client] -> [AP] -> CAPWAP Control -> [WLC] -> RADIUS 10.1.1.100
+                   ↘ Local data switch (no WAN for data)
+
+<div class="dt" style="margin-top:12px">WAN Failover (Standalone mode)</div>
+
+  [Client] -> [AP] -> Local RADIUS 192.168.10.50 (at branch)
+                   ↘ Local data switch continues uninterrupted
+
+<span class="dn">  Clients don't notice the WAN failure — zero downtime</span>
+</div>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">Flex Profile</td><td>Flex-Retail | Local RADIUS: 192.168.10.50 (branch RADIUS) | RADIUS fallback: local</td></tr><tr><td class="fn">Site Tag</td><td>Tag-Site-Retail | Flex Profile: Flex-Retail | Local Site: ✗</td></tr><tr><td class="fn">Policy Profile</td><td>Policy-Corp | Local Switching: ON | Local DHCP: ON</td></tr></tbody></table>
+<div class="note success"><span class="ni">✅</span><span>Local RADIUS in the Flex Profile enables authentication of new clients during WAN outage. Without it, only the 100 cached client credentials can authenticate.</span></div>
+</div></div>
+
+<div class="egcard" id="eg5">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(255,115,0,.2)">🔒</div>
+  <h3>Example 5 — FlexConnect Central Switching (Secure Corporate over WAN)</h3>
+  <span class="mode mode-flex">FlexConnect</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> A branch where the corporate SSID must route ALL client traffic back through the HQ WLC (for firewall/IDS inspection), while a second guest SSID locally switches to the internet. Both SSIDs run on the same FlexConnect AP.</p>
+<div class="diagram">
+<div class="dt">FlexConnect — Mixed Central + Local Switching</div>
+
+  Branch [AP] in FlexConnect mode
+     │
+     ├── Corp-WiFi6 -> CAPWAP DATA tunnel -> [WLC at HQ] -> VLAN 10 (inspected)
+     │
+     └── Guest-WiFi -> Local switch -> Branch VLAN 200 -> Internet (direct)
+
+<span class="dn">  FlexConnect supports per-WLAN switching mode independently</span>
+</div>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">Policy Profile Corp</td><td>Policy-Corp-Flex | Central Switching: ON | VLAN: 10 (HQ VLAN, tunneled back)</td></tr><tr><td class="fn">Policy Profile Guest</td><td>Policy-Guest-Flex | Local Switching: ON | VLAN: 200 (branch local)</td></tr><tr><td class="fn">Flex Profile</td><td>Flex-Branch | VLAN override for Guest-WiFi only: Guest-WiFi -> VLAN 200</td></tr><tr><td class="fn">Site Tag</td><td>Tag-Site-Branch | Flex Profile: Flex-Branch | Local Site: ✗</td></tr></tbody></table>
+<div class="note warning"><span class="ni">⚠️</span><span>When Corp SSID uses central switching in FlexConnect mode, client traffic DOES traverse the WAN. Ensure adequate WAN bandwidth and QoS prioritization for wireless traffic (DSCP EF for voice, AF41 for video).</span></div>
+</div></div>
+
+<div class="egcard" id="eg6">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(226,35,26,.2)">🚨</div>
+  <h3>Example 6 — The Default Tag Trap (What Goes Wrong)</h3>
+  <span class="mode" style="background:rgba(226,35,26,.3);color:#e2231a">DANGER</span>
+</div>
+<div class="egbody">
+<p><strong>Scenario:</strong> An engineer adds a new SSID to the default-policy-tag to quickly test it on one AP, not realizing the implications.</p>
+<div class="diagram">
+<span class="dv">Before (safe):</span>
+  default-policy-tag  ->  <span class="dn">empty (no WLANs mapped)</span>
+  200 APs use default-policy-tag  ->  no SSIDs broadcast  ✓
+
+<span class="dv">Engineer adds test WLAN:</span>
+  default-policy-tag  ->  TestSSID -> Policy-Test
+
+<span class="dv">Result (unintended):</span>
+  <span class="dv">ALL 200 APs</span> now broadcast "TestSSID" including:
+  • Parking lot APs  • Reception APs
+  • Executive floor  • Remote branches
+  • Conference rooms • Server room APs
+
+<span class="dn">  Immediate security exposure — unauthorized access point on every AP</span>
+</div>
+<div class="note danger"><span class="ni">🚨</span><span>Never add production or test WLANs to the default-policy-tag unless you explicitly want ALL untagged APs to broadcast that SSID.</span></div>
+<div class="note success"><span class="ni">✅</span><span>Fix: Create a custom Policy Tag for testing with only the specific test APs assigned to it. Keep default-policy-tag empty (or with a dead-end Policy Profile that has no VLAN).</span></div>
+</div></div>
+
+<div class="egcard" id="eg7">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(0,188,235,.2)">🔄</div>
+  <h3>Example 7 — Dynamic TAG Assignment via RADIUS</h3>
+  <span class="mode mode-loc">Dynamic</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> A multi-tenant building where different floors are managed by different tenants. When an AP joins, the RADIUS server assigns tags based on the AP's identity, placing it in the correct tenant's configuration context automatically.</p>
+<div class="diagram">
+<div class="dt">Dynamic TAG Assignment Flow</div>
+
+  AP boots and sends CAPWAP Join Request to WLC
+           │
+           ▼
+  WLC queries RADIUS for AP identity
+  (AP MAC / AP name as username)
+           │
+           ▼
+  RADIUS returns Access-Accept with VSA:
+    Cisco-AVPair = <span class="dpr">"policy-tag=Tag-Tenant-A"</span>
+    Cisco-AVPair = <span class="dpr">"site-tag=Tag-Site-FloorA"</span>
+    Cisco-AVPair = <span class="dpr">"rf-tag=Tag-RF-High-Density"</span>
+           │
+           ▼
+  WLC applies tags -> AP broadcasts Tenant A SSIDs only
+</div>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">RADIUS Server</td><td>Must support Cisco-AVPair VSA (Vendor ID 9, Attribute 1)</td></tr><tr><td class="fn">VSA format</td><td>policy-tag=&lt;tag-name&gt; | site-tag=&lt;tag-name&gt; | rf-tag=&lt;tag-name&gt;</td></tr><tr><td class="fn">Fallback</td><td>If RADIUS does not return tag VSAs, default tags are applied</td></tr></tbody></table>
+<div class="note info"><span class="ni">ℹ️</span><span>Dynamic TAG assignment is especially powerful in managed service provider (MSP) environments and large campuses where manual AP tagging is impractical.</span></div>
+</div></div>
+
+<div class="egcard" id="eg8">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(108,192,74,.2)">🧱</div>
+  <h3>Example 8 — SD-Access / Fabric Mode</h3>
+  <span class="mode mode-fab">Fabric</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> Cisco SD-Access (DNA Center managed) deployment where wireless clients need VXLAN encapsulation, Scalable Group Tags (SGT), and integration with the fabric underlay/overlay.</p>
+<div class="diagram">
+<div class="dt">Fabric Mode Traffic Flow</div>
+
+  [Client] ──802.11──&gt; [AP]
+                         │
+                         │ CAPWAP to WLC
+                         ▼
+                       [WLC] ──── VXLAN VNI encapsulation ────&gt;
+                                  Scalable Group Tag (SGT)
+                                  LISP registration
+                         │
+                         ▼
+                  [Fabric Border / Edge Node]
+                         │
+                         ▼
+                  [SD-Access Fabric Overlay]
+</div>
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Description</th></tr></thead><tbody><tr><td class="fn">Fabric Profile</td><td>Configures VNID, SGT, LISP. Referenced by Site Tag.</td></tr><tr><td class="fn">Site Tag</td><td>Tag-Site-Fabric | AP Join Profile: APJoin-Fabric | Fabric Profile attached</td></tr><tr><td class="fn">Policy Profile</td><td>Policy-Fabric | Fabric: Enabled | SGT: assigned per WLAN</td></tr><tr><td class="fn">DNA Center</td><td>Manages tag-to-fabric mapping automatically via WLC API. Manual tag config not required.</td></tr></tbody></table>
+<div class="note info"><span class="ni">ℹ️</span><span>In SD-Access deployments, DNA Center (Catalyst Center) provisions the WLC automatically. Tags and profiles are pushed via RESTCONF/NETCONF — manual GUI configuration is typically not needed.</span></div>
+<div class="note warning"><span class="ni">⚠️</span><span>Fabric mode APs must be in a Site Tag that references a Fabric Profile, NOT a Flex Profile. Mixing Fabric and FlexConnect profiles in the same Site Tag is not supported.</span></div>
+</div></div>
+
+<div class="egcard" id="eg9">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(0,188,235,.2)">🎓</div>
+  <h3>Example 9 — University Multi-Building SSID with wireless client vlan-persistent</h3>
+  <span class="mode mode-loc">vlan-persistent</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> Large university campus with three buildings. All staff use one <code>UniWiFi-Staff</code> SSID (WPA2-Enterprise / 802.1X via ISE). The network team uses a separate /24 subnet per building for IP management. Professors carry laptops and phones between buildings all day — VoIP calls on Cisco Jabber must not drop at building boundaries.</p>
+
+<div class="subsec"><h4>Network Layout</h4></div>
+<div class="diagram">
+<div class="dt">Campus topology</div>
+
+  Building A APs  →  Tag-Policy-BldgA  →  Policy-Staff-BldgA  →  <span class="dpr">VLAN 110</span>  (10.11.0.0/24)
+  Building B APs  →  Tag-Policy-BldgB  →  Policy-Staff-BldgB  →  <span class="dpr">VLAN 120</span>  (10.12.0.0/24)
+  Building C APs  →  Tag-Policy-BldgC  →  Policy-Staff-BldgC  →  <span class="dpr">VLAN 130</span>  (10.13.0.0/24)
+
+  All buildings: same SSID "UniWiFi-Staff", same 802.1X security, same WLC
+  Difference: VLAN (and therefore IP subnet) per building only
+</div>
+
+<div class="subsec"><h4>The Problem (Before vlan-persistent)</h4></div>
+<div class="diagram">
+<span class="dv">Professor walks: Building A  →  Building B</span>
+
+  Laptop is on 10.11.0.87 / VLAN 110, Teams call active
+
+  Laptop associates to first Building B AP
+  └─ Building B AP has Policy-Staff-BldgB → VLAN 120 → <span class="dv">DIFFERENT profile name</span>
+
+  C9800 triggers slow roam:
+    ① Full 802.1X EAP/TLS exchange with ISE  (1–3 seconds)
+    ② DHCP request → new IP: 10.12.0.23      (0.5–1 second)
+    ③ Teams detects IP change → call drops    ✗
+    ④ SSH / database sessions terminate       ✗
+</div>
+
+<div class="subsec"><h4>The Solution (With vlan-persistent)</h4></div>
+<div class="diagram">
+<span class="da">Same walk: Building A  →  Building B</span>
+
+  Laptop associates to first Building B AP
+  └─ C9800 compares profiles: only VLAN differs → allowed
+
+  Seamless migration:
+    ① PMK reused from original authentication   ← no EAP round-trip to ISE
+    ② Client retains IP: <span class="da">10.11.0.87 / VLAN 110</span>
+    ③ Teams call continues uninterrupted        ✓
+    ④ SSH sessions survive                      ✓
+
+  <span class="dn">Note: client stays on VLAN 110 even while in Building B</span>
+  <span class="dn">Building B's VLAN 120 is used only for newly joining clients</span>
+</div>
+
+<div class="subsec"><h4>CLI Configuration</h4></div>
+<div class="diagram">
+<span class="dn">Policy Profiles — identical except VLAN</span>
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Staff-BldgA
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">central dhcp</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 110
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Staff-BldgB
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">central dhcp</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 120
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Staff-BldgC
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">central dhcp</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 130
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+<span class="dn">Policy Tags — one per building, same WLAN profile in all</span>
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Policy-BldgA
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> UniWiFi-Staff <span class="dpr">policy</span> Policy-Staff-BldgA
+
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Policy-BldgB
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> UniWiFi-Staff <span class="dpr">policy</span> Policy-Staff-BldgB
+
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Policy-BldgC
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> UniWiFi-Staff <span class="dpr">policy</span> Policy-Staff-BldgC
+
+<span class="dn">Assign policy tags to APs (or use AP name filter for bulk)</span>
+C9800(config)#<span class="dpr">ap</span> &lt;BldgA-AP-MAC&gt;
+C9800(config-ap-tag)#  <span class="dpr">policy-tag</span> Tag-Policy-BldgA
+
+<span class="dn">Enable vlan-persistent — one global command, no reload</span>
+C9800(config)#<span class="dpr">wireless client vlan-persistent</span>
+</div>
+
+<div class="subsec"><h4>Verification After a Roam Event</h4></div>
+<div class="diagram">
+<span class="dn">Professor's laptop just roamed from Building A to Building B:</span>
+C9800#<span class="dpr">show wireless client detail mac</span> f4a5.b7c9.1234
+
+  Current AP       : AP-BldgB-Floor2-01          ← new AP (Building B)
+  Policy Profile   : Policy-Staff-<span class="da">BldgB</span>           ← new profile name
+  VLAN             : <span class="da">110</span>                         ← original VLAN retained!
+  IPv4 Address     : <span class="da">10.11.0.87</span>                 ← same IP as in Building A
+  Roam Type        : <span class="da">Fast Roam</span>                   ← no EAP exchange occurred
+</div>
+
+<table class="field-table"><thead><tr><th>Field / Setting</th><th>Value</th></tr></thead><tbody>
+<tr><td class="fn">WLAN Profile (all buildings)</td><td>UniWiFi-Staff | Security: WPA2-Enterprise 802.1X | PMF: Optional</td></tr>
+<tr><td class="fn">Policy Profile BldgA</td><td>Central switching | Central DHCP | VLAN 110</td></tr>
+<tr><td class="fn">Policy Profile BldgB</td><td>Central switching | Central DHCP | VLAN 120</td></tr>
+<tr><td class="fn">Policy Profile BldgC</td><td>Central switching | Central DHCP | VLAN 130</td></tr>
+<tr><td class="fn">Site Tag (all buildings)</td><td>Custom site tag per building | AP Join Profile: default-ap-profile | Local Site: ✓</td></tr>
+<tr><td class="fn">Global command</td><td><code>wireless client vlan-persistent</code></td></tr>
+</tbody></table>
+
+<div class="note success"><span class="ni">✅</span><span>VoIP calls survive building transitions. The professor's device keeps VLAN 110 and 10.11.0.87 for the entire work day regardless of which building they are in — VLAN assignment only changes on next full authentication (e.g., next morning).</span></div>
+<div class="note warning"><span class="ni">⚠️</span><span>If per-building IP addressing is required for <strong>security policy enforcement</strong> (e.g., building-specific firewall rules that depend on source IP), vlan-persistent defeats this segmentation. In that case use RADIUS VLAN Override instead — the RADIUS server assigns the correct VLAN based on the AP's NAS-Port-Id or Called-Station-Id attribute.</span></div>
+</div></div>
+
+<div class="egcard" id="eg10">
+<div class="eghead">
+  <div class="egicon" style="background:rgba(255,115,0,.2)">🏭</div>
+  <h3>Example 10 — Zone-Based ACL Enforcement with wireless client vlan-persistent</h3>
+  <span class="mode mode-loc">vlan-persistent</span>
+</div>
+<div class="egbody">
+<p><strong>Use case:</strong> A manufacturing company runs a single <code>CorpWiFi</code> SSID (WPA2-Enterprise) across three distinct zones in the same facility. All zones use <strong>VLAN 50</strong> — but each zone has different ACL restrictions for compliance and safety. Staff and engineers move between zones frequently and need seamless connectivity on their tablets and handheld scanners.</p>
+
+<div class="subsec"><h4>Zone Design</h4></div>
+<div class="diagram">
+<div class="dt">Zone layout — same VLAN, different ACLs</div>
+
+  Zone: Open Office     →  Policy-Corp-Office     →  VLAN 50, <span class="da">no ACL</span>
+                            Full corporate network access
+
+  Zone: Production Floor →  Policy-Corp-ProdFloor  →  VLAN 50, <span class="dpr">PROD-RESTRICT-ACL</span>
+                            Blocks: HR servers (10.0.50.0/24), Finance (10.0.60.0/24)
+                            Allows: Production systems, Internet
+
+  Zone: Receiving Dock  →  Policy-Corp-Dock        →  VLAN 50, <span class="dpr">DOCK-ACL</span>
+                            Allows: WMS server (10.100.10.5) only
+                            Blocks: everything else
+
+  All zones: same SSID "CorpWiFi", same 802.1X auth, same VLAN 50, same WLC
+</div>
+
+<div class="subsec"><h4>Without vlan-persistent — The Operational Problem</h4></div>
+<div class="diagram">
+<span class="dv">Engineer walks: Open Office  →  Production Floor</span>
+
+  Handheld scanner on 10.50.0.44 / VLAN 50, WMS query in progress
+
+  Scanner associates to Production Floor AP
+  └─ Policy profile name changed: Office ≠ ProdFloor → <span class="dv">slow roam triggered</span>
+
+  ① Full 802.1X exchange         (~2 seconds, scanner freezes)
+  ② DHCP — gets same VLAN 50     (may renew same IP or get new one)
+  ③ WMS query session terminated ✗
+  ④ Barcode scan lost            ✗
+  ⑤ PROD-RESTRICT-ACL eventually applied
+
+  <span class="dn">Engineers report: "scanner drops every time we step on the floor"</span>
+</div>
+
+<div class="subsec"><h4>With vlan-persistent — Seamless ACL Enforcement</h4></div>
+<div class="diagram">
+<span class="da">Same walk: Open Office  →  Production Floor</span>
+
+  C9800 compares Policy-Corp-Office vs Policy-Corp-ProdFloor:
+    VLAN: both 50               ← identical, no issue
+    ACL:  different             ← allowed-to-differ attribute
+
+  Seamless migration:
+    ① PMK reused                       ← no 802.1X exchange
+    ② Client retains IP: <span class="da">10.50.0.44</span>
+    ③ <span class="da">PROD-RESTRICT-ACL applied immediately</span>  ← ACL enforcement still works!
+    ④ WMS session continues            ✓
+    ⑤ Barcode scan uninterrupted       ✓
+</div>
+
+<div class="subsec"><h4>CLI Configuration</h4></div>
+<div class="diagram">
+<span class="dn">Define ACLs first (on the WLC or upstream switch)</span>
+C9800(config)#<span class="dpr">ip access-list extended</span> PROD-RESTRICT-ACL
+C9800(config-ext-nacl)#  <span class="dpr">deny</span>   ip any 10.0.50.0 0.0.0.255   <span class="dn">! HR servers</span>
+C9800(config-ext-nacl)#  <span class="dpr">deny</span>   ip any 10.0.60.0 0.0.0.255   <span class="dn">! Finance servers</span>
+C9800(config-ext-nacl)#  <span class="dpr">permit</span> ip any any
+
+C9800(config)#<span class="dpr">ip access-list extended</span> DOCK-ACL
+C9800(config-ext-nacl)#  <span class="dpr">permit</span> ip any host 10.100.10.5   <span class="dn">! WMS server only</span>
+C9800(config-ext-nacl)#  <span class="dpr">deny</span>   ip any any
+
+<span class="dn">Policy Profiles — same VLAN 50, different ACL per zone</span>
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Corp-Office
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 50
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>            <span class="dn">! no ACL — full access</span>
+
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Corp-ProdFloor
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 50
+C9800(config-wireless-policy)#  <span class="dpr">ipv4 acl</span> PROD-RESTRICT-ACL <span class="dpr">in</span>
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+C9800(config)#<span class="dpr">wireless profile policy</span> Policy-Corp-Dock
+C9800(config-wireless-policy)#  <span class="dpr">central switching</span>
+C9800(config-wireless-policy)#  <span class="dpr">vlan</span> 50
+C9800(config-wireless-policy)#  <span class="dpr">ipv4 acl</span> DOCK-ACL <span class="dpr">in</span>
+C9800(config-wireless-policy)#  <span class="dpr">no shutdown</span>
+
+<span class="dn">Policy Tags — one per zone</span>
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Zone-Office
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> CorpWiFi <span class="dpr">policy</span> Policy-Corp-Office
+
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Zone-ProdFloor
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> CorpWiFi <span class="dpr">policy</span> Policy-Corp-ProdFloor
+
+C9800(config)#<span class="dpr">wireless tag policy</span> Tag-Zone-Dock
+C9800(config-policy-tag)#  <span class="dpr">wlan</span> CorpWiFi <span class="dpr">policy</span> Policy-Corp-Dock
+
+<span class="dn">Assign APs to their zone policy tag (use AP filter for bulk)</span>
+<span class="dn">Example filter: all APs named "AP-ProdFloor-*" → Tag-Zone-ProdFloor</span>
+C9800(config)#<span class="dpr">ap filter name</span> ProdFloor-Filter
+C9800(config-ap-filter)#  <span class="dpr">ap name-regex</span> AP-ProdFloor-.*
+C9800(config-ap-filter)#  <span class="dpr">policy-tag</span> Tag-Zone-ProdFloor
+
+<span class="dn">Enable vlan-persistent</span>
+C9800(config)#<span class="dpr">wireless client vlan-persistent</span>
+</div>
+
+<div class="subsec"><h4>Roam Behavior Summary for This Deployment</h4></div>
+<table class="field-table"><thead><tr><th>Roam path</th><th>VLAN change?</th><th>ACL change?</th><th>Result with vlan-persistent</th></tr></thead><tbody>
+<tr><td class="fn">Office → Production Floor</td><td>No (VLAN 50 → 50)</td><td>Yes (none → PROD-RESTRICT-ACL)</td><td>Seamless. PROD-RESTRICT-ACL applied instantly.</td></tr>
+<tr><td class="fn">Production Floor → Receiving Dock</td><td>No (VLAN 50 → 50)</td><td>Yes (PROD-RESTRICT → DOCK-ACL)</td><td>Seamless. DOCK-ACL applied instantly — WMS server still reachable.</td></tr>
+<tr><td class="fn">Office → Production Floor → Office</td><td>No</td><td>Yes (twice)</td><td>Seamless both ways. ACL swaps happen without any session interruption.</td></tr>
+</tbody></table>
+
+<div class="note success"><span class="ni">✅</span><span>ACL enforcement still works correctly even though there is no reauthentication. The new ACL from the target zone's policy profile is applied to the client <strong>immediately</strong> at roam time — security is not compromised, and connectivity is not interrupted.</span></div>
+<div class="note info"><span class="ni">ℹ️</span><span>This ACL-only scenario is a common misconception about vlan-persistent — many engineers assume the feature is only for VLAN differences. When both profiles use the same VLAN, vlan-persistent provides seamless ACL enforcement changes which is equally valuable for zone-based access control.</span></div>
+</div></div>
+</main>
+</div>
+
+</body></html>
