@@ -29,8 +29,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ─────────────────────────────────────────────────────────────
 # Configuration
 # ─────────────────────────────────────────────────────────────
-ISE_IP      = "ise-dev.semmelweis.hu"
-USERNAME    = "uzsoki.mark"
+ISE_IP      = "10.81.145.7"
+USERNAME    = "admin"
 PASSWORD    = getpass.getpass(f"Password for {USERNAME}@{ISE_IP}: ")
 OUTPUT_HTML = "ISE_Policy_Analytics.html"
 TIMEOUT     = 30
