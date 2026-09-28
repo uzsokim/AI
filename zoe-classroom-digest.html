@@ -1,0 +1,652 @@
+<title>Zoé napi összesítői</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #eef2f0;
+    --surface: #ffffff;
+    --surface-2: #e2e9e6;
+    --ink: #14231f;
+    --ink-soft: #4c625c;
+    --ink-faint: #7e8f8a;
+    --line: #d3ddd8;
+    --accent: #1f6f63;
+    --accent-soft: #dcece7;
+    --warn: #93601c;
+    --warn-soft: #f4e6d1;
+    --tag-assignment: #1f6f63;
+    --tag-assignment-bg: #dcece7;
+    --tag-announcement: #93601c;
+    --tag-announcement-bg: #f4e6d1;
+    --tag-material: #47616c;
+    --tag-material-bg: #e2e9ec;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1715;
+      --surface: #16211e;
+      --surface-2: #1e2b27;
+      --ink: #e9f1ee;
+      --ink-soft: #a9bcb6;
+      --ink-faint: #7c8e88;
+      --line: #2a3733;
+      --accent: #5fc2ad;
+      --accent-soft: #1c332d;
+      --warn: #e0ab5f;
+      --warn-soft: #362a15;
+      --tag-assignment: #5fc2ad;
+      --tag-assignment-bg: #1c332d;
+      --tag-announcement: #e0ab5f;
+      --tag-announcement-bg: #362a15;
+      --tag-material: #9fb7c0;
+      --tag-material-bg: #1c2a2f;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0f1715;
+    --surface: #16211e;
+    --surface-2: #1e2b27;
+    --ink: #e9f1ee;
+    --ink-soft: #a9bcb6;
+    --ink-faint: #7c8e88;
+    --line: #2a3733;
+    --accent: #5fc2ad;
+    --accent-soft: #1c332d;
+    --warn: #e0ab5f;
+    --warn-soft: #362a15;
+    --tag-assignment: #5fc2ad;
+    --tag-assignment-bg: #1c332d;
+    --tag-announcement: #e0ab5f;
+    --tag-announcement-bg: #362a15;
+    --tag-material: #9fb7c0;
+    --tag-material-bg: #1c2a2f;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Public Sans', system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 40px 64px;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  header.page {
+    margin-bottom: 32px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(28px, 5vw, 38px);
+    line-height: 1.12;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+
+  .lede {
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    line-height: 1.55;
+    max-width: 58ch;
+    margin: 0 0 18px;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+
+  .meta-row strong { color: var(--ink-soft); font-weight: 600; }
+
+  section.block {
+    margin-bottom: 32px;
+  }
+
+  h2.section-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 20px;
+    margin: 0 0 4px;
+  }
+
+  .section-sub {
+    color: var(--ink-faint);
+    font-size: 13.5px;
+    margin: 0 0 16px;
+  }
+
+  .deadlines {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .deadline-row {
+    background: var(--surface);
+    display: grid;
+    grid-template-columns: 84px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  @media (max-width: 480px) {
+    .deadline-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  .deadline-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .deadline-title { font-size: 14.5px; }
+  .deadline-course { color: var(--ink-faint); font-size: 12.5px; }
+
+  .deadline-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--warn);
+    background: var(--warn-soft);
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    justify-self: start;
+  }
+
+  @media (max-width: 480px) {
+    .deadline-tag { justify-self: start; }
+  }
+
+  .timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .day {
+    position: relative;
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 480px) {
+    .day { grid-template-columns: 1fr; }
+    .day-rail { flex-direction: row !important; padding-top: 0 !important; gap: 10px !important; }
+  }
+
+  .day-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 4px;
+  }
+
+  .day-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .day-weekday {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .day-rail .stem {
+    width: 1px;
+    flex: 1;
+    background: var(--line);
+    margin-top: 8px;
+    min-height: 12px;
+  }
+
+  @media (max-width: 480px) { .day-rail .stem { display: none; } }
+
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+
+  .day-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+    margin-bottom: 12px;
+  }
+
+  .day-course {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .day-poster {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .item {
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+
+  .items .item:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .item-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .tag.assignment { color: var(--tag-assignment); background: var(--tag-assignment-bg); }
+  .tag.announcement { color: var(--tag-announcement); background: var(--tag-announcement-bg); }
+  .tag.material { color: var(--tag-material); background: var(--tag-material-bg); }
+
+  .item-title { font-weight: 600; font-size: 14.5px; }
+
+  .item-due {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--warn);
+    white-space: nowrap;
+  }
+
+  .item-body {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  footer.page {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="page">
+    <p class="eyebrow">Google Classroom · napi összesítő</p>
+    <h1>Zoé Uzsoki digestje</h1>
+    <p class="lede">
+      A „Daily summary for Zoé Uzsoki” tárgyú levelek összefoglalója — nyolc nap
+      a Creascola 9.a osztályából, túlnyomórészt a Földrajz órákról, plusz az
+      osztály- és tagozati közlemények.
+    </p>
+    <div class="meta-row">
+      <span><strong>Időszak</strong> · 2026.09.10 – 2026.09.25</span>
+      <span><strong>Levelek</strong> · 8</span>
+      <span><strong>Forrás</strong> · no-reply@classroom.google.com</span>
+    </div>
+  </header>
+
+  <section class="block">
+    <h2 class="section-title">Nyitott határidők</h2>
+    <p class="section-sub">Az utolsó levél (szept. 25.) idejéhez képest még előttünk állók.</p>
+    <div class="deadlines">
+      <div class="deadline-row">
+        <span class="deadline-date">szept. 28.</span>
+        <span>
+          <span class="deadline-title">Tájékozódás az időben</span><br>
+          <span class="deadline-course">Földrajz 9.a — szöveg alapján megválaszolandó kérdések</span>
+        </span>
+        <span class="deadline-tag">feladat</span>
+      </div>
+      <div class="deadline-row">
+        <span class="deadline-date">szept. 30.</span>
+        <span>
+          <span class="deadline-title">Sítábor jelentkezés + 200&nbsp;€ előleg</span><br>
+          <span class="deadline-course">High School faliújság — Creascola sítábor, 2027 február</span>
+        </span>
+        <span class="deadline-tag">jelentkezés</span>
+      </div>
+      <div class="deadline-row">
+        <span class="deadline-date">okt. 1–5.</span>
+        <span>
+          <span class="deadline-title">Prezentáció vállalása (500 pont)</span><br>
+          <span class="deadline-course">Földrajz 9.a — Naprendszer, Hold, Föld alakja, galaxis</span>
+        </span>
+        <span class="deadline-tag">önkéntes</span>
+      </div>
+      <div class="deadline-row">
+        <span class="deadline-date">okt. 2.</span>
+        <span>
+          <span class="deadline-title">Gyakorló feladatok — helyi idő és zónaidő</span><br>
+          <span class="deadline-course">Földrajz 9.a</span>
+        </span>
+        <span class="deadline-tag">feladat</span>
+      </div>
+      <div class="deadline-row">
+        <span class="deadline-date">okt. 18.</span>
+        <span>
+          <span class="deadline-title">Motimore első tanulási időszak vége</span><br>
+          <span class="deadline-course">Földrajz 9.a — pontgyűjtés órai/otthoni munkára</span>
+        </span>
+        <span class="deadline-tag">folyamatos</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2 class="section-title">Napi bontásban</h2>
+    <p class="section-sub">Legújabb elöl. Minden nap az adott napi Classroom-levél tartalma.</p>
+
+    <div class="timeline">
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.25.</span>
+          <span class="day-weekday">péntek</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head"><span class="day-course">Földrajz 9.a</span></div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Tájékozódás az időben</span>
+                <span class="item-due">határidő: szept. 28.</span>
+              </div>
+              <p class="item-body">A csatolt tankönyvi szöveg alapján megválaszolandó kérdések, a gépen dolgozva.</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Gyakorló feladatok — helyi idő és zónaidő számítása</span>
+                <span class="item-due">határidő: okt. 2.</span>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">Prezentációk — 500 pont</span>
+              </div>
+              <p class="item-body">Vállalható témák: A mi galaxisunk (Levi, 10.01), A Naprendszer (Iván, 10.01), A Hold (Szilárd, 10.05), A Föld alakja és mozgásai (Ágnes, 10.05).</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">Sítábor — Creascola első sítábora</span>
+                <span class="item-due">jelentkezés: szept. 30.</span>
+              </div>
+              <p class="item-body">2027 február, Ausztria, 4 síterep (Bad Kleinkirchheim, Turracher Höhe, Katschberg, Goldeck), 5 nap, síoktatóval. Helyfoglalás 200 € előleggel. (High School tagozat faliújság, Kulcsár Edit)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.24.</span>
+          <span class="day-weekday">csütörtök</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head"><span class="day-course">Földrajz 9.a</span></div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Podcast és mind map</span>
+              </div>
+              <p class="item-body">Meghallgatandó a digitális jegyzetfüzetben lévő podcast, összevetve a mind mappal a saját jegyzettel — kiegészítés, ha az nem teljes.</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Földrajzi fokhálózat és műholdak</span>
+              </div>
+              <p class="item-body">Csatolt link megnyitása, kérdések megválaszolása.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.23.</span>
+          <span class="day-weekday">szerda</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head">
+            <span class="day-course">9.a osztálycsoport</span>
+            <span class="day-poster">+ High School faliújság</span>
+          </div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">Diáksport program pénteken</span>
+              </div>
+              <p class="item-body">A Magyar Diáksport Napja keretében az 1–2. órában mozgásos esemény. Gyülekező 7:50-ig melegítőben az iskolaudvaron, majd átvonulás a BSC sporttelepre (Árok utca).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.18.</span>
+          <span class="day-weekday">péntek</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head">
+            <span class="day-course">Földrajz 9.a</span>
+            <span class="day-poster">+ High School faliújság</span>
+          </div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Tájékozódás a térben</span>
+                <span class="item-due">határidő: szept. 18.</span>
+              </div>
+              <p class="item-body">Koordináták meghatározása (Kékes, Canberra, Atlanta, Sanghaj, Oslo), vaktérképes gyakorlás, Chile szélességkülönbsége, Debrecen–Miskolc térképi távolságszámítás, saját utazás tervezése.</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">Pontok nyilvántartása — Motimore</span>
+              </div>
+              <p class="item-body">Az első tanulási időszak okt. 18-ig tart. Csak önálló megoldás pontozható, AI legfeljebb ellenőrzésre használható.</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">Sítábor meghirdetve</span>
+              </div>
+              <p class="item-body">Részletek a csatolt plakáton. (High School tagozat faliújság, Marton Tamás)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.17.</span>
+          <span class="day-weekday">csütörtök</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head"><span class="day-course">Földrajz 9.a</span></div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag material">anyag</span>
+                <span class="item-title">Műholdak</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.14.</span>
+          <span class="day-weekday">hétfő</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head">
+            <span class="day-course">9.a osztálycsoport</span>
+            <span class="day-poster">+ High School faliújság</span>
+          </div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">Osztályprogram csütörtökön (szept. 17.)</span>
+              </div>
+              <p class="item-body">A 3. óra után Brain Bar jövőkutató fesztivál a Városligetben, BKV jeggyel/bérlettel. Érkezés kb. 11:30-ra, 14 óra után önállóan lehet távozni. Iskolai ebédlemondás szerda 10 óráig.</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Évfolyamprojektek</span>
+              </div>
+              <p class="item-body">9A — érettségi büfé (határidő jún. 18), 10A — ballagás szervezése (ápr. 30), 11A — szalagavató szervezése (nov. 28).</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag material">anyag</span>
+                <span class="item-title">Naptár, kapcsolattartók és vizsgaidőszakok</span>
+              </div>
+              <p class="item-body">Google Naptár feliratkozási linkek, tantárgyi/ügyintézési kapcsolattartók listája (FAQ), valamint a 9A–12A projekthetek és vizsgák áttekintése.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.11.</span>
+          <span class="day-weekday">péntek</span>
+          <span class="stem"></span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head"><span class="day-course">Földrajz 9.a</span></div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag material">anyag</span>
+                <span class="item-title">Okostankönyv, munkafüzet és atlasz</span>
+              </div>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag material">anyag</span>
+                <span class="item-title">Földrajzi fokhálózat</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day">
+        <div class="day-rail">
+          <span class="day-date">09.10.</span>
+          <span class="day-weekday">csütörtök</span>
+        </div>
+        <div class="day-card">
+          <div class="day-card-head"><span class="day-course">Földrajz 9.a</span></div>
+          <div class="items">
+            <div class="item">
+              <div class="item-head">
+                <span class="tag assignment">feladat</span>
+                <span class="item-title">Tájékozódás a térben</span>
+              </div>
+              <p class="item-body">Koordináták, vaktérképes gyakorlás, Chile szélessége, térképi távolságszámítás, utazástervezés — később szept. 18-i határidővel ismét szerepel.</p>
+            </div>
+            <div class="item">
+              <div class="item-head">
+                <span class="tag announcement">közlemény</span>
+                <span class="item-title">1. óra — szept. 10.</span>
+              </div>
+              <p class="item-body">Elkezdődik a tananyag feldolgozása. Hozandó: munkafüzet, füzet, atlasz.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="page">
+    A tantárgy nagy része Földrajz 9.a (tanár: Pintér Zsolt), az osztály- és
+    tagozati közlemények forrása a 9.a osztálycsoport és a High School
+    tagozat faliújsága (Marton Tamás, ill. Kulcsár Edit). Mind a nyolc levél
+    a no-reply@classroom.google.com címről érkezett, tárgya „Daily summary
+    for Zoé Uzsoki”.
+  </footer>
+
+</div>
